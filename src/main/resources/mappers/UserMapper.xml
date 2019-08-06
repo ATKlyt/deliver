@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.deliver.dao.UserDao">
+  <resultMap id="BaseResultMap" type="cn.deliver.domain.User">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="auth_id" jdbcType="VARCHAR" property="authId" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="role" jdbcType="VARCHAR" property="role" />
+    <result column="register_time" jdbcType="TIMESTAMP" property="registerTime" />
+    <result column="register_area" jdbcType="VARCHAR" property="registerArea" />
+    <result column="register_role" jdbcType="VARCHAR" property="registerRole" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+  </resultMap>
+
+  <resultMap id="UserAndDriverMap" type="cn.deliver.domain.UserDriverInfo">
+    <association property="user" javaType="cn.deliver.domain.User">
+      <result column="user_id" property="id" />
+      <result column="user_auth_id" property="authId" />
+      <result column="user_password" property="password" />
+      <result column="user_status" property="status"/>
+      <result column="user_role" property="role" />
+      <result column="user_phone" property="phone" />
+      <result column="user_register_area"  property="registerArea" />
+      <result column="user_register_time"  property="registerTime" />
+      <result column="user_register_role"  property="registerRole" />
+      <result column="user_email" property="email" />
+    </association>
+    <association property="userInfo" javaType="cn.deliver.domain.UserInfo">
+      <result column="user_info_id" property="id"/>
+      <result column="user_info_uid" property="uid"/>
+      <result column="user_info_name" property="name"/>
+      <result column="user_info_gender" property="gender"/>
+      <result column="user_info_birthday" property="birthday"/>
+      <result column="user_info_avatar" property="avatar"/>
+    </association>
+    <association property="driverInfo" javaType="cn.deliver.domain.DriverInfo">
+      <result column="driver_info_id" property="id"/>
+      <result column="driver_info_uuid" property="uiid"/>
+      <result column="driver_info_car_type" property="carType"/>
+      <result column="driver_info_driving_licence_picture" property="drivingLicencePicture"/>
+      <result column="driver_info_car_picture" property="carPicture"/>
+      <result column="driver_info_running_route" property="runningRoute"/>
+      <result column="driver_info_order_number" property="orderNumber"/>
+      <result column="driver_info_car_number" property="carNumber"/>
+      <result column="driver_info_status" property="status"/>
+    </association>
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, auth_id, phone, password, status, role, register_time, register_area, register_role, 
+    email
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.deliver.domain.User">
+    insert into user (id, auth_id, phone, 
+      password, status, role, 
+      register_time, register_area, register_role, 
+      email)
+    values (#{id,jdbcType=INTEGER}, #{authId,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{role,jdbcType=VARCHAR}, 
+      #{registerTime,jdbcType=TIMESTAMP}, #{registerArea,jdbcType=VARCHAR}, #{registerRole,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.deliver.domain.User">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="authId != null">
+        auth_id,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="role != null">
+        role,
+      </if>
+      <if test="registerTime != null">
+        register_time,
+      </if>
+      <if test="registerArea != null">
+        register_area,
+      </if>
+      <if test="registerRole != null">
+        register_role,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="authId != null">
+        #{authId,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null">
+        #{role,jdbcType=VARCHAR},
+      </if>
+      <if test="registerTime != null">
+        #{registerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="registerArea != null">
+        #{registerArea,jdbcType=VARCHAR},
+      </if>
+      <if test="registerRole != null">
+        #{registerRole,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.deliver.domain.User">
+    update user
+    <set>
+      <if test="authId != null">
+        auth_id = #{authId,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null">
+        role = #{role,jdbcType=VARCHAR},
+      </if>
+      <if test="registerTime != null">
+        register_time = #{registerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="registerArea != null">
+        register_area = #{registerArea,jdbcType=VARCHAR},
+      </if>
+      <if test="registerRole != null">
+        register_role = #{registerRole,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.deliver.domain.User">
+    update user
+    set auth_id = #{authId,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      role = #{role,jdbcType=VARCHAR},
+      register_time = #{registerTime,jdbcType=TIMESTAMP},
+      register_area = #{registerArea,jdbcType=VARCHAR},
+      register_role = #{registerRole,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="findByUid" resultMap="BaseResultMap">
+        select * from user where id = #{uid,jdbcType=INTEGER} ;
+    </select>
+  <select id="findByAuthId" resultMap="BaseResultMap">
+        select * from user where auth_id = #{authId,jdbcType=VARCHAR}   ;
+  </select>
+
+<!--============================艺明==============================-->
+  <!-- 查询所有的用户信息 -->
+  <select id="findAllUser"  resultMap="UserAndDriverMap">
+        select * from user
+    </select>
+
+  <!-- 查询两个表格中的某些片段 -->
+  <select id="findCommonUser" resultMap="UserAndDriverMap">
+        select * from user u,user_info ui where u.id= ui.uid
+    </select>
+
+  <!-- 插入 -->
+  <insert id="insertUser" parameterType="cn.deliver.domain.User" useGeneratedKeys="true" keyProperty="id">
+        insert into user(auth_id,password,phone,status,role,register_time,register_area,register_role,email)
+        values (#{authId},#{password},#{phone},#{status},#{role},#{registerTime},#{registerArea},#{registerRole},#{email})
+    </insert>
+
+  <!-- 审核提交状态 -->
+  <update id="updateUserStatus"  >
+        update user set status = #{status} where  id = #{id}
+    </update>
+
+  <!-- 查询审核为用户状态信息 -->
+  <select id="examineFindUser" parameterType="cn.deliver.domain.User"  resultMap="UserAndDriverMap">
+        SELECT * FROM user u, user_info ui WHERE u.register_role = #{registerRole} and u.status= #{status} and u.user_id = ui.user_info_uid
+    </select>
+  <!-- 查询审核为用户状态信息 -->
+  <select id="examineFindDriver" parameterType="cn.deliver.domain.User" resultMap="UserAndDriverMap">
+        SELECT * FROM user u, user_info ui ,driver_info di WHERE u.register_role = #{registerRole} and u.status=#{status} and u.id = ui.uid and ui.id = di.uiid
+    </select>
+
+<!--  =====================================俊彬======================================-->
+  <!--检测手机号码是否已被注册-->
+  <select id="checkPhoneNumber" resultType="java.lang.Integer">
+        select id from user where phone = #{phoneNumber}
+    </select>
+
+  <!--用户注册(提交基本信息)-->
+  <insert id="register" parameterType="cn.deliver.domain.User" useGeneratedKeys="true" keyProperty="id">
+        insert into user
+        (auth_id,phone,password,status,role,register_time,register_area,register_role)
+        values
+        (#{authId},#{phone},#{password},#{status},#{role},#{registerTime},#{registerArea},#{registerRole})
+    </insert>
+
+  <!--用户登录(系统发放id以及手机号码均可登录)-->
+  <select id="login" resultType="java.lang.Integer">
+    select id from user where password = #{password} and
+    <if test="length==10">
+      auth_id =
+    </if>
+    <if test="length==11">
+      phone =
+    </if>
+    #{id}
+  </select>
+
+</mapper>

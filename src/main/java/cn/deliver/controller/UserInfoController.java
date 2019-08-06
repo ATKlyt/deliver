@@ -14,10 +14,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
 
 @Controller
+@RequestMapping("/userInfo")
 public class UserInfoController {
 
     @Autowired
@@ -29,7 +28,7 @@ public class UserInfoController {
 
     private static final String DRIVER = "司机";
     private static final String USER = "普通用户";
-    private final String IDENTITYCARDFORMAT = "/^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$|^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9]|X)$/";
+    private final String IDENTITYCARDFORMAT = "^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$|^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9]|X)$";
 
     /**
      * 用户和司机注册时填写详细信息

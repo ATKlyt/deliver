@@ -22,13 +22,11 @@ import java.util.Map;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("user")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
     UserService userService;
-
-
 
     /**
      * 获取发货人信息
@@ -40,9 +38,9 @@ public class UserController {
     public Result findShipperInfoByAuthId(Integer uid){
         Map<String, Object> data = userService.findShipperInfoByAuthId(uid);
         if ( !data.isEmpty()){
-            return new Result("查询成功","200",data);
+            return new Result("查询成功","0",data);
         }else{
-            return new Result("该用户没有捎货资格", "400");
+            return new Result("该用户没有捎货资格", "1");
         }
     }
 
@@ -59,11 +57,11 @@ public class UserController {
         Map<String, Object> data = userService.findConsigneeByAuthId(authId);
         String msg = (String) data.get("message");
         if (firstError.equals(msg)){
-            return new Result("该用户没有捎货资格", "400");
+            return new Result("该用户没有捎货资格", "1");
         }else if (secondError.equals(msg)){
-            return new Result("查找不到该用户", "400");
+            return new Result("查找不到该用户", "1");
         }else {
-            return new Result("查询成功","200",data);
+            return new Result("查询成功","0",data);
         }
     }
 

@@ -1,20 +1,13 @@
 package cn.deliver.utils;
 
 
-import cn.cat.domain.User;
-import cn.cat.domain.UserDriverInfo;
-import cn.cat.domain.UserInfo;
 import cn.deliver.domain.User;
 import cn.deliver.domain.UserDriverInfo;
 import cn.deliver.domain.UserInfo;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import javax.sound.midi.Soundbank;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
@@ -56,9 +49,9 @@ public class ImportExcel {
 
                 user = new User(null,CheckFormat.formatCell(hssfRow.getCell(0)),CheckFormat.formatCell(hssfRow.getCell(2)),CheckFormat.formatCell(hssfRow.getCell(1)),"1",CheckFormat.formatCell(hssfRow.getCell(3)),
                         timestamp,CheckFormat.formatCell(hssfRow.getCell(5)),CheckFormat.formatCell(hssfRow.getCell(3)),CheckFormat.formatCell(hssfRow.getCell(6)));
-                userInfo = new UserInfo(null,null,CheckFormat.formatCell(hssfRow.getCell(7)),CheckFormat.formatCell(hssfRow.getCell(8)),birthStamp,null,null,"D:\\picture\\nopicture.jpg");
-
-                index = new UserDriverInfo(user,userInfo);
+//                userInfo = new UserInfo(null,null,CheckFormat.formatCell(hssfRow.getCell(7)),CheckFormat.formatCell(hssfRow.getCell(8)),birthStamp,null,null,"D:\\picture\\nopicture.jpg");
+//
+//                index = new UserDriverInfo(user,userInfo);
 
                 userList.add(index);
 

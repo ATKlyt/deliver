@@ -1,26 +1,18 @@
 package cn.deliver.service;
 
 import cn.deliver.domain.Area;
-import cn.deliver.domain.DriverInfo;
 import cn.deliver.domain.UserInfo;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
-
 public interface UserInfoService {
     //=========================================艺明===================
-    //插入用户信息
-    void insertUserInfo(UserInfo userInfo);
-
-
-//==================================俊彬=====================================
     /**
      * 插入用户信息
      * @param userInfo 用户信息
      */
     void insertUserInfo(UserInfo userInfo);
+
+    //==================================俊彬=====================================
 
     /**
      * 用户注册时填写详细信息

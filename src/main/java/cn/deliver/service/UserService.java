@@ -82,4 +82,11 @@ public interface UserService {
      * @return 验证码
      */
     String getPhoneCode(String phoneNumber);
+
+    /**
+     * 通过系统发放id获取用户的手机号码
+     * @param authId 系统发放id
+     * @return 用户的手机号码
+     */
+    String findPhoneNumberByAuthId(String authId);
 }

@@ -6,7 +6,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+/**
+ * @author 93231
+ */
 public class UploadFileUtil {
+
+    private UploadFileUtil(){}
 
     /**
      * 在service.xml中配置映射地址，用/upload映射服务器本地磁盘中的地址
@@ -21,6 +26,7 @@ public class UploadFileUtil {
     public static String uploadFile(MultipartFile file ,String type){
         String path = UPLOADPATH + "/" + type;
         File files = new File(path);
+        System.out.println(files.getAbsoluteFile());
         if(!files.exists()){
             files.mkdirs();
         }
@@ -28,7 +34,7 @@ public class UploadFileUtil {
         String uuid = UUID.randomUUID().toString().replace("-","");
         fileName = uuid + "_" + fileName;
         try {
-            file.transferTo(new File(fileName,path));
+            file.transferTo(new File(path,fileName));
             return path + "/" + fileName;
         } catch (IOException e) {
             return null;

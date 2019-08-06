@@ -15,6 +15,8 @@ public class User {
 
     private String role;
 
+    private String evidence;
+
     private Timestamp registerTime;
 
     private String registerArea;
@@ -26,13 +28,14 @@ public class User {
     public User() {
     }
 
-    public User(Integer id, String authId, String phone, String password, String status, String role, Timestamp registerTime, String registerArea, String registerRole, String email) {
+    public User(Integer id, String authId, String phone, String password, String status, String role, String evidence, Timestamp registerTime, String registerArea, String registerRole, String email) {
         this.id = id;
         this.authId = authId;
         this.phone = phone;
         this.password = password;
         this.status = status;
         this.role = role;
+        this.evidence = evidence;
         this.registerTime = registerTime;
         this.registerArea = registerArea;
         this.registerRole = registerRole;
@@ -48,6 +51,7 @@ public class User {
                 ", password='" + password + '\'' +
                 ", status='" + status + '\'' +
                 ", role='" + role + '\'' +
+                ", evidence='" + evidence + '\'' +
                 ", registerTime=" + registerTime +
                 ", registerArea='" + registerArea + '\'' +
                 ", registerRole='" + registerRole + '\'' +
@@ -101,6 +105,14 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getEvidence() {
+        return evidence;
+    }
+
+    public void setEvidence(String evidence) {
+        this.evidence = evidence;
     }
 
     public Timestamp getRegisterTime() {

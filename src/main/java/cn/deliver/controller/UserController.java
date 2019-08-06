@@ -5,6 +5,7 @@ import cn.deliver.domain.User;
 import cn.deliver.domain.UserDriverInfo;
 import cn.deliver.service.UserService;
 import cn.deliver.utils.ExportExcel;
+import cn.deliver.utils.SessionUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -27,6 +27,12 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    private final int CODETIME = 60;
+    private final int PHONELENGTH = 11;
+    private final int CODELENGTH = 6;
+    private final String PASSWORDFORMAT = "(?!.*[\\u4E00-\\u9FA5\\s])(?!^[a-zA-Z]+$)(?!^[\\d]+$)(?!^[^a-zA-Z\\d]+$)^.{6,16}$";
+    private final String PHONENUMBERFORMAT = "^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$";
 
     /**
      * 获取发货人信息
@@ -65,7 +71,6 @@ public class UserController {
         }
     }
 
-    //======================================================================艺明
     /**
      * 查询分页信息
      * */
@@ -88,11 +93,8 @@ public class UserController {
     @ResponseBody
     @RequestMapping(value = "/audit",method = RequestMethod.GET)
     public Result auditUser(@RequestParam(value = "status",defaultValue = "0") String status,@RequestParam(value = "role") int role){
-
         List<UserDriverInfo> searchList = userService.findUserBySR(status,role);
-
         return new Result("处理成功","0",searchList);
-
     }
 
 
@@ -149,8 +151,6 @@ public class UserController {
         out.close();
     }
 
-
-
     /**
      * 导入数据
      * */
@@ -184,14 +184,6 @@ public class UserController {
         userService.updateUserStatus(id,status);
         return new Result("审核成功","0",null);
     }
-    //===========================================================艺明
-
-    //=============================================================俊彬
-
-
-    private final int CODETIME = 60;
-    private final String PASSWORDFORMAT = "(?!.*[\\u4E00-\\u9FA5\\s])(?!^[a-zA-Z]+$)(?!^[\\d]+$)(?!^[^a-zA-Z\\d]+$)^.{6,16}$";
-    private final String PHONENUMBERFORMAT = "^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$";
 
     /**
      * 检测手机号码是否被注册
@@ -222,16 +214,14 @@ public class UserController {
     @ResponseBody
     public Result getPhoneCode(@RequestBody Map<String,Object> data,HttpServletRequest request){
         String phoneNumber = (String) data.get("phone");
-        //验证手机号码是否为空或符合格式
         if(phoneNumber == null || !phoneNumber.matches(PHONENUMBERFORMAT)){
-            return new Result("手机号码为空或格式有误","1",null);
+            return new Result("手机号码为空或格式有误 ","1",null);
         }
         String code = userService.getPhoneCode(phoneNumber);
-        System.out.println(code);
         if(code!=null){
             //将随机生成的验证码存入session域中等待比对
             request.getSession().setAttribute("beforeCode",code);
-            request.getSession().setAttribute("sendTime",new Date());
+            SessionUtil.removeAttribute(request.getSession(),"beforeCode");
             return new Result("验证码发送成功","0",null);
         }else{
             return new Result("验证码发送失败","1",null);
@@ -252,18 +242,10 @@ public class UserController {
             return new Result("验证码为空","1",null);
         }
         String beforeCode = (String) request.getSession().getAttribute("beforeCode");
-        Date sendTime = (Date) request.getSession().getAttribute("sendTime");
-        //计算时间差，超过60秒即失效
-        System.out.println("sendTime:"+sendTime);
-        long diffTime = (System.currentTimeMillis() - sendTime.getTime()) / 1000;
-        if(diffTime < CODETIME) {
-            if (code.equals(beforeCode)) {
-                return new Result("验证码正确", "0", null);
-            } else {
-                return new Result("验证码错误", "1", null);
-            }
-        }else {
-            return new Result("验证码已过期，请重新发送验证码", "1", null);
+        if (code.equals(beforeCode)) {
+            return new Result("验证码正确", "0", null);
+        } else {
+            return new Result("验证码错误", "1", null);
         }
     }
 
@@ -304,9 +286,18 @@ public class UserController {
         if(!((String) data.get("password")).matches(PASSWORDFORMAT)){
             return new Result("密码格式有误","1",null);
         }
-        //简单的MD5加密，后续添加盐值加密
-        String password = DigestUtils.md5DigestAsHex(((String)data.get("password")).getBytes());
-        Integer loginId = userService.login(id,password);
+        String password = (String) data.get("password");
+        //MD5加盐加密处理
+        if(id.length() == PHONELENGTH) {
+            password = id + password;
+        }else{
+            String phone = userService.findPhoneNumberByAuthId(id);
+            if(phone != null){
+                password = phone + password;
+            }
+        }
+        String cryptographicPassword = DigestUtils.md5DigestAsHex(password.getBytes());
+        Integer loginId = userService.login(id,cryptographicPassword);
         if(loginId!=null){
             request.getSession().setAttribute("id",loginId);
             return new Result("登录成功","0",id);
@@ -314,6 +305,4 @@ public class UserController {
             return new Result("登录失败","1",null);
         }
     }
-
-    //=============================================================俊彬
 }

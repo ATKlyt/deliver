@@ -29,6 +29,9 @@ public class UserServiceImpl implements UserService{
     private final String transportRole = "客运车司机";
     private final String privateRole = "私家车司机";
     private final String commonRole = "用户";
+    private static final int IDLENGTH = 10;
+    private static final int CODELENGTH = 6;
+
     @Autowired
     UserDao userDao;
     @Autowired
@@ -162,16 +165,6 @@ public class UserServiceImpl implements UserService{
     public void updateUserStatus(int id, String status) {
         userDao.updateUserStatus(id,status);
     }
-    //============================    艺明    ======================================
-
-
-    //===================================================俊彬
-
-    /**
-     * 登录id长度和验证码长度
-     */
-    private static final int IDLENGTH = 10;
-    private static final int CODELENGTH = 6;
 
     @Override
     public boolean checkPhoneNumber(String phoneNumber) {
@@ -197,11 +190,17 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public String findPhoneNumberByAuthId(String authId) {
+        return userDao.findPhoneNumberByAuthId(authId);
+    }
+
+    @Override
     public Map<String,Object> register(User user) {
         //后台随机生成10位数的ID
         user.setAuthId(PhoneCodeUtil.getPhoneCodeUtil().getRandomNum(IDLENGTH));
-        //md5的简单加密
-        user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+        //md5盐值加密
+        String cryptographicPassword = user.getPhone() + user.getPassword();
+        user.setPassword(DigestUtils.md5DigestAsHex(cryptographicPassword.getBytes()));
         //未通过后台审核前所有用户的身份均为游客
         user.setRole("游客");
         //审核状态("0"为审核中，"1"为审核通过，"2"为审核不通过)
@@ -221,5 +220,4 @@ public class UserServiceImpl implements UserService{
     public Integer login(String id, String password) {
         return userDao.login(id,password,id.length());
     }
-    //===================================================俊彬
 }

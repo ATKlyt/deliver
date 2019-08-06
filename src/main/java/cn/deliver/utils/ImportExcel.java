@@ -47,8 +47,8 @@ public class ImportExcel {
                 Timestamp timestamp = Timestamp.valueOf(time);
                 Timestamp birthStamp = Timestamp.valueOf(birthdayTime);
 
-                user = new User(null,CheckFormat.formatCell(hssfRow.getCell(0)),CheckFormat.formatCell(hssfRow.getCell(2)),CheckFormat.formatCell(hssfRow.getCell(1)),"1",CheckFormat.formatCell(hssfRow.getCell(3)),
-                        timestamp,CheckFormat.formatCell(hssfRow.getCell(5)),CheckFormat.formatCell(hssfRow.getCell(3)),CheckFormat.formatCell(hssfRow.getCell(6)));
+//                user = new User(null,CheckFormat.formatCell(hssfRow.getCell(0)),CheckFormat.formatCell(hssfRow.getCell(2)),CheckFormat.formatCell(hssfRow.getCell(1)),"1",CheckFormat.formatCell(hssfRow.getCell(3)),
+//                        timestamp,CheckFormat.formatCell(hssfRow.getCell(5)),CheckFormat.formatCell(hssfRow.getCell(3)),CheckFormat.formatCell(hssfRow.getCell(6)));
 //                userInfo = new UserInfo(null,null,CheckFormat.formatCell(hssfRow.getCell(7)),CheckFormat.formatCell(hssfRow.getCell(8)),birthStamp,null,null,"D:\\picture\\nopicture.jpg");
 //
 //                index = new UserDriverInfo(user,userInfo);

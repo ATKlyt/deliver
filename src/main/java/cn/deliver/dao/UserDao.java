@@ -25,8 +25,6 @@ public interface UserDao {
 
     User findByAuthId(String authId);
 
-    //==================================艺明=====================================
-
     /**
      * 查询所有的用户信息
      * */
@@ -57,7 +55,6 @@ public interface UserDao {
      * */
     List<UserDriverInfo> examineFindDriver(User user);
 
-//==================================俊彬=====================================
     /**
      * 检测手机号码是否已被注册
      * @param phoneNumber 手机号码
@@ -80,5 +77,10 @@ public interface UserDao {
      */
     Integer login(@Param("id") String id,@Param("password") String password,@Param("length") int length);
 
-
+    /**
+     * 通过系统发放id获取用户的手机号码
+     * @param authId 系统发放id
+     * @return 用户的手机号码
+     */
+    String findPhoneNumberByAuthId(@Param("authId") String authId);
 }

@@ -289,9 +289,17 @@
   <!--用户注册(提交基本信息)-->
   <insert id="register" parameterType="cn.deliver.domain.User" useGeneratedKeys="true" keyProperty="id">
         insert into user
-        (auth_id,phone,password,status,role,register_time,register_area,register_role)
+        (auth_id,phone,password,status,role,register_time,register_area,register_role
+        <if test="#{evidence != null}">
+          ,#{evidence}
+        </if>
+        )
         values
-        (#{authId},#{phone},#{password},#{status},#{role},#{registerTime},#{registerArea},#{registerRole})
+        (#{authId},#{phone},#{password},#{status},#{role},#{registerTime},#{registerArea},#{registerRole}
+        <if test="#{evidence != null}">
+          ,#{evidence}
+        </if>
+        )
     </insert>
 
   <!--用户登录(系统发放id以及手机号码均可登录)-->
@@ -306,4 +314,8 @@
     #{id}
   </select>
 
+  <!--通过authId来获取对应的手机号码-->
+  <select id="findPhoneNumberByAuthId" resultType="java.lang.String">
+    select phone from user where auth_id = #{authId}
+  </select>
 </mapper>

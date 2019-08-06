@@ -22,15 +22,10 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Autowired
     private AreaDao areaDao;
 
-    //==================================艺明=====================================
-
-
     @Override
     public void insertUserInfo(UserInfo userInfo) {
         userInfoDao.insertUserInfo(userInfo);
     }
-
-//==================================俊彬=====================================
 
     private static final String AVATAR = "";
 

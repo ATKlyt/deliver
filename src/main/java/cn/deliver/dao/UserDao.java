@@ -88,4 +88,10 @@ public interface UserDao {
     List<UserDriverInfo> abstractQuery(@Param("info") String info);
 
 
+    /**
+     * 根据uid查找电话号码
+     * @param cid
+     * @return
+     */
+    String findPhoneByUid(Integer cid);
 }

@@ -7,8 +7,6 @@ import cn.deliver.domain.DriverInfo;
 import cn.deliver.domain.User;
 import cn.deliver.domain.UserInfo;
 import cn.deliver.utils.NameBuilder;
-import org.junit.Before;
-import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -23,13 +21,11 @@ public class MyTest {
 
     ApplicationContext applicationcontext;
 
-    @Before
     public void init() {
         // 初始化Spring容器
         applicationcontext = new ClassPathXmlApplicationContext("file:src/main/resources/ApplicationContext.xml");
     }
 
-    @Test
     public void getUserText2() {
         UserDao userDao = applicationcontext.getBean(UserDao.class);
         UserInfoDao userInfoDao = applicationcontext.getBean(UserInfoDao.class);

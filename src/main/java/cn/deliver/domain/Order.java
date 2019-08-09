@@ -1,10 +1,20 @@
 package cn.deliver.domain;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class Order {
     private Integer id;
 
+    /**
+     * 订单状态
+     * 1/2/3/4/5/6  ---->
+     * 用户订单等待被邀请司机确认
+     * 被邀请司机已确认,交易达成
+     * 被邀请司机已确认，等待担保人确认
+     * 被邀请司机和担保人均确认等待，交易达成
+     * 司机取消
+     * 用户取消
+     */
     private String status;
 
     private Integer userOrderId;
@@ -15,9 +25,11 @@ public class Order {
 
     private String no;
 
-    private Date createTime;
+    private Timestamp createTime;
 
-    private Date updateTime;
+    private Timestamp updateTime;
+
+    private Integer driverOrderId;
 
     public Integer getId() {
         return id;
@@ -67,19 +79,28 @@ public class Order {
         this.no = no == null ? null : no.trim();
     }
 
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
+    public Timestamp getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(Timestamp updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Timestamp getCreateTime() {
+
+        return createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Integer getDriverOrderId() {
+        return driverOrderId;
+    }
+
+    public void setDriverOrderId(Integer driverOrderId) {
+        this.driverOrderId = driverOrderId;
     }
 }

@@ -16,8 +16,9 @@ public class DriverInfoServiceImpl implements DriverInfoService {
     private DriverInfoDao driverInfoDao;
 
     @Override
-    public String uploadFile(MultipartFile fil, String type) {
-        return UploadFileUtil.uploadFile(fil,type);
+    public String uploadFile(MultipartFile file, String type) {
+        return UploadFileUtil.uploadFile(file,type);
+
     }
 
     @Override

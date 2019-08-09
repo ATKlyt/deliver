@@ -2,23 +2,33 @@ package cn.deliver.domain;
 
 
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.List;
 
 public class DriverOrderMessage {
-    private String phone;
+    private Integer driverOrderId;
+    private String authId;
     private String name;
-    private Date birthday;
+    private String phone;
     private String carNumber;
     private String carPicture;
-    private Integer authId;
-    private Area area;
-    private DriverOrder driverOrder;
+    private Timestamp goOff;
+    private List<Area> areas;
 
-    public String getPhone() {
-        return phone;
+    public Integer getDriverOrderId() {
+        return driverOrderId;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setDriverOrderId(Integer driverOrderId) {
+        this.driverOrderId = driverOrderId;
+    }
+
+    public String getAuthId() {
+        return authId;
+    }
+
+    public void setAuthId(String authId) {
+        this.authId = authId;
     }
 
     public String getName() {
@@ -29,12 +39,12 @@ public class DriverOrderMessage {
         this.name = name;
     }
 
-    public Date getBirthday() {
-        return birthday;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getCarNumber() {
@@ -53,27 +63,19 @@ public class DriverOrderMessage {
         this.carPicture = carPicture;
     }
 
-    public Integer getAuthId() {
-        return authId;
+    public Timestamp getGoOff() {
+        return goOff;
     }
 
-    public void setAuthId(Integer authId) {
-        this.authId = authId;
+    public void setGoOff(Timestamp goOff) {
+        this.goOff = goOff;
     }
 
-    public Area getArea() {
-        return area;
+    public List<Area> getAreas() {
+        return areas;
     }
 
-    public void setArea(Area area) {
-        this.area = area;
-    }
-
-    public DriverOrder getDriverOrder() {
-        return driverOrder;
-    }
-
-    public void setDriverOrder(DriverOrder driverOrder) {
-        this.driverOrder = driverOrder;
+    public void setAreas(List<Area> areas) {
+        this.areas = areas;
     }
 }

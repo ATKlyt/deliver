@@ -14,10 +14,11 @@ public interface UserService {
 
 
 
-    Map<String, Object> findShipperInfoByAuthId(Integer uid);
+    Result findDeliverInfoByAuthId(Integer uid);
 
-    Map<String, Object> findConsigneeByAuthId(String authId);
+    Result findConsigneeByAuthId(String authId);
 
+    Result findSuretyByAuthId(String authId, Integer driverUid);
 
     //=========================================艺明===================
 

@@ -62,20 +62,16 @@ public class UserController {
         }
     }
 
+
     /**
      * 获取发货人信息
      * @param uid
      * @return
      */
     @ResponseBody
-    @RequestMapping("findShipperInfo")
-    public Result findShipperInfoByAuthId(Integer uid){
-        Map<String, Object> data = userService.findShipperInfoByAuthId(uid);
-        if ( !data.isEmpty()){
-            return new Result("查询成功","200",data);
-        }else{
-            return new Result("该用户没有捎货资格", "400");
-        }
+    @RequestMapping("findDeliverInfo")
+    public Result findDeliverInfoByAuthId(Integer uid){
+        return userService.findDeliverInfoByAuthId(uid);
     }
 
     /**
@@ -86,17 +82,7 @@ public class UserController {
     @ResponseBody
     @RequestMapping("findConsigneeInfo")
     public Result findConsigneeByAuthId(String authId){
-        String firstError = "该用户没有捎货资格";
-        String secondError = "查找不到该用户";
-        Map<String, Object> data = userService.findConsigneeByAuthId(authId);
-        String msg = (String) data.get("message");
-        if (firstError.equals(msg)){
-            return new Result("该用户没有捎货资格", "400");
-        }else if (secondError.equals(msg)){
-            return new Result("查找不到该用户", "400");
-        }else {
-            return new Result("查询成功","200",data);
-        }
+        return userService.findConsigneeByAuthId(authId);
     }
 
     /**

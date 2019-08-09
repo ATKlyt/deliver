@@ -197,7 +197,7 @@
       #{registerTime,jdbcType=TIMESTAMP}, #{registerArea,jdbcType=VARCHAR}, #{registerRole,jdbcType=VARCHAR}, 
       #{email,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="cn.deliver.domain.User">
+  <insert id="insertSelective" parameterType="cn.deliver.domain.User" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
     insert into user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -341,5 +341,8 @@
     </if>
     #{id}
   </select>
+    <select id="findPhoneByUid" resultType="java.lang.String">
+      select phone from user where id = #{cid,jdbcType=INTEGER} ;
+    </select>
 
 </mapper>

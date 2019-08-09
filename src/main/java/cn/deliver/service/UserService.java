@@ -1,10 +1,12 @@
 package cn.deliver.service;
 
+import cn.deliver.domain.Result;
 import cn.deliver.domain.User;
 import cn.deliver.domain.UserDriverInfo;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +41,7 @@ public interface UserService {
     /**
      * 导入excel表格数据
      * */
-    void importExcel(InputStream inputStream, String fileName) throws IOException;
+    void importExcel(InputStream inputStream, String fileName) throws IOException, ParseException;
 
     /**
      * 导出数据库
@@ -49,7 +51,7 @@ public interface UserService {
     /**
      * 审核用户申请
      * */
-    void updateUserStatus(int id, String status);
+    void updateUserStatus(int id, String status,String role);
 
     //==================================俊彬=====================================
 
@@ -82,4 +84,16 @@ public interface UserService {
      * @return 验证码
      */
     String getPhoneCode(String phoneNumber);
+
+    /**
+     * @param info 查询内容
+     * */
+    List<UserDriverInfo> abstractQuery(String info);
+
+    /**
+     * 根据ID删除用户
+     * @param map
+     * @return
+     */
+    Result deleteUser(Map<String, Object> map);
 }

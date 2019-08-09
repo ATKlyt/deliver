@@ -1,9 +1,5 @@
 package cn.deliver.utils;
 
-
-import cn.cat.domain.User;
-import cn.cat.domain.UserDriverInfo;
-import cn.cat.domain.UserInfo;
 import cn.deliver.domain.User;
 import cn.deliver.domain.UserDriverInfo;
 import cn.deliver.domain.UserInfo;
@@ -18,7 +14,11 @@ import javax.sound.midi.Soundbank;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class ImportExcel {
 
-    public static List<UserDriverInfo> creatList(InputStream inputStream, String fileName) throws IOException {
+    public static List<UserDriverInfo> creatList(InputStream inputStream, String fileName) throws IOException, ParseException {
         //获取返回对象
         List<UserDriverInfo> userList = new ArrayList<UserDriverInfo>();
 
@@ -50,16 +50,17 @@ public class ImportExcel {
 
                 String time = CheckFormat.formatCell(hssfRow.getCell(4));
                 String birthdayTime = CheckFormat.formatCell(hssfRow.getCell(9));
-
                 Timestamp timestamp = Timestamp.valueOf(time);
-                Timestamp birthStamp = Timestamp.valueOf(birthdayTime);
+                Date birthDay = Date.valueOf(birthdayTime);
 
                 user = new User(null,CheckFormat.formatCell(hssfRow.getCell(0)),CheckFormat.formatCell(hssfRow.getCell(2)),CheckFormat.formatCell(hssfRow.getCell(1)),"1",CheckFormat.formatCell(hssfRow.getCell(3)),
                         timestamp,CheckFormat.formatCell(hssfRow.getCell(5)),CheckFormat.formatCell(hssfRow.getCell(3)),CheckFormat.formatCell(hssfRow.getCell(6)));
-                userInfo = new UserInfo(null,null,CheckFormat.formatCell(hssfRow.getCell(7)),CheckFormat.formatCell(hssfRow.getCell(8)),birthStamp,null,null,"D:\\picture\\nopicture.jpg");
+
+                userInfo = new UserInfo(null,null,CheckFormat.formatCell(hssfRow.getCell(7)),CheckFormat.formatCell(hssfRow.getCell(8)), birthDay,null,null,"D:\\picture\\nopicture.jpg");
 
                 index = new UserDriverInfo(user,userInfo);
-
+                System.out.println(user);
+                System.out.println(userInfo);
                 userList.add(index);
 
             }

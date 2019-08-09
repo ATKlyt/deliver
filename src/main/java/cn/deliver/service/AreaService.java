@@ -4,18 +4,38 @@ package cn.deliver.service;
 
 
 import cn.deliver.domain.Area;
+import cn.deliver.domain.Result;
 
 import java.util.List;
 
 public interface AreaService {
 
-    int updateBelongAreaByUid(Area area);
+    /**
+     * 跟新所属地区
+     * @param area
+     * @return
+     */
+    Result updateBelongAreaByUid(Area area);
 
-    int insertSelective(Area area);
+    Result insertSelective(Area area);
 
-    int updateConsignee(Integer areaId, Integer uid);
+    /**
+     * 修改用户默认收货/发货地址
+     * @param areaId
+     * @param uid
+     * @param type consignee/deliver ---->  收货地址/发货地址
+     * @return
+     */
+    Result updateArea(Integer areaId, Integer uid, String type);
 
-    List<Area> findAllConsigneeByUid(Integer uid);
+    /**
+     * 查询所有收货地址
+     * @param uid
+     * @return
+     */
+    Result findAllConsigneeByUid(Integer uid);
 
-    int deleteConsignee(Integer areaId);
+    Result deleteAreaByAreaId(Integer areaId);
+
+    Result findAllDeliverByUid(Integer uid);
 }

@@ -10,10 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface UserInfoService {
-    //=========================================艺明===================
-    //插入用户信息
-    void insertUserInfo(UserInfo userInfo);
-
 
 //==================================俊彬=====================================
     /**

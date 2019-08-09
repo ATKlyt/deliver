@@ -1,6 +1,6 @@
 package cn.deliver.domain;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class DriverOrder {
     private Integer id;
@@ -13,10 +13,14 @@ public class DriverOrder {
 
     private Integer carry;
 
-    private Date goOff;
+    private Timestamp goOff;
 
-    private Date deadline;
+    private Timestamp deadline;
 
+    /**
+     * (0未过期,1过期,2取消状态,3删除状态)
+     * 过期状态：当前时间超过出发时间
+     */
     private String status;
 
     public Integer getId() {
@@ -59,19 +63,19 @@ public class DriverOrder {
         this.carry = carry;
     }
 
-    public Date getGoOff() {
+    public Timestamp getGoOff() {
         return goOff;
     }
 
-    public void setGoOff(Date goOff) {
+    public void setGoOff(Timestamp goOff) {
         this.goOff = goOff;
     }
 
-    public Date getDeadline() {
+    public Timestamp getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(Date deadline) {
+    public void setDeadline(Timestamp deadline) {
         this.deadline = deadline;
     }
 

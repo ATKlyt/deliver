@@ -703,6 +703,76 @@ public class AreaExample {
             addCriterion("cid not between", value1, value2, "cid");
             return (Criteria) this;
         }
+
+        public Criteria andDetailIsNull() {
+            addCriterion("detail is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailIsNotNull() {
+            addCriterion("detail is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailEqualTo(String value) {
+            addCriterion("detail =", value, "detail");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailNotEqualTo(String value) {
+            addCriterion("detail <>", value, "detail");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailGreaterThan(String value) {
+            addCriterion("detail >", value, "detail");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailGreaterThanOrEqualTo(String value) {
+            addCriterion("detail >=", value, "detail");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailLessThan(String value) {
+            addCriterion("detail <", value, "detail");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailLessThanOrEqualTo(String value) {
+            addCriterion("detail <=", value, "detail");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailLike(String value) {
+            addCriterion("detail like", value, "detail");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailNotLike(String value) {
+            addCriterion("detail not like", value, "detail");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailIn(List<String> values) {
+            addCriterion("detail in", values, "detail");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailNotIn(List<String> values) {
+            addCriterion("detail not in", values, "detail");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailBetween(String value1, String value2) {
+            addCriterion("detail between", value1, value2, "detail");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailNotBetween(String value1, String value2) {
+            addCriterion("detail not between", value1, value2, "detail");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

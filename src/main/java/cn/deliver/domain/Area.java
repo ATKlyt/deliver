@@ -1,5 +1,6 @@
 package cn.deliver.domain;
 
+
 public class Area {
     private Integer id;
 
@@ -15,9 +16,14 @@ public class Area {
 
     private String village;
 
+    /**
+     *   1/2/3/4/5/6/7/8    --->    所属地区/默认收货地址/收货地址/默认发货地址/发货地址/司机出发地/司机目的地/删除状态
+     */
     private String status;
 
     private Integer cid;
+
+    private String detail;
 
     public Integer getId() {
         return id;
@@ -89,5 +95,13 @@ public class Area {
 
     public void setCid(Integer cid) {
         this.cid = cid;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail == null ? null : detail.trim();
     }
 }

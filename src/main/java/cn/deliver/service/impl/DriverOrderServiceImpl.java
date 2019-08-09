@@ -3,10 +3,8 @@ package cn.deliver.service.impl;
 import cn.deliver.dao.AreaDao;
 import cn.deliver.dao.DriverOrderDao;
 import cn.deliver.dao.UserInfoDao;
-import cn.deliver.domain.Area;
-import cn.deliver.domain.AreaList;
-import cn.deliver.domain.DriverOrder;
-import cn.deliver.domain.DriverOrderMessage;
+import cn.deliver.dao.UserOrderDao;
+import cn.deliver.domain.*;
 import cn.deliver.service.DriverOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,39 +20,52 @@ public class DriverOrderServiceImpl implements DriverOrderService {
     UserInfoDao userInfoDao;
     @Autowired
     AreaDao areaDao;
-
-
+    @Autowired
+    UserOrderDao userOrderDao;
 
 
 
 
     @Override
-    public List<DriverOrderMessage> findNearbyDriverOrder(Integer uid) {
-        HashMap<String, Object> map = new HashMap<>(16);
-        //获取用户所属地区-----district：区
-        Area userBelongArea = areaDao.findBelongAreaByUid(uid);
-        String district = userBelongArea.getDistrict();
-        return driverOrderDao.findNearbyDriverOrder(district);
+    public Result findNearByUserOrder(Integer userOrderId) {
+        try {
+            //查找该用户订单的具体信息
+            UserOrder userOrder = userOrderDao.selectByPrimaryKey(userOrderId);
+            //查找该用户订单的发货地址的具体信息
+            Area deliverArea = areaDao.selectByPrimaryKey(userOrder.getDeliverAreaId());
+            //找到用户订单发货地址：村
+            String village = deliverArea.getVillage();
+            List<DriverOrderMessage> nearbyDriverOrders = driverOrderDao.findNearbyDriverOrder(village);
+            if (nearbyDriverOrders.size() > 0 ){
+                return new Result("查找成功", "0", nearbyDriverOrders);
+            }else{
+                return new Result("该订单没有顺路的司机哦", "0", null);
+            }
+        }catch (NullPointerException e){
+            e.printStackTrace();
+            return new Result("查找失败，该用户订单不存在", "0", null);
+        }
+
     }
 
     @Override
-    public int addDriverOrder(AreaList areas, DriverOrder driverOrder) {
-        //出发地址
-        String originalStatus = "4";
-        Integer originalId = 0;
-        Integer destinationId = 0;
-        for (Area area : areas.getAreas()) {
-            areaDao.insertSelective(area);
-            if (originalStatus.equals(area.getStatus())){
-                originalId = area.getId();
-            }else {
-                destinationId = area.getId();
-            }
-        }
-        driverOrder.setOriginalId(originalId);
-        driverOrder.setDestinationId(destinationId);
+    public Result addDriverOrder(Area originalArea, Area consigneeArea, DriverOrder driverOrder) {
+        areaDao.insertSelective(originalArea);
+        areaDao.insertSelective(consigneeArea);
+        driverOrder.setOriginalId(originalArea.getId());
+        driverOrder.setDestinationId(consigneeArea.getId());
+        //该司机行程处于未过期状态
         driverOrder.setStatus("1");
-        driverOrderDao.insertSelective(driverOrder);
-        return 1;
+        if (driverOrderDao.insertSelective(driverOrder)>0){
+            return new Result("发布成功", "0");
+        }else{
+            return new Result("发布失败", "1");
+        }
+    }
+
+    @Override
+    public Result findDetailByDriverOrder(Integer driverOrderId) {
+        DriverOrderMessage driverOrderMessage = driverOrderDao.findDetailByUserOrder(driverOrderId);
+        return new Result("查询成功", "0", driverOrderMessage);
     }
 }

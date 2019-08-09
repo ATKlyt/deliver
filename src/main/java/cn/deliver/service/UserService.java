@@ -1,5 +1,6 @@
 package cn.deliver.service;
 
+import cn.deliver.domain.Result;
 import cn.deliver.domain.User;
 import cn.deliver.domain.UserDriverInfo;
 
@@ -12,10 +13,11 @@ public interface UserService {
 
 
 
-    Map<String, Object> findShipperInfoByAuthId(Integer uid);
+    Result findDeliverInfoByAuthId(Integer uid);
 
-    Map<String, Object> findConsigneeByAuthId(String authId);
+    Result findConsigneeByAuthId(String authId);
 
+    Result findSuretyByAuthId(String authId, Integer driverUid);
 
     //=========================================艺明===================
 

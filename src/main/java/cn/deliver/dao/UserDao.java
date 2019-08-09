@@ -81,4 +81,5 @@ public interface UserDao {
     Integer login(@Param("id") String id,@Param("password") String password,@Param("length") int length);
 
 
+    String findPhoneByUid(Integer cid);
 }

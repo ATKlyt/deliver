@@ -1,6 +1,9 @@
 package cn.deliver.domain;
 
-import java.util.Date;
+import javax.persistence.Transient;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.List;
 
 public class UserOrder {
     private Integer id;
@@ -9,23 +12,40 @@ public class UserOrder {
 
     private String description;
 
-    private Long pay;
+    private BigDecimal pay;
 
-    private Date deliveryStart;
+    private Timestamp deliveryStart;
 
     private Integer consigneeAreaId;
 
     private Integer deliverAreaId;
 
+    /**
+     * 0/1/2/3/4/5  --->
+     * 用户订单还未达成交易关系/
+     * 用户订单已被司机接单，达成交易关系/
+     * 用户已被司机接单，等待担保人确认/
+     * 用户订单被取消/
+     * 用户订单过期/
+     * 用户订单已完成
+     */
     private String status;
 
-    private Date deliveryEnd;
+    private Timestamp deliveryEnd;
 
     private String goodsPicture1;
 
     private String goodsPicture2;
 
     private String goodsPicture3;
+
+    public BigDecimal getPay() {
+        return pay;
+    }
+
+    public void setPay(BigDecimal pay) {
+        this.pay = pay;
+    }
 
     public Integer getId() {
         return id;
@@ -51,19 +71,12 @@ public class UserOrder {
         this.description = description == null ? null : description.trim();
     }
 
-    public Long getPay() {
-        return pay;
-    }
 
-    public void setPay(Long pay) {
-        this.pay = pay;
-    }
-
-    public Date getDeliveryStart() {
+    public Timestamp getDeliveryStart() {
         return deliveryStart;
     }
 
-    public void setDeliveryStart(Date deliveryStart) {
+    public void setDeliveryStart(Timestamp deliveryStart) {
         this.deliveryStart = deliveryStart;
     }
 
@@ -91,11 +104,11 @@ public class UserOrder {
         this.status = status == null ? null : status.trim();
     }
 
-    public Date getDeliveryEnd() {
+    public Timestamp getDeliveryEnd() {
         return deliveryEnd;
     }
 
-    public void setDeliveryEnd(Date deliveryEnd) {
+    public void setDeliveryEnd(Timestamp deliveryEnd) {
         this.deliveryEnd = deliveryEnd;
     }
 

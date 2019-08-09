@@ -15,6 +15,24 @@
     <result column="goods_picture_2" jdbcType="VARCHAR" property="goodsPicture2" />
     <result column="goods_picture_3" jdbcType="VARCHAR" property="goodsPicture3" />
   </resultMap>
+
+  <resultMap id="userOrderMessage" type="cn.deliver.domain.UserOrderMessage">
+    <result column="phone" jdbcType="VARCHAR" property="phone"/>
+    <result column="name" jdbcType="VARCHAR" property="name"/>
+    <result column="user_order_id" jdbcType="INTEGER" property="userOrderId"/>
+    <association property="area" javaType="cn.deliver.domain.Area">
+      <id column="id" jdbcType="INTEGER" property="id" />
+      <result column="uid" jdbcType="INTEGER" property="uid" />
+      <result column="province" jdbcType="VARCHAR" property="province" />
+      <result column="city" jdbcType="VARCHAR" property="city" />
+      <result column="district" jdbcType="VARCHAR" property="district" />
+      <result column="town" jdbcType="VARCHAR" property="town" />
+      <result column="village" jdbcType="VARCHAR" property="village" />
+      <result column="cid" jdbcType="INTEGER" property="cid" />
+      <result column="detail" jdbcType="VARCHAR" property="detail" />
+    </association>
+
+  </resultMap>
   <sql id="Example_Where_Clause">
     <where>
       <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -119,7 +137,7 @@
       #{goodsPicture1,jdbcType=VARCHAR}, #{goodsPicture2,jdbcType=VARCHAR}, #{goodsPicture3,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="cn.deliver.domain.UserOrder">
+  <insert id="insertSelective" parameterType="cn.deliver.domain.UserOrder" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
     insert into user_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -320,4 +338,44 @@
       goods_picture_3 = #{goodsPicture3,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="findNearByVillage" resultMap="userOrderMessage">
+      SELECT
+          user_order.id AS user_order_id,
+          user_info.`name`,
+          `user`.phone,
+          area.*
+      FROM
+          user_order,
+          area,
+          `user`,
+          user_info
+      WHERE
+          user_order.deliver_area_id = area.id
+      AND area.village = #{village,jdbcType=VARCHAR}
+      AND area.uid = user_info.uid
+      AND `user`.id = area.uid;
+  </select>
+<!--  <select id="findDetailByUserOrderId" resultMap="userOrderMessage">-->
+<!--    SELECT-->
+<!--      user_order.goods_picture_1,-->
+<!--      user_order.goods_picture_2,-->
+<!--      user_order.goods_picture_3,-->
+<!--      user_order.description,-->
+<!--      user_order.delivery_start,-->
+<!--      user_order.delivery_end,-->
+<!--      user_order.pay,-->
+<!--      user_info.`name`,-->
+<!--      `user`.phone,-->
+<!--      area.*-->
+<!--    FROM-->
+<!--        user_order,-->
+<!--        area,-->
+<!--        `user`,-->
+<!--        user_info-->
+<!--    WHERE-->
+<!--        user_order.id = #{userOrderId,jdbcType=INTEGER}-->
+<!--    AND user_order.consignee_area_id = area.id-->
+<!--    AND area.uid = `user`.id-->
+<!--    AND area.uid = user_info.uid-->
+<!--  </select>-->
 </mapper>

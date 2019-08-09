@@ -114,7 +114,7 @@
       #{orderNumber,jdbcType=INTEGER}, #{carNumber,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="cn.deliver.domain.DriverInfo">
+  <insert id="insertSelective" parameterType="cn.deliver.domain.DriverInfo" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
     insert into driver_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

@@ -52,4 +52,6 @@ public interface UserInfoDao {
      * @return 用户的系统发放id
      */
     String findUserAuthId(int userInfoId);
+
+    String findNameByUid(Integer cid);
 }

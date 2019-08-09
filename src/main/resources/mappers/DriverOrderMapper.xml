@@ -12,33 +12,25 @@
     <result column="status" jdbcType="VARCHAR" property="status" />
   </resultMap>
   <resultMap id="DriverOrderMessageResultMap" type="cn.deliver.domain.DriverOrderMessage">
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="birthday" jdbcType="DATE" property="birthday" />
+    <result column="driver_order_id" jdbcType="VARCHAR" property="driverOrderId" />
     <result column="auth_id" jdbcType="VARCHAR" property="authId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="car_number" jdbcType="VARCHAR" property="carNumber" />
     <result column="car_picture" jdbcType="VARCHAR" property="carPicture" />
-    <association property="driverOrder" javaType="cn.deliver.domain.DriverOrder">
+    <result column="go_off" jdbcType="TIMESTAMP" property="goOff"/>
+    <collection property="areas" ofType="cn.deliver.domain.Area">
       <id column="id" jdbcType="INTEGER" property="id" />
       <result column="uid" jdbcType="INTEGER" property="uid" />
-      <result column="original_id" jdbcType="INTEGER" property="originalId" />
-      <result column="destination_id" jdbcType="INTEGER" property="destinationId" />
-      <result column="carry" jdbcType="INTEGER" property="carry" />
-      <result column="go_off" jdbcType="DATE" property="goOff" />
-      <result column="deadline" jdbcType="DATE" property="deadline" />
+      <result column="province" jdbcType="VARCHAR" property="province" />
+      <result column="city" jdbcType="VARCHAR" property="city" />
+      <result column="district" jdbcType="VARCHAR" property="district" />
+      <result column="town" jdbcType="VARCHAR" property="town" />
+      <result column="village" jdbcType="VARCHAR" property="village" />
       <result column="status" jdbcType="VARCHAR" property="status" />
-    </association>
-    <association property="area" javaType="cn.deliver.domain.Area">
-      <id column="area_id" jdbcType="INTEGER" property="id" />
-      <result column="area_uid" jdbcType="INTEGER" property="uid" />
-      <result column="area_province" jdbcType="VARCHAR" property="province" />
-      <result column="area_city" jdbcType="VARCHAR" property="city" />
-      <result column="area_district" jdbcType="VARCHAR" property="district" />
-      <result column="area_town" jdbcType="VARCHAR" property="town" />
-      <result column="area_village" jdbcType="VARCHAR" property="village" />
-      <result column="area_status" jdbcType="VARCHAR" property="status" />
-      <result column="area_cid" jdbcType="INTEGER" property="cid" />
-    </association>
+      <result column="cid" jdbcType="INTEGER" property="cid" />
+      <result column="detail" jdbcType="VARCHAR" property="detail"/>
+    </collection>
   </resultMap>
 
   <sql id="Example_Where_Clause">
@@ -140,7 +132,7 @@
       #{destinationId,jdbcType=INTEGER}, #{carry,jdbcType=INTEGER}, #{goOff,jdbcType=TIMESTAMP}, 
       #{deadline,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="cn.deliver.domain.DriverOrder">
+  <insert id="insertSelective" parameterType="cn.deliver.domain.DriverOrder" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
     insert into driver_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -286,30 +278,70 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="findNearbyDriverOrder" resultType="cn.deliver.domain.DriverOrderMessage">
+  <select id="findNearbyDriverOrder" resultMap="DriverOrderMessageResultMap">
         SELECT
-            a.*, dor.*, u.auth_id,
-            u.phone,
-            ui.name,
-            ui.birthday,
-            di.car_number,
-            di.car_picture
-        FROM
-            (
-                (
-                    (
-                        `user` AS u
-                        INNER JOIN user_info AS ui ON u.id = ui.uid
-                    )
-                    INNER JOIN driver_info AS di ON ui.uid = di.uiid
-                    AND di.driver_info_order_number &lt; 5
-                )
-                INNER JOIN driver_order AS dor ON u.id = dor.uid
-                AND dor.status = 1
-            )
-        INNER JOIN area AS a ON u.id = a.uid
-        AND a.status = 4
-        AND dor.original_id = a.area_id
-        AND a.district = #{district,jdbcType=VARCHAR} ;
+	area.*, other.driver_order_id,
+	other.car_number,
+	other.go_off,
+	other.`NAME`,
+	other.phone
+FROM
+	(
+		SELECT
+			dor.original_id,
+			dor.id AS driver_order_id,
+			dor.go_off,
+			u.phone,
+			ui. NAME,
+			di.car_number
+		FROM
+			driver_order AS dor,
+			`user` AS u,
+			user_info AS ui,
+            driver_info AS di
+        WHERE
+	        u.id = ui.uid
+        AND ui.id = di.uiid
+        AND u.id = dor.uid
+        AND dor.`status` = 1
+        AND di.order_number &lt; 5
+  ) AS other,
+   area
+  WHERE
+      area.village = #{village,jdbcType=VARCHAR}
+  AND other.original_id = area.id;
 </select>
+  <select id="findDetailByUserOrder" resultMap="DriverOrderMessageResultMap">
+    SELECT
+      area.*, other.destination_id,
+      other.auth_id,
+      other.car_picture
+    FROM
+        (
+            SELECT
+                dor.id AS driver_order_id,
+                u.auth_id,
+                di.car_picture,
+                dor.destination_id,
+                dor.uid
+            FROM
+                driver_order AS dor,
+                `user` AS u,
+                user_info AS ui,
+                driver_info AS di
+            WHERE
+                u.id = ui.uid
+            AND ui.id = di.uiid
+            AND u.id = dor.uid
+            AND dor.id = #{driverOrderId,jdbcType=INTEGER}
+        ) AS other,
+        area
+    WHERE
+        (
+            area.uid = other.uid
+            AND area.`status` = 1
+        )
+    OR area.id = other.destination_id;
+
+  </select>
 </mapper>

@@ -11,6 +11,23 @@
     <result column="village" jdbcType="VARCHAR" property="village" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="cid" jdbcType="INTEGER" property="cid" />
+    <result column="detail" jdbcType="VARCHAR" property="detail" />
+  </resultMap>
+
+
+
+  <resultMap id="ConsigneeDetail" type="cn.deliver.domain.ConsigneeDetail">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name"/>
+    <result column="phone" jdbcType="VARCHAR" property="phone"/>
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="district" jdbcType="VARCHAR" property="district" />
+    <result column="town" jdbcType="VARCHAR" property="town" />
+    <result column="village" jdbcType="VARCHAR" property="village" />
+    <result column="detail" jdbcType="VARCHAR" property="detail" />
+    <result column="cid" jdbcType="INTEGER" property="cid" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -71,7 +88,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, uid, province, city, district, town, village, status, cid
+    id, uid, province, city, district, town, village, status, cid, detail
   </sql>
   <select id="selectByExample" parameterType="cn.deliver.domain.AreaExample" resultMap="BaseResultMap">
     select
@@ -88,7 +105,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from area
     where id = #{id,jdbcType=INTEGER}
@@ -104,16 +121,16 @@
     </if>
   </delete>
   <insert id="insert" parameterType="cn.deliver.domain.Area">
-    insert into area (id, uid, province, 
-      city, district, town, 
-      village, status, cid
-      )
-    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{province,jdbcType=VARCHAR}, 
-      #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, #{town,jdbcType=VARCHAR}, 
-      #{village,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{cid,jdbcType=INTEGER}
-      )
+    insert into area (id, uid, province,
+      city, district, town,
+      village, status, cid,
+      detail)
+    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{province,jdbcType=VARCHAR},
+      #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, #{town,jdbcType=VARCHAR},
+      #{village,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{cid,jdbcType=INTEGER},
+      #{detail,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="cn.deliver.domain.Area">
+  <insert id="insertSelective" parameterType="cn.deliver.domain.Area" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
     insert into area
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -143,6 +160,9 @@
       <if test="cid != null">
         cid,
       </if>
+      <if test="detail != null">
+        detail,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -171,6 +191,9 @@
       </if>
       <if test="cid != null">
         #{cid,jdbcType=INTEGER},
+      </if>
+      <if test="detail != null">
+        #{detail,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -210,6 +233,9 @@
       <if test="record.cid != null">
         cid = #{record.cid,jdbcType=INTEGER},
       </if>
+      <if test="record.detail != null">
+        detail = #{record.detail,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -218,14 +244,15 @@
   <update id="updateByExample" parameterType="map">
     update area
     set id = #{record.id,jdbcType=INTEGER},
-      uid = #{record.uid,jdbcType=INTEGER},
-      province = #{record.province,jdbcType=VARCHAR},
-      city = #{record.city,jdbcType=VARCHAR},
-      district = #{record.district,jdbcType=VARCHAR},
-      town = #{record.town,jdbcType=VARCHAR},
-      village = #{record.village,jdbcType=VARCHAR},
-      status = #{record.status,jdbcType=VARCHAR},
-      cid = #{record.cid,jdbcType=INTEGER}
+    uid = #{record.uid,jdbcType=INTEGER},
+    province = #{record.province,jdbcType=VARCHAR},
+    city = #{record.city,jdbcType=VARCHAR},
+    district = #{record.district,jdbcType=VARCHAR},
+    town = #{record.town,jdbcType=VARCHAR},
+    village = #{record.village,jdbcType=VARCHAR},
+    status = #{record.status,jdbcType=VARCHAR},
+    cid = #{record.cid,jdbcType=INTEGER},
+    detail = #{record.detail,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -257,6 +284,9 @@
       <if test="cid != null">
         cid = #{cid,jdbcType=INTEGER},
       </if>
+      <if test="detail != null">
+        detail = #{detail,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -269,10 +299,10 @@
       town = #{town,jdbcType=VARCHAR},
       village = #{village,jdbcType=VARCHAR},
       status = #{status,jdbcType=VARCHAR},
-      cid = #{cid,jdbcType=INTEGER}
+      cid = #{cid,jdbcType=INTEGER},
+      detail = #{detail,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
-
   <update id="updateBelongAreaByUid" parameterType="cn.deliver.domain.Area">
         update area
         set province = #{province,jdbcType=VARCHAR} ,
@@ -282,30 +312,46 @@
         where uid = #{uid,jdbcType=INTEGER}
         and status = 1;
     </update>
-  <update id="updateDefaultById" parameterType="java.lang.Integer">
-        update area set status = 2 where id = #{areaId,jdbcType=INTEGER}
-    </update>
-  <update id="updateNonDefaultByUid" parameterType="java.lang.Integer">
+  <update id="updateDefaultById" >
+    <if test="status == 'consignee'">
+      update area set status = 2
+    </if>
+    <if test="status == 'deliver'">
+      update area set status = 4
+    </if>
+    where id = #{areaId,jdbcType=INTEGER}
+  </update>
+  <update id="updateNonDefaultByUid" >
+      <if test="status == 'consignee'">
         update area set status = 3 where uid = #{uid,jdbcType=INTEGER} and status = 2;
+      </if>
+      <if test="status == 'deliver'">
+        update area set status = 5 where uid = #{uid,jdbcType=INTEGER} and status = 4;
+      </if>
     </update>
-  <select id="findAllConsigneeByUid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-        select * from area
-        where uid = #{uid,jdbcType=INTEGER}
-        and (status = 2 or status = 3);
+  <!--  通过uid和状态查找地址  -->
+  <select id="findAreaByUidAndStatus"  resultMap="BaseResultMap">
+        select * from area where uid = #{uid,jdbcType=INTEGER} and status = #{status,jdbcType=VARCHAR} ;
     </select>
-  <select id="findDefaultByUid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-        select * from area where uid = #{uid,jdbcType=INTEGER} and status = 2;
-    </select>
-  <select id="findBelongAreaByUid" resultMap="BaseResultMap">
-        select * from area where uid = #{uid,jdbcType=INTEGER} and status = 1;
-    </select>
-
 <!--俊彬  -->
-
   <insert id="insertUserArea" parameterType="cn.deliver.domain.Area" useGeneratedKeys="true" keyProperty="id">
         insert into area
         (uid,province,city,district,status)
         values
         (#{uid},#{province},#{city},#{district},#{status})
     </insert>
+
+  <select id="findAllDeliverByUid" resultMap="BaseResultMap">
+    select * from area
+    where uid = #{uid,jdbcType=INTEGER}
+    and  status in (4,5)
+  </select>
+  <select id="findAllConsigneesByUid" resultMap="ConsigneeDetail">
+    select area.id, area.province,area.city,area.district,area.town,area.village,area.detail,area.status,area.cid, `user`.phone, user_info.`name` from area, user_info, `user`
+    where area.uid = #{uid,jdbcType=INTEGER}  AND area.cid = `user`.id AND user_info.uid = area.cid
+    and  area.status in (2,3);
+  </select>
+  <delete id="deleteByAreaId" parameterType="java.lang.Integer">
+    update area set status = 8 where id = #{areaId,jdbcType=INTEGER} ;
+  </delete>
 </mapper>

@@ -1,7 +1,12 @@
 package cn.deliver.service;
 
+import cn.deliver.domain.Result;
 import cn.deliver.domain.UserOrder;
 
 public interface UserOrderService {
-    int addUserOrder(UserOrder userOrder);
+    Result addUserOrder(UserOrder userOrder);
+
+    Result findNearByVillage(String village);
+
+    Result findDetailByUserOrderId(Integer userOrderId);
 }

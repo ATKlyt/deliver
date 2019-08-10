@@ -604,6 +604,66 @@ public class OrderExample {
             addCriterion("update_time not between", value1, value2, "updateTime");
             return (Criteria) this;
         }
+
+        public Criteria andDriverOrderIdIsNull() {
+            addCriterion("driver_order_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDriverOrderIdIsNotNull() {
+            addCriterion("driver_order_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDriverOrderIdEqualTo(Integer value) {
+            addCriterion("driver_order_id =", value, "driverOrderId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDriverOrderIdNotEqualTo(Integer value) {
+            addCriterion("driver_order_id <>", value, "driverOrderId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDriverOrderIdGreaterThan(Integer value) {
+            addCriterion("driver_order_id >", value, "driverOrderId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDriverOrderIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("driver_order_id >=", value, "driverOrderId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDriverOrderIdLessThan(Integer value) {
+            addCriterion("driver_order_id <", value, "driverOrderId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDriverOrderIdLessThanOrEqualTo(Integer value) {
+            addCriterion("driver_order_id <=", value, "driverOrderId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDriverOrderIdIn(List<Integer> values) {
+            addCriterion("driver_order_id in", values, "driverOrderId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDriverOrderIdNotIn(List<Integer> values) {
+            addCriterion("driver_order_id not in", values, "driverOrderId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDriverOrderIdBetween(Integer value1, Integer value2) {
+            addCriterion("driver_order_id between", value1, value2, "driverOrderId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDriverOrderIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("driver_order_id not between", value1, value2, "driverOrderId");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

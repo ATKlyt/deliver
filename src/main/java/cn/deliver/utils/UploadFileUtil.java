@@ -10,13 +10,12 @@ import java.util.UUID;
  * @author 93231
  */
 public class UploadFileUtil {
-
-    private UploadFileUtil(){}
-
     /**
      * 在service.xml中配置映射地址，用/upload映射服务器本地磁盘中的地址
      */
     private static final String UPLOADPATH = "/uploads";
+
+    private UploadFileUtil(){}
 
     /**
      * 上传文件
@@ -26,7 +25,6 @@ public class UploadFileUtil {
     public static String uploadFile(MultipartFile file ,String type){
         String path = UPLOADPATH + "/" + type;
         File files = new File(path);
-        System.out.println(files.getAbsoluteFile());
         if(!files.exists()){
             files.mkdirs();
         }

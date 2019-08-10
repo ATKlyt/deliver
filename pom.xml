@@ -194,6 +194,12 @@
       <artifactId>druid</artifactId>
       <version>1.1.10</version>
     </dependency>
+    <!-- 阿里巴巴 FastJson-->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>fastjson</artifactId>
+      <version>1.2.58</version>
+    </dependency>
     <!-- 集成 c3p0数据连接池 -->
     <dependency>
       <groupId>com.mchange</groupId>
@@ -359,7 +365,6 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.12</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.poi</groupId>

@@ -10,6 +10,7 @@
     <result column="no" jdbcType="VARCHAR" property="no" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="driver_order_id" jdbcType="INTEGER" property="driverOrderId" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -70,7 +71,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, status, user_order_id, driver_uid, surety_id, no, create_time, update_time
+    id, status, user_order_id, driver_uid, surety_id, no, create_time, update_time, driver_order_id
   </sql>
   <select id="selectByExample" parameterType="cn.deliver.domain.OrderExample" resultMap="BaseResultMap">
     select
@@ -105,12 +106,14 @@
   <insert id="insert" parameterType="cn.deliver.domain.Order">
     insert into order (id, status, user_order_id, 
       driver_uid, surety_id, no, 
-      create_time, update_time)
+      create_time, update_time, driver_order_id
+      )
     values (#{id,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{userOrderId,jdbcType=INTEGER}, 
       #{driverUid,jdbcType=INTEGER}, #{suretyId,jdbcType=INTEGER}, #{no,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{driverOrderId,jdbcType=INTEGER}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="cn.deliver.domain.Order">
+  <insert id="insertSelective" parameterType="cn.deliver.domain.Order" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
     insert into order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -137,6 +140,9 @@
       <if test="updateTime != null">
         update_time,
       </if>
+      <if test="driverOrderId != null">
+        driver_order_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -162,6 +168,9 @@
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="driverOrderId != null">
+        #{driverOrderId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -198,6 +207,9 @@
       <if test="record.updateTime != null">
         update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.driverOrderId != null">
+        driver_order_id = #{record.driverOrderId,jdbcType=INTEGER},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -212,7 +224,8 @@
       surety_id = #{record.suretyId,jdbcType=INTEGER},
       no = #{record.no,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      driver_order_id = #{record.driverOrderId,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -241,6 +254,9 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="driverOrderId != null">
+        driver_order_id = #{driverOrderId,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -252,14 +268,19 @@
       surety_id = #{suretyId,jdbcType=INTEGER},
       no = #{no,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      driver_order_id = #{driverOrderId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
-
   <select id="findWaitOrder" resultMap="BaseResultMap">
-        select * from `order` where status in ('1');
+        select * from `order` where status in (1);
     </select>
-  <delete id="updateDriverConfirm">
-        update order set status
-    </delete>
+
+  <update id="updateStatusByIdAndStatus">
+    update order set status = #{status,jdbcType=VARCHAR} where id = #{orderId,jdbcType=INTEGER} ;
+  </update>
+  <delete id="updateUpdateTimeById">
+    update order set update_time = #{updateTime,jdbcType=TIMESTAMP} where id = #{orderId,jdbcType=INTEGER}
+
+  </delete>
 </mapper>

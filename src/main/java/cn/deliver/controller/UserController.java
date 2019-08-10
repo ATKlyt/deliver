@@ -9,15 +9,20 @@ import cn.deliver.utils.ExportExcel;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.*;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/user")
@@ -31,7 +36,37 @@ public class UserController {
     private final int CODELENGTH = 6;
     private final String PASSWORDFORMAT = "(?!.*[\\u4E00-\\u9FA5\\s])(?!^[a-zA-Z]+$)(?!^[\\d]+$)(?!^[^a-zA-Z\\d]+$)^.{6,16}$";
     private final String PHONENUMBERFORMAT = "^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$";
+    /**
+     * 管理员删除用户
+     * @param map 封装 id
+     * @return
+     */
+    @RequestMapping(value = "deleteUser")
+    @ResponseBody
+    public Result deleteUser(@RequestBody Map<String , Object> map){
+        Result result = userService.deleteUser(map);
+        return result;
+    }
 
+    /**
+     * 模糊查询
+     * @param map 请求参数
+     * */
+    @RequestMapping(value = "/abstractQuery")
+    @ResponseBody
+    public Result abstractQuery(@RequestBody Map<String,Object> map ) {
+
+        int pn = Integer.parseInt((String)map.get("pn"));
+        String info = (String) map.get("info");
+        List<UserDriverInfo> userDriverInfos = userService.abstractQuery(info);
+        if (userDriverInfos!=null){
+            PageHelper.startPage(pn,5);
+            PageInfo page = new PageInfo(userDriverInfos,5);
+            return new Result("找到相关用户消息","0",page);
+        }else {
+            return new Result("未查找到用户消息","0",null);
+        }
+    }
 
     /**
      * 获取发货人信息
@@ -39,14 +74,9 @@ public class UserController {
      * @return
      */
     @ResponseBody
-    @RequestMapping("findShipperInfo")
-    public Result findShipperInfoByAuthId(Integer uid){
-        Map<String, Object> data = userService.findShipperInfoByAuthId(uid);
-        if ( !data.isEmpty()){
-            return new Result("查询成功","0",data);
-        }else{
-            return new Result("该用户没有捎货资格", "1");
-        }
+    @RequestMapping("findDeliverInfo")
+    public Result findDeliverInfoByAuthId(Integer uid){
+        return userService.findDeliverInfoByAuthId(uid);
     }
 
     /**
@@ -57,17 +87,7 @@ public class UserController {
     @ResponseBody
     @RequestMapping("findConsigneeInfo")
     public Result findConsigneeByAuthId(String authId){
-        String firstError = "该用户没有捎货资格";
-        String secondError = "查找不到该用户";
-        Map<String, Object> data = userService.findConsigneeByAuthId(authId);
-        String msg = (String) data.get("message");
-        if (firstError.equals(msg)){
-            return new Result("该用户没有捎货资格", "1");
-        }else if (secondError.equals(msg)){
-            return new Result("查找不到该用户", "1");
-        }else {
-            return new Result("查询成功","0",data);
-        }
+        return userService.findConsigneeByAuthId(authId);
     }
 
     /**
@@ -91,9 +111,12 @@ public class UserController {
      * */
     @ResponseBody
     @RequestMapping(value = "/audit",method = RequestMethod.GET)
-    public Result auditUser(@RequestParam(value = "status",defaultValue = "0") String status,@RequestParam(value = "role") int role){
+    public Result auditUser(@RequestParam(value = "status",defaultValue = "0") String status,@RequestParam(value = "role") int role,@RequestParam(value = "pn",defaultValue = "1") int pn){
         List<UserDriverInfo> searchList = userService.findUserBySR(status,role);
-        return new Result("处理成功","0",searchList);
+        PageHelper.startPage(pn,5);
+        //包装查询结果,连续显示五页
+        PageInfo page = new PageInfo(searchList,5);
+        return new Result("处理成功","0",page);
     }
 
 
@@ -108,7 +131,7 @@ public class UserController {
         ExportExcel exportExcel = new ExportExcel();
         List<String[]>  resource = userService.exportExcel(userAndUserInfo);
         String name = UUID.randomUUID().toString();
-        String newName = "D:\\picture\\"+name+".xlsx";
+        String newName = "C:\\picture\\"+name+".xlsx";
         OutputStream outputStream = new FileOutputStream(newName);
         exportExcel.exportExcel(resource,outputStream);
         outputStream.flush();
@@ -166,7 +189,7 @@ public class UserController {
         try {
             inputStream = file.getInputStream();
             userService.importExcel(inputStream,fileName);
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
             return new Result("导入失败","1",null);
         }
@@ -179,8 +202,11 @@ public class UserController {
      */
     @RequestMapping("/updateUserStatus")
     @ResponseBody
-    public Result updateUserStatus(@RequestParam(value = "id") int id,@RequestParam(value = "status") String status){
-        userService.updateUserStatus(id,status);
+    public Result updateUserStatus(@RequestBody Map<String , Object> map){
+        String id = (String) map.get("id");
+        String status = (String) map.get("status");
+        String role = (String) map.get("role");
+        userService.updateUserStatus(Integer.parseInt(id),status,role);
         return new Result("审核成功","0",null);
     }
 

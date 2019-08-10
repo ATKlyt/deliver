@@ -110,7 +110,7 @@
       #{gender,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, #{identityCard,jdbcType=VARCHAR}, 
       #{identityCardPicture,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="cn.deliver.domain.UserInfo">
+  <insert id="insertSelective" parameterType="cn.deliver.domain.UserInfo" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
     insert into user_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -307,5 +307,8 @@
   <!--根据用户的userInfoId找到对应user表中的系统发放id-->
   <select id="findUserAuthId" resultType="java.lang.String">
         select auth_id from user where id = (select uid from user_info where id = #{userInfoId})
+    </select>
+    <select id="findNameByUid" resultType="java.lang.String">
+      select name from user_info where uid = #{cid,jdbcType=INTEGER} ;
     </select>
 </mapper>

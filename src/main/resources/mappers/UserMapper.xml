@@ -15,39 +15,107 @@
     <result column="email" jdbcType="VARCHAR" property="email" />
   </resultMap>
 
+
+
   <resultMap id="UserAndDriverMap" type="cn.deliver.domain.UserDriverInfo">
     <association property="user" javaType="cn.deliver.domain.User">
-      <result column="user_id" property="id" />
-      <result column="user_auth_id" property="authId" />
-      <result column="user_password" property="password" />
-      <result column="user_status" property="status"/>
-      <result column="user_role" property="role" />
-      <result column="user_phone" property="phone" />
-      <result column="user_register_area"  property="registerArea" />
-      <result column="user_register_time"  property="registerTime" />
-      <result column="user_register_role"  property="registerRole" />
-      <result column="user_email" property="email" />
+      <id column="id" property="id" />
+      <result column="auth_id" property="authId" />
+      <result column="password" property="password" />
+      <result column="status" property="status"/>
+      <result column="role" property="role" />
+      <result column="phone" property="phone" />
+      <result column="register_area"  property="registerArea" />
+      <result column="register_time"  property="registerTime" />
+      <result column="register_role"  property="registerRole" />
+      <result column="email" property="email" />
     </association>
     <association property="userInfo" javaType="cn.deliver.domain.UserInfo">
-      <result column="user_info_id" property="id"/>
-      <result column="user_info_uid" property="uid"/>
-      <result column="user_info_name" property="name"/>
-      <result column="user_info_gender" property="gender"/>
-      <result column="user_info_birthday" property="birthday"/>
-      <result column="user_info_avatar" property="avatar"/>
+      <id column="user_id" property="id"/>
+      <result column="uid" property="uid"/>
+      <result column="name" property="name"/>
+      <result column="gender" property="gender"/>
+      <result column="birthday" property="birthday"/>
+      <result column="avatar" property="avatar"/>
     </association>
     <association property="driverInfo" javaType="cn.deliver.domain.DriverInfo">
-      <result column="driver_info_id" property="id"/>
-      <result column="driver_info_uuid" property="uiid"/>
-      <result column="driver_info_car_type" property="carType"/>
-      <result column="driver_info_driving_licence_picture" property="drivingLicencePicture"/>
-      <result column="driver_info_car_picture" property="carPicture"/>
-      <result column="driver_info_running_route" property="runningRoute"/>
-      <result column="driver_info_order_number" property="orderNumber"/>
-      <result column="driver_info_car_number" property="carNumber"/>
-      <result column="driver_info_status" property="status"/>
+      <id column="drive_id" property="id"/>
+      <result column="uuid" property="uiid"/>
+      <result column="car_type" property="carType"/>
+      <result column="driving_licence_picture" property="drivingLicencePicture"/>
+      <result column="car_picture" property="carPicture"/>
+      <result column="running_route" property="runningRoute"/>
+      <result column="order_number" property="orderNumber"/>
+      <result column="car_number" property="carNumber"/>
+      <result column="status" property="status"/>
     </association>
   </resultMap>
+
+  <!-- 模糊查询 -->
+  <select id="abstractQuery" parameterType="java.lang.String" resultMap="UserAndDriverMap">
+    select
+        u.id,
+        u.auth_id,
+        u.phone,
+        u.role,
+        u.email,
+        ui.id user_id,
+        ui.name,
+        ui.avatar
+     from user u,user_info ui
+     where u.status = 1 and u.id = ui.uid and ( u.auth_id like '%${info}%' or u.phone like '%${info}%' or u.register_area like '%${info}%' or u.email like '%${info}%'
+        or ui.name like '%${info}%' or u.role like '%${info}%' or ui.gender like '%${info}%' )
+  </select>
+
+<!--  <select id="abstractQueryByDriver" parameterType="java.lang.String" resultMap="UserAndDriverMap">-->
+<!--    select-->
+<!--        u.id,-->
+<!--        u.auth_id,-->
+<!--        u.phone,-->
+<!--        u.role,-->
+<!--        u.email,-->
+<!--        ui.id user_id,-->
+<!--        ui.name,-->
+<!--        ui.avatar,-->
+<!--        di.car_type,-->
+<!--        di.car_type-->
+<!--     from user u,user_info ui-->
+<!--     where u.id = ui.uid and ui.id = di.uiid and  u.auth_id like '%${info}%' or u.phone like '%${info}%' or u.register_area like '%${info}%' or u.email like '%${info}%'-->
+<!--        or ui.name like '%${info}%' or u.role like '%${info}%' or ui.gender like '%${info}%'-->
+<!--  </select>-->
+
+  <!-- 查询所有的用户信息 -->
+  <select id="findAllUser"  resultMap="UserAndDriverMap">
+        select * from user
+    </select>
+
+  <!-- 查询两个表格中的某些片段 -->
+  <select id="findCommonUser" resultMap="UserAndDriverMap">
+        select * from user u,user_info ui where u.id= ui.uid
+    </select>
+
+  <!-- 插入 -->
+  <insert id="insertUser" parameterType="cn.deliver.domain.User" useGeneratedKeys="true" keyProperty="id">
+        insert into user(auth_id,password,phone,status,role,register_time,register_area,register_role,email)
+        values (#{authId},#{password},#{phone},#{status},#{role},#{registerTime},#{registerArea},#{registerRole},#{email})
+    </insert>
+
+  <!-- 审核提交状态 -->
+  <update id="updateUserStatus"  >
+        update user set status = #{status} , role = #{role}  where  id = #{id}
+    </update>
+
+  <!-- 查询审核为用户状态信息 -->
+  <select id="examineFindUser" parameterType="cn.deliver.domain.User"  resultMap="UserAndDriverMap">
+        SELECT * FROM user u, user_info ui WHERE u.register_role = #{registerRole} and u.status= #{status} and u.id = ui.uid
+    </select>
+  <!-- 查询审核为用户状态信息 -->
+  <select id="examineFindDriver" parameterType="cn.deliver.domain.User" resultMap="UserAndDriverMap">
+        SELECT * FROM user u, user_info ui ,driver_info di WHERE u.register_role = #{registerRole} and u.status=#{status} and u.id = ui.uid and ui.id = di.uiid
+    </select>
+
+
+
   <sql id="Example_Where_Clause">
     <where>
       <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -130,7 +198,7 @@
       #{registerTime,jdbcType=TIMESTAMP}, #{registerArea,jdbcType=VARCHAR}, #{registerRole,jdbcType=VARCHAR}, 
       #{email,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="cn.deliver.domain.User">
+  <insert id="insertSelective" parameterType="cn.deliver.domain.User" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
     insert into user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -250,38 +318,6 @@
         select * from user where auth_id = #{authId,jdbcType=VARCHAR}   ;
   </select>
 
-<!--============================艺明==============================-->
-  <!-- 查询所有的用户信息 -->
-  <select id="findAllUser"  resultMap="UserAndDriverMap">
-        select * from user
-    </select>
-
-  <!-- 查询两个表格中的某些片段 -->
-  <select id="findCommonUser" resultMap="UserAndDriverMap">
-        select * from user u,user_info ui where u.id= ui.uid
-    </select>
-
-  <!-- 插入 -->
-  <insert id="insertUser" parameterType="cn.deliver.domain.User" useGeneratedKeys="true" keyProperty="id">
-        insert into user(auth_id,password,phone,status,role,register_time,register_area,register_role,email)
-        values (#{authId},#{password},#{phone},#{status},#{role},#{registerTime},#{registerArea},#{registerRole},#{email})
-    </insert>
-
-  <!-- 审核提交状态 -->
-  <update id="updateUserStatus"  >
-        update user set status = #{status} where  id = #{id}
-    </update>
-
-  <!-- 查询审核为用户状态信息 -->
-  <select id="examineFindUser" parameterType="cn.deliver.domain.User"  resultMap="UserAndDriverMap">
-        SELECT * FROM user u, user_info ui WHERE u.register_role = #{registerRole} and u.status= #{status} and u.user_id = ui.user_info_uid
-    </select>
-  <!-- 查询审核为用户状态信息 -->
-  <select id="examineFindDriver" parameterType="cn.deliver.domain.User" resultMap="UserAndDriverMap">
-        SELECT * FROM user u, user_info ui ,driver_info di WHERE u.register_role = #{registerRole} and u.status=#{status} and u.id = ui.uid and ui.id = di.uiid
-    </select>
-
-<!--  =====================================俊彬======================================-->
   <!--检测手机号码是否已被注册-->
   <select id="checkPhoneNumber" resultType="java.lang.Integer">
         select id from user where phone = #{phoneNumber}
@@ -312,6 +348,9 @@
     </if>
     #{id}
   </select>
+    <select id="findPhoneByUid" resultType="java.lang.String">
+      select phone from user where id = #{cid,jdbcType=INTEGER} ;
+    </select>
 
   <!--通过authId来获取对应的手机号码-->
   <select id="findPhoneNumberByAuthId" resultType="java.lang.String">

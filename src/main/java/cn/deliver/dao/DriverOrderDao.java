@@ -31,9 +31,17 @@ public interface DriverOrderDao {
     int updateByPrimaryKey(DriverOrder record);
 
     /**
-     * 查找用户所属区域=司机发单的出发地所在区，且司机已接订单数量小于5，司机发单的状态为1则不过期
-     * @param district
+     * 查询司机订单出发地址与用户订单发货地址相同的司机行程(村子相同)，司机已接订单小于5，该司机订单状态为不过期
+     * 司机行程id/姓名/车牌/出发地/出发时间
+     * @param village 用户订单发货地址所在村
      * @return
      */
-    List<DriverOrderMessage> findNearbyDriverOrder(String district);
+    List<DriverOrderMessage> findNearbyDriverOrder(String village);
+
+    /**
+     * 查找司机行程具体信息
+     * @param driverOrderId
+     * @return
+     */
+    DriverOrderMessage findDetailByUserOrder(Integer driverOrderId);
 }

@@ -2,6 +2,7 @@ package cn.deliver.dao;
 
 import cn.deliver.domain.UserOrder;
 import cn.deliver.domain.UserOrderExample;
+import cn.deliver.domain.UserOrderMessage;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -28,4 +29,8 @@ public interface UserOrderDao {
     int updateByPrimaryKeySelective(UserOrder record);
 
     int updateByPrimaryKey(UserOrder record);
+
+    List<UserOrderMessage> findNearByVillage(String village);
+
+//    UserOrderMessage findDetailByUserOrderId(Integer userOrderId);
 }

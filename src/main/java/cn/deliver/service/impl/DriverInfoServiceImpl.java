@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class DriverInfoServiceImpl implements DriverInfoService {
 
-    //俊彬
 
     @Autowired
     private DriverInfoDao driverInfoDao;
@@ -30,5 +29,4 @@ public class DriverInfoServiceImpl implements DriverInfoService {
         }
     }
 
-    //俊彬
 }

@@ -28,14 +28,13 @@ public class User {
     public User() {
     }
 
-    public User(Integer id, String authId, String phone, String password, String status, String role, String evidence, Timestamp registerTime, String registerArea, String registerRole, String email) {
+    public User(Integer id, String authId, String phone, String password, String status, String role, Timestamp registerTime, String registerArea, String registerRole, String email) {
         this.id = id;
         this.authId = authId;
         this.phone = phone;
         this.password = password;
         this.status = status;
         this.role = role;
-        this.evidence = evidence;
         this.registerTime = registerTime;
         this.registerArea = registerArea;
         this.registerRole = registerRole;

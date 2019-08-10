@@ -4,6 +4,7 @@ import cn.deliver.domain.Order;
 import cn.deliver.domain.OrderExample;
 import org.apache.ibatis.annotations.Param;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface OrderDao {
@@ -29,7 +30,20 @@ public interface OrderDao {
 
     int updateByPrimaryKey(Order record);
 
+    /**
+     * 寻找处于等待状态的order
+     * @param driverUid
+     * @return
+     */
     List<Order> findWaitOrder(Integer driverUid);
 
-    int updateDriverConfirm(Integer orderId);
+    /**
+     * 通过id更改订单的状态status
+     * @param orderId
+     * @param status
+     * @return
+     */
+    int updateStatusByIdAndStatus(@Param("orderId") Integer orderId,@Param("status") String status);
+
+    void updateUpdateTimeById(@Param("orderId") Integer orderId,@Param("updateTime") Timestamp updateTime);
 }

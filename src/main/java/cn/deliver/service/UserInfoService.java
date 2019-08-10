@@ -5,14 +5,12 @@ import cn.deliver.domain.UserInfo;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface UserInfoService {
-    //=========================================艺明===================
+
     /**
      * 插入用户信息
      * @param userInfo 用户信息
      */
     void insertUserInfo(UserInfo userInfo);
-
-    //==================================俊彬=====================================
 
     /**
      * 用户注册时填写详细信息

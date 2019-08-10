@@ -5,9 +5,8 @@ package cn.deliver.domain;
  * @date 2019/8/2 - 18:28
  */
 public class UserDriverInfo {
-
+    private User user ;
     private UserInfo userInfo;
-    private  User user ;
     private DriverInfo driverInfo;
 
     public UserDriverInfo() {
@@ -29,27 +28,25 @@ public class UserDriverInfo {
         this.driverInfo = driverInfo;
     }
 
-    public DriverInfo getDriverInfo() {
-        return driverInfo;
-    }
-
-    public void setDriverInfo(DriverInfo driverInfo) {
-        this.driverInfo = driverInfo;
-    }
-
-    public UserInfo getUserInfo() {
-        return userInfo;
-    }
-
-    public void setUserInfo(UserInfo userInfo) {
-        this.userInfo = userInfo;
-    }
 
     public User getUser() {
         return user;
     }
-
     public void setUser(User user) {
         this.user = user;
     }
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
+    public DriverInfo getDriverInfo() {
+        return driverInfo;
+    }
+    public void setDriverInfo(DriverInfo driverInfo) {
+        this.driverInfo = driverInfo;
+    }
+
+
 }

@@ -115,9 +115,6 @@ public class UserServiceImpl implements UserService{
         }
     }
 
-
-    //============================    艺明    ======================================
-
     @Override
     public List<UserDriverInfo> findAllUser() {
         return userDao.findAllUser();
@@ -216,7 +213,7 @@ public class UserServiceImpl implements UserService{
         //后台随机生成6位数验证码
         String code = PhoneCodeUtil.getPhoneCodeUtil().getRandomNum(CODELENGTH);
         //调用工具类发送手机验证码
-        if(/*PhoneCodeUtil.getPhoneCodeUtil().sendPhoneCode(phoneNumber,code)*/true){
+        if(PhoneCodeUtil.getPhoneCodeUtil().sendPhoneCode(phoneNumber,code)){
             //发送成功则将验证码返回至控制层
             System.out.println(code);
             return code;

@@ -29,8 +29,8 @@ public class UserServiceImpl implements UserService{
     private final String transportRole = "客运车司机";
     private final String privateRole = "私家车司机";
     private final String commonRole = "用户";
-    private static final int IDLENGTH = 10;
-    private static final int CODELENGTH = 6;
+    private final int IDLENGTH = 10;
+    private final int CODELENGTH = 6;
 
     @Autowired
     UserDao userDao;
@@ -180,7 +180,7 @@ public class UserServiceImpl implements UserService{
         //后台随机生成6位数验证码
         String code = PhoneCodeUtil.getPhoneCodeUtil().getRandomNum(CODELENGTH);
         //调用工具类发送手机验证码
-        if(PhoneCodeUtil.getPhoneCodeUtil().sendPhoneCode(phoneNumber,code)){
+        if(/*PhoneCodeUtil.getPhoneCodeUtil().sendPhoneCode(phoneNumber,code)*/true){
             //发送成功则将验证码返回至控制层
             System.out.println(code);
             return code;
@@ -192,6 +192,22 @@ public class UserServiceImpl implements UserService{
     @Override
     public String findPhoneNumberByAuthId(String authId) {
         return userDao.findPhoneNumberByAuthId(authId);
+    }
+
+    @Override
+    public UserInfo findUserDataById(String id ,int length) {
+        return userDao.findUserDataById(id,length);
+    }
+
+    @Override
+    public boolean updatePassword(String phoneNumber, String password) {
+        password = phoneNumber + password;
+        String cryptographicPassword = DigestUtils.md5DigestAsHex(password.getBytes());
+        if(userDao.updatePassword(phoneNumber,cryptographicPassword) == 1){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @Override
@@ -209,9 +225,7 @@ public class UserServiceImpl implements UserService{
         Map<String,Object> result = new HashMap<>(2);
         if(userDao.register(user)>0){
             result.put("userAuthId",user.getAuthId());
-            result.put("result",true);
-        }else{
-            result.put("result",false);
+            result.put("userId",user.getId());
         }
         return result;
     }

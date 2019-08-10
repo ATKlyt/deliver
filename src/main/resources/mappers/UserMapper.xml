@@ -8,6 +8,7 @@
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="role" jdbcType="VARCHAR" property="role" />
+    <result column="evidence" jdbcType="VARCHAR" property="evidence" />
     <result column="register_time" jdbcType="TIMESTAMP" property="registerTime" />
     <result column="register_area" jdbcType="VARCHAR" property="registerArea" />
     <result column="register_role" jdbcType="VARCHAR" property="registerRole" />
@@ -290,16 +291,14 @@
   <insert id="register" parameterType="cn.deliver.domain.User" useGeneratedKeys="true" keyProperty="id">
         insert into user
         (auth_id,phone,password,status,role,register_time,register_area,register_role
-        <if test="#{evidence != null}">
-          ,#{evidence}
-        </if>
-        )
+        <if test="evidence != null">
+          ,evidence
+        </if>)
         values
         (#{authId},#{phone},#{password},#{status},#{role},#{registerTime},#{registerArea},#{registerRole}
-        <if test="#{evidence != null}">
+        <if test="evidence != null">
           ,#{evidence}
-        </if>
-        )
+        </if>)
     </insert>
 
   <!--用户登录(系统发放id以及手机号码均可登录)-->
@@ -318,4 +317,21 @@
   <select id="findPhoneNumberByAuthId" resultType="java.lang.String">
     select phone from user where auth_id = #{authId}
   </select>
+
+  <!--通过登录id来获取用户信息-->
+  <select id="findUserDataById" resultType="cn.deliver.domain.UserInfo">
+    select name,avatar from user inner join user_info on
+    <if test="length==10">
+      auth_id =
+    </if>
+    <if test="length==11">
+      phone =
+    </if>
+    #{id}
+    and user.id = user_info.uid
+  </select>
+
+  <update id="updatePassword" >
+    update user set password = #{password} where id = #{id}
+  </update>
 </mapper>

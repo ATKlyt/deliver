@@ -3,9 +3,9 @@ package cn.deliver.controller;
 import cn.deliver.domain.Result;
 import cn.deliver.domain.User;
 import cn.deliver.domain.UserDriverInfo;
+import cn.deliver.domain.UserInfo;
 import cn.deliver.service.UserService;
 import cn.deliver.utils.ExportExcel;
-import cn.deliver.utils.SessionUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequestMapping("/user")
@@ -33,6 +31,7 @@ public class UserController {
     private final int CODELENGTH = 6;
     private final String PASSWORDFORMAT = "(?!.*[\\u4E00-\\u9FA5\\s])(?!^[a-zA-Z]+$)(?!^[\\d]+$)(?!^[^a-zA-Z\\d]+$)^.{6,16}$";
     private final String PHONENUMBERFORMAT = "^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$";
+
 
     /**
      * 获取发货人信息
@@ -206,23 +205,25 @@ public class UserController {
 
     /**
      * 发送手机验证码
-     * @param data 用户手机信息
-     * @param request 封装HTTP请求的对象
+     * @param data 用户手机号码
      * @return 结果集
      */
     @RequestMapping(value = "/getPhoneCode",method = RequestMethod.POST)
     @ResponseBody
-    public Result getPhoneCode(@RequestBody Map<String,Object> data,HttpServletRequest request){
+    public Result getPhoneCode(@RequestBody Map<String,Object> data){
         String phoneNumber = (String) data.get("phone");
         if(phoneNumber == null || !phoneNumber.matches(PHONENUMBERFORMAT)){
             return new Result("手机号码为空或格式有误 ","1",null);
         }
         String code = userService.getPhoneCode(phoneNumber);
         if(code!=null){
-            //将随机生成的验证码存入session域中等待比对
-            request.getSession().setAttribute("beforeCode",code);
-            SessionUtil.removeAttribute(request.getSession(),"beforeCode");
-            return new Result("验证码发送成功","0",null);
+            Map<String,Object> codeData = new HashMap<>(2);
+            Long beforeTime = System.currentTimeMillis();
+            //加盐加密验证码
+            String cryptographicCode = DigestUtils.md5DigestAsHex((code + beforeTime.toString()).getBytes());
+            codeData.put("beforeCode",cryptographicCode);
+            codeData.put("beforeTime",beforeTime);
+            return new Result("验证码发送成功","0",codeData);
         }else{
             return new Result("验证码发送失败","1",null);
         }
@@ -231,17 +232,25 @@ public class UserController {
     /**
      * 验证手机验证码
      * @param data 用户验证码信息
-     * @param request 封装HTTP请求的对象
      * @return 结果集
      */
     @RequestMapping(value = "/checkPhoneCode",method = RequestMethod.POST)
     @ResponseBody
-    public Result checkCode(@RequestBody Map<String,Object> data,HttpServletRequest request){
+    public Result checkCode(@RequestBody Map<String,Object> data){
         String code = (String) data.get("code");
         if(code == null){
             return new Result("验证码为空","1",null);
         }
-        String beforeCode = (String) request.getSession().getAttribute("beforeCode");
+        Long time = (Long) data.get("time");
+        Map<String,Object> codeData = (HashMap<String, Object>) data.get("codeData");
+        //计算时间差，判断验证码是否过期
+        Long timeDifference = (time - (Long) codeData.get("beforeTime")) / 1000;
+        if(timeDifference > CODETIME){
+            return new Result("验证码已过期，请重新发送验证码","1",null);
+        }
+        //对验证码进行加密比对，若一致则验证码正确，反之则错误
+        code = DigestUtils.md5DigestAsHex((code + codeData.get("beforeTime").toString()).getBytes());
+        String beforeCode = (String) codeData.get("beforeCode");
         if (code.equals(beforeCode)) {
             return new Result("验证码正确", "0", null);
         } else {
@@ -267,8 +276,8 @@ public class UserController {
             return new Result("密码格式有误","1",null);
         }
         Map<String,Object> result = userService.register(user);
-        if((boolean) result.get("result")){
-            return new Result("注册成功","0",result.get("userAuthId"));
+        if(!result.isEmpty()){
+            return new Result("注册成功","0",result);
         }else{
             return new Result("注册失败","1",null);
         }
@@ -283,11 +292,11 @@ public class UserController {
     @ResponseBody
     public Result userLogin(@RequestBody Map<String,Object> data, HttpServletRequest request){
         String id = (String) data.get("id");
-        if(!((String) data.get("password")).matches(PASSWORDFORMAT)){
+        String password = (String) data.get("password");
+        if(!password.matches(PASSWORDFORMAT)){
             return new Result("密码格式有误","1",null);
         }
-        String password = (String) data.get("password");
-        //MD5加盐加密处理
+        //根据用户登录id进行加盐处理
         if(id.length() == PHONELENGTH) {
             password = id + password;
         }else{
@@ -296,13 +305,50 @@ public class UserController {
                 password = phone + password;
             }
         }
+        //加密处理后的密码
         String cryptographicPassword = DigestUtils.md5DigestAsHex(password.getBytes());
-        Integer loginId = userService.login(id,cryptographicPassword);
-        if(loginId!=null){
-            request.getSession().setAttribute("id",loginId);
+        if(userService.login(id,cryptographicPassword) != null){
+            request.getSession().setAttribute("id",id);
             return new Result("登录成功","0",id);
         }else{
             return new Result("登录失败","1",null);
+        }
+    }
+
+    /**
+     * 修改密码
+     * @param data 用户密码
+     * @return
+     */
+    @RequestMapping("/updatePassword")
+    @ResponseBody
+    public Result updatePassword(@RequestBody Map<String,Object> data){
+        String phoneNumber = (String) data.get("phone");
+        String password = (String) data.get("password");
+        if(userService.updatePassword(phoneNumber,password)){
+            return new Result("修改密码成功","0",null);
+        }else{
+            return new Result("修改密码失败","1",null);
+        }
+    }
+
+    /**
+     * 展示"我的"首页部分用户信息
+     * @param request 封装Http请求的对象
+     * @return 用户信息
+     */
+    @RequestMapping("/mainPersonalData")
+    @ResponseBody
+    public Result showPersonData(HttpServletRequest request){
+        String id = (String) request.getSession().getAttribute("id");
+        if("".equals(id) || id == null){
+            return new Result("找不到用户id，请重新登录","1",null);
+        }
+        UserInfo userInfo = userService.findUserDataById(id,id.length());
+        if(userInfo == null){
+            return new Result("该账号不存在，请重新登录","1",null);
+        }else {
+            return new Result("获取用户资料成功", "0", userInfo);
         }
     }
 }

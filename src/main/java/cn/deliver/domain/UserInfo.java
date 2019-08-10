@@ -17,6 +17,8 @@ public class UserInfo {
 
     private String identityCardPicture;
 
+    private String role;
+
     private String avatar;
 
     public UserInfo() {
@@ -73,6 +75,14 @@ public class UserInfo {
 
     public String getGender() {
         return gender;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public void setGender(String gender) {

@@ -2,6 +2,7 @@ package cn.deliver.dao;
 
 import cn.deliver.domain.User;
 import cn.deliver.domain.UserDriverInfo;
+import cn.deliver.domain.UserInfo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -83,4 +84,18 @@ public interface UserDao {
      * @return 用户的手机号码
      */
     String findPhoneNumberByAuthId(@Param("authId") String authId);
+
+    /**
+     * 通过用户登录id获取用户信息
+     * @param id 登录id
+     * @return 用户信息(头像、名字)
+     */
+    UserInfo findUserDataById(@Param("id")String id, @Param("length") int length);
+
+    /**
+     * 修改密码
+     * @param password 用户密码
+     * @return 判断是否更改成功
+     */
+    int updatePassword(@Param("phoneNumber") String phoneNumber, @Param("password") String password);
 }

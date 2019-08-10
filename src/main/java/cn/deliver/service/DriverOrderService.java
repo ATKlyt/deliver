@@ -23,5 +23,5 @@ public interface DriverOrderService {
      */
     Result findDetailByDriverOrder(Integer driverOrderId);
 
-    Result addDriverOrder(Area originalArea, Area consigneeArea, DriverOrder driverOrder);
+    Result addDriverOrder(Area originalArea, Area consigneeArea, DriverOrder driverOrder) throws InterruptedException;
 }

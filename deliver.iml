@@ -70,12 +70,12 @@
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.2.3" level="project" />
     <orderEntry type="library" name="Maven: org.jsoup:jsoup:1.11.3" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba:druid:1.1.10" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.58" level="project" />
     <orderEntry type="library" name="Maven: com.mchange:c3p0:0.9.5.3" level="project" />
     <orderEntry type="library" name="Maven: com.mchange:mchange-commons-java:0.2.15" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.8" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.9.8" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.8" level="project" />
-    <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.58" level="project" />
     <orderEntry type="library" name="Maven: net.sf.json-lib:json-lib:jdk15:2.4" level="project" />
     <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.1" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.5" level="project" />

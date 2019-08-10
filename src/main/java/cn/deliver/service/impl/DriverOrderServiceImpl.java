@@ -49,7 +49,7 @@ public class DriverOrderServiceImpl implements DriverOrderService {
     }
 
     @Override
-    public Result addDriverOrder(Area originalArea, Area consigneeArea, DriverOrder driverOrder) {
+    public Result addDriverOrder(Area originalArea, Area consigneeArea, DriverOrder driverOrder) throws InterruptedException {
         areaDao.insertSelective(originalArea);
         areaDao.insertSelective(consigneeArea);
         driverOrder.setOriginalId(originalArea.getId());

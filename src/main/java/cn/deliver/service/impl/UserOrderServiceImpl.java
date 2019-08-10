@@ -27,9 +27,9 @@ public class UserOrderServiceImpl implements UserOrderService {
 
     @Override
     public Result addUserOrder(UserOrder userOrder) {
-        if (userOrderDao.insertSelective(userOrder) > 0){
+        if (userOrderDao.insertSelective(userOrder) > 0) {
             return new Result("发单成功", "0", userOrder.getId());
-        }else{
+        } else {
             return new Result("发单失败", "1");
         }
     }
@@ -37,9 +37,9 @@ public class UserOrderServiceImpl implements UserOrderService {
     @Override
     public Result findNearByVillage(String village) {
         List<UserOrderMessage> userOrderMessages = userOrderDao.findNearByVillage(village);
-        if (userOrderMessages.size() > 0){
+        if (userOrderMessages.size() > 0) {
             return new Result("查询成功", "0", userOrderMessages);
-        }else{
+        } else {
             return new Result("附近没有用户订单", "1", null);
         }
     }
@@ -48,7 +48,7 @@ public class UserOrderServiceImpl implements UserOrderService {
     public Result findDetailByUserOrderId(Integer userOrderId) {
         Map<String, Object> map = new HashMap<>(16);
         UserOrder userOrder = userOrderDao.selectByPrimaryKey(userOrderId);
-        if (userOrder != null){
+        if (userOrder != null) {
             Area area = areaDao.selectByPrimaryKey(userOrder.getConsigneeAreaId());
             String phone = userDao.findPhoneByUid(area.getCid());
             String name = userInfoDao.findNameByUid(area.getCid());
@@ -57,7 +57,7 @@ public class UserOrderServiceImpl implements UserOrderService {
             map.put("userOrder", userOrder);
             map.put("consigneeArea", area);
             return new Result("查询成功", "0", map);
-        }else {
+        } else {
             return new Result("没有该用户订单哦", "1", null);
         }
     }

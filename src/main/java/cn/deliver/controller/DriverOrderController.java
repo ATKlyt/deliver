@@ -21,46 +21,16 @@ public class DriverOrderController {
 
     /**
      *
-     * @param parameters
+     * @param driverOrderDetail
      * @return
      */
     @RequestMapping("addDriverOrder")
     @ResponseBody
-    public Result addDriverOrder(@RequestBody Map<String, Object> parameters){
-
-        //之后与前端商量优化
-        Area originalArea = new Area();
-        Area consigneeArea = new Area();
-        DriverOrder driverOrder = new DriverOrder();
-
-        driverOrder.setUid((Integer) parameters.get("uid"));
-        driverOrder.setCarry((Integer) parameters.get("carry"));
-        driverOrder.setGoOff(new Timestamp((Long) parameters.get("goOff")));
-        driverOrder.setDeadline(new Timestamp((Long) parameters.get("deadline")));
-
-        originalArea.setUid(driverOrder.getUid());
-        originalArea.setProvince((String) parameters.get("originalProvince"));
-        originalArea.setCity((String) parameters.get("originalCity"));
-        originalArea.setDistrict((String) parameters.get("originDistrict"));
-        originalArea.setTown((String) parameters.get("originalTown"));
-        originalArea.setVillage((String) parameters.get("originalVillage"));
-        originalArea.setDetail((String) parameters.get("originDetail"));
-        originalArea.setStatus("6");
-
-        consigneeArea.setUid(driverOrder.getUid());
-        consigneeArea.setProvince((String) parameters.get("consigneeProvince"));
-        consigneeArea.setCity((String) parameters.get("consigneeCity"));
-        consigneeArea.setDistrict((String) parameters.get("consigneeDistrict"));
-        consigneeArea.setTown((String) parameters.get("consigneeTown"));
-        consigneeArea.setVillage((String) parameters.get("consigneeVillage"));
-        consigneeArea.setDetail((String) parameters.get("consigneeDetail"));
-        consigneeArea.setStatus("7");
-
-
-
+    public Result addDriverOrder(@RequestBody DriverOrderDetail driverOrderDetail) throws InterruptedException {
         //验证是否有资格
-        return driverOrderService.addDriverOrder(originalArea, consigneeArea, driverOrder);
-        //return null;
+        return driverOrderService.addDriverOrder(driverOrderDetail.getOriginalArea(),
+                                                 driverOrderDetail.getConsigneeArea(),
+                                                 driverOrderDetail.getDriverOrder());
     }
 
 

@@ -11,14 +11,14 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class DriverInfoServiceImpl implements DriverInfoService {
 
-    //俊彬
 
     @Autowired
     private DriverInfoDao driverInfoDao;
 
     @Override
     public String uploadFile(MultipartFile file, String type) {
-        return UploadFileUtil.uploadFile(file, type);
+        return UploadFileUtil.uploadFile(file,type);
+
     }
 
     @Override
@@ -30,5 +30,4 @@ public class DriverInfoServiceImpl implements DriverInfoService {
         }
     }
 
-    //俊彬
 }

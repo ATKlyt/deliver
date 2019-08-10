@@ -3,6 +3,7 @@ package cn.deliver.domain;
 import java.sql.Date;
 
 public class UserInfo {
+
     private Integer id;
 
     private Integer uid;

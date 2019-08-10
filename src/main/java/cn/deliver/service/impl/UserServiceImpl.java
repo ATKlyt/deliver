@@ -1,5 +1,6 @@
 package cn.deliver.service.impl;
 
+
 import cn.deliver.dao.*;
 import cn.deliver.domain.*;
 import cn.deliver.service.UserService;
@@ -12,6 +13,7 @@ import org.springframework.util.DigestUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -128,15 +130,12 @@ public class UserServiceImpl implements UserService{
         System.out.println(status);
         user.setStatus(status);
         if(role == 0){
-            System.out.println("用户");
             user.setRegisterRole("用户");
             return userDao.examineFindUser(user);
         }else if(role == 1){
-            System.out.println("司机");
             user.setRegisterRole("司机");
             return userDao.examineFindDriver(user);
         }else{
-            System.out.println("管理员");
             user.setRegisterRole("管理员");
             return userDao.examineFindUser(user);
         }
@@ -151,7 +150,8 @@ public class UserServiceImpl implements UserService{
      * 导入Excel表格
      * */
     @Override
-    public void importExcel(InputStream inputStream, String fileName) throws IOException {
+    public void importExcel(InputStream inputStream, String fileName) throws IOException, ParseException {
+
         List<UserDriverInfo> userAndUserInfos = ImportExcel.creatList(inputStream, fileName);
         UserInfo userInfo;
         for(UserDriverInfo userDriverInfo:userAndUserInfos){
@@ -190,13 +190,14 @@ public class UserServiceImpl implements UserService{
      * @param status 审核状态
      * */
     @Override
-    public void updateUserStatus(int id, String status) {
-        userDao.updateUserStatus(id,status);
+    public void updateUserStatus(int id, String status,String role) {
+        if (Integer.parseInt(status) == 1){
+            userDao.updateUserStatus(id,status,role);
+        }else {
+            userDao.updateUserStatus(id,status,"游客");
+        }
     }
-    //============================    艺明    ======================================
 
-
-    //===================================================俊彬
 
     /**
      * 登录id长度和验证码长度
@@ -224,6 +225,33 @@ public class UserServiceImpl implements UserService{
             return code;
         }else{
             return null;
+        }
+    }
+
+    /**
+     * 模糊查询
+     * @param info 查询内容
+     * @return
+     */
+    @Override
+    public List<UserDriverInfo> abstractQuery(String info) {
+        List<UserDriverInfo> userDriverInfos = userDao.abstractQuery(info);
+        return userDriverInfos;
+    }
+
+    /**
+     * 根据Id批量删除用户
+     * @param map
+     * @return
+     */
+    @Override
+    public Result deleteUser(Map<String, Object> map) {
+        int id = Integer.parseInt((String) map.get("id"));
+        int num = userDao.deleteByPrimaryKey(id);
+        if (num > 0){
+            return new Result("删除成功","0",null);
+        }else {
+            return new Result("用户ID不存在","1",null);
         }
     }
 

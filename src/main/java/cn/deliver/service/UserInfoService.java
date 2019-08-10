@@ -11,7 +11,6 @@ import java.util.Map;
 
 public interface UserInfoService {
 
-//==================================俊彬=====================================
     /**
      * 插入用户信息
      * @param userInfo 用户信息

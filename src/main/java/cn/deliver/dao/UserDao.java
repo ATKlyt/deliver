@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserDao {
 
-    int deleteByPrimaryKey(Long id);
+    int deleteByPrimaryKey(int id);
 
     int insert(User record);
 
@@ -45,7 +45,7 @@ public interface UserDao {
     /**
      * 审核更改申请状态   1为通过，2为失败
      * */
-    void updateUserStatus(@Param("id") int id , @Param("status") String status);
+    void updateUserStatus(@Param("id") int id , @Param("status") String status,@Param("role") String role);
 
     /**
      * 审核时查找用户或者管理员
@@ -81,5 +81,17 @@ public interface UserDao {
     Integer login(@Param("id") String id,@Param("password") String password,@Param("length") int length);
 
 
+    /**
+     * 模糊查询
+     * @param info 查询的字段
+     * */
+    List<UserDriverInfo> abstractQuery(@Param("info") String info);
+
+
+    /**
+     * 根据uid查找电话号码
+     * @param cid
+     * @return
+     */
     String findPhoneByUid(Integer cid);
 }

@@ -284,7 +284,7 @@
     </if>
     )
     values
-    (#{uiid},#{type},#{drivingLicencePicture},#{carPicture}
+    (#{uiid},#{carType},#{drivingLicencePicture},#{carPicture}
     <if test="#{runningRoute!=null}">
       ,#{runningRoute}
     </if>

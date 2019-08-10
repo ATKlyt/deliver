@@ -35,7 +35,7 @@ public interface UserInfoDao {
 
     //==================================艺明=====================================
     //插入用户信息
-    void insertUserInfo(UserInfo userInfo);
+    int insertUserInfo(UserInfo userInfo);
 
 
     //==================================俊彬=====================================

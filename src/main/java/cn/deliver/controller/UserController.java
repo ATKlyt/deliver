@@ -6,6 +6,7 @@ import cn.deliver.domain.UserDriverInfo;
 import cn.deliver.domain.UserInfo;
 import cn.deliver.service.UserService;
 import cn.deliver.utils.ExportExcel;
+import cn.deliver.utils.UploadFileUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,7 +131,7 @@ public class UserController {
         ExportExcel exportExcel = new ExportExcel();
         List<String[]>  resource = userService.exportExcel(userAndUserInfo);
         String name = UUID.randomUUID().toString();
-        String newName = "C:\\picture\\"+name+".xlsx";
+        String newName = UploadFileUtil.UPLOADPATH + "/xlsx/" + name + ".xlsx";
         OutputStream outputStream = new FileOutputStream(newName);
         exportExcel.exportExcel(resource,outputStream);
         outputStream.flush();

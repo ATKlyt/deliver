@@ -10,10 +10,11 @@ import java.util.UUID;
  * @author 93231
  */
 public class UploadFileUtil {
+
     /**
      * 在service.xml中配置映射地址，用/upload映射服务器本地磁盘中的地址
      */
-    private static final String UPLOADPATH = "/uploads";
+    public static final String UPLOADPATH = "/uploads";
 
     private UploadFileUtil(){}
 

@@ -7,18 +7,15 @@ import cn.deliver.service.UserOrderService;
 import cn.deliver.utils.UploadFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("userOrder")
@@ -69,7 +66,6 @@ public class UserOrderController {
         userOrder.setDeliverAreaId((Integer) userOrderMsg.get("deliverAreaId"));
         userOrder.setConsigneeAreaId((Integer) userOrderMsg.get("consigneeAreaId"));
         userOrder.setDescription((String) userOrderMsg.get("description"));
-        //userOrder.setPay((BigDecimal) userOrderMsg.get("pay"));
         userOrder.setDeliveryStart(new Timestamp((Long) userOrderMsg.get("deliveryStart")));
         userOrder.setDeliveryEnd(new Timestamp((Long) userOrderMsg.get("deliveryEnd")));
         //验证

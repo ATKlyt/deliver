@@ -9,7 +9,7 @@ import cn.deliver.utils.ExportExcel;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.*;
 import java.text.ParseException;
-import java.util.Date;
+
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -33,7 +33,6 @@ public class UserController {
 
     private final int CODETIME = 60;
     private final int PHONELENGTH = 11;
-    private final int CODELENGTH = 6;
     private final String PASSWORDFORMAT = "(?!.*[\\u4E00-\\u9FA5\\s])(?!^[a-zA-Z]+$)(?!^[\\d]+$)(?!^[^a-zA-Z\\d]+$)^.{6,16}$";
     private final String PHONENUMBERFORMAT = "^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$";
     /**

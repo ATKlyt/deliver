@@ -41,7 +41,7 @@ public class DriverInfoController {
     @RequestMapping("/CardPicture")
     @ResponseBody
     public Result uploadCarPicture(MultipartFile file ,String type){
-        String url = driverInfoService.uploadFile(file,"CardPicture");
+        String url = driverInfoService.uploadFile(file,type);
         if(url != null){
             return new Result("汽车照片上传成功","0",url);
         }else{

@@ -23,26 +23,31 @@ public class UserInfoController {
 
     private final String DRIVER = "司机";
     private final String USER = "用户";
+    private final String ADMIN = "管理员";
     private final String IDENTITYCARDFORMAT = "^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$|^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9]|X)$";
 
     /**
      * 用户和司机注册时填写详细信息
-     * @param request 封装HTTP请求的对象
      * @return 结果集
      */
     @RequestMapping(value = "/userInfoRegister",method = RequestMethod.POST)
     @ResponseBody
     public Result userInfoRegister(@RequestBody UserDriverArea userDriverArea ){
-        if(userDriverArea.getUserInfo().getUid() == null ||userDriverArea.getUserInfo().getName() == null ||userDriverArea.getArea().getProvince() == null ||userDriverArea.getArea().getCity() == null ||userDriverArea.getArea().getDistrict() == null ||userDriverArea.getArea().getStatus() == null ||userDriverArea.getUserInfo().getIdentityCard() == null ){
-            return new Result("用户注册必填项信息为空","1",null);
-        }
-        if(!userDriverArea.getUserInfo().getIdentityCard().matches(IDENTITYCARDFORMAT)){
-            return new Result("身份证格式有误","1",null);
-        }
         //获取注册的角色
         String role = userDriverArea.getUserInfo().getRole();
         if(role == null){
             return new Result("用户暂未选择身份","1",null);
+        }
+        if(userDriverArea.getUserInfo().getUid() == null ||userDriverArea.getUserInfo().getName() == null ||userDriverArea.getArea().getProvince() == null ||userDriverArea.getArea().getCity() == null ||userDriverArea.getArea().getDistrict() == null ||userDriverArea.getArea().getStatus() == null){
+            return new Result("用户注册必填项信息为空","1",null);
+        }
+        if(!ADMIN.equals(role)){
+            if(userDriverArea.getUserInfo().getIdentityCard() == null || !userDriverArea.getUserInfo().getIdentityCard().matches(IDENTITYCARDFORMAT)){
+                return new Result("身份证号码为空或格式有误","1",null);
+            }
+            if(userDriverArea.getUserInfo().getIdentityCardPicture() == null){
+                return new Result("暂未上传用户身份证正面照","1",null);
+            }
         }
         //普通用户与司机注册经过的共同步骤(姓名、性别、生日、身份证号码)
         int userInfoId = userInfoService.registerUser(userDriverArea.getUserInfo(),userDriverArea.getArea());
@@ -64,6 +69,8 @@ public class UserInfoController {
                 }else{
                     return new Result("司机注册失败","1",null);
                 }
+            }else if(ADMIN.equals(role)){
+                return new Result("管理员注册成功","0",userAuthId);
             }else{
                 return new Result("获取身份失败，请重新注册","1",null);
             }

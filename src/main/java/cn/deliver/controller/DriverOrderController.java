@@ -1,6 +1,7 @@
 package cn.deliver.controller;
 
-import cn.deliver.domain.*;
+import cn.deliver.domain.DriverOrderDetail;
+import cn.deliver.domain.Result;
 import cn.deliver.service.DriverOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,19 +9,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.sql.Timestamp;
-import java.util.List;
 import java.util.Map;
 
 @Controller
 @RequestMapping("driverOrder")
 public class DriverOrderController {
+
     @Autowired
     DriverOrderService driverOrderService;
 
-
     /**
-     *
      * @param driverOrderDetail
      * @return
      */
@@ -46,10 +44,6 @@ public class DriverOrderController {
         Integer driverOrderId = (Integer) parameters.get("driverOrderId");
         return driverOrderService.findDetailByDriverOrder(driverOrderId);
     }
-
-
-
-
 
     /**
      * 查询司机订单出发地址与用户订单发货地址相同的司机行程(村子相同)

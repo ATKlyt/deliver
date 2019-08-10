@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -21,10 +20,6 @@ public class OrderController {
 
     @Autowired
     OrderService orderService;
-
-
-
-
 
     /**
      * 用户邀请司机

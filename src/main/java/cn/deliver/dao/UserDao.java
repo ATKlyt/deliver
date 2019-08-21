@@ -86,7 +86,6 @@ public interface UserDao {
     String findPhoneNumberByAuthId(@Param("authId") String authId);
 
     /**
-<<<<<<< HEAD
      * 通过用户登录id获取用户信息
      * @param id 登录id
      * @return 用户信息(头像、名字)

@@ -11,7 +11,7 @@ import java.util.Random;
  */
 public class PhoneCodeUtil {
 
-    private static PhoneCodeUtil phoneCodeUtil = new PhoneCodeUtil();
+    private static PhoneCodeUtil phoneCodeUtil;
 
     /**
      * 短信API调用结果
@@ -29,6 +29,9 @@ public class PhoneCodeUtil {
      * @return 自身实例化
      */
     public static PhoneCodeUtil getPhoneCodeUtil(){
+        if(phoneCodeUtil == null){
+            phoneCodeUtil = new PhoneCodeUtil();
+        }
         return phoneCodeUtil;
     }
 

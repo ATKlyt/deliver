@@ -27,7 +27,6 @@ public class UserInfoController {
 
     /**
      * 用户和司机注册时填写详细信息
-     * @param request 封装HTTP请求的对象
      * @return 结果集
      */
     @RequestMapping(value = "/userInfoRegister",method = RequestMethod.POST)

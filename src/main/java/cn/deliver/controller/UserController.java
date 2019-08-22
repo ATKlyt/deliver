@@ -362,7 +362,7 @@ public class UserController {
      * @param request 封装Http请求的对象
      * @return 用户信息
      */
-    @RequestMapping("/mainPersonalData")
+    @RequestMapping("/getInformation")
     @ResponseBody
     public Result showPersonData(HttpServletRequest request){
         String id = (String) request.getSession().getAttribute("id");

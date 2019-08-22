@@ -359,7 +359,7 @@
 
   <!--通过登录id来获取用户信息-->
   <select id="findUserDataById" resultType="cn.deliver.domain.UserInfo">
-    select name,avatar from user inner join user_info on
+    select name,avatar,gender,birthday from user inner join user_info on
     <if test="length==10">
       auth_id =
     </if>

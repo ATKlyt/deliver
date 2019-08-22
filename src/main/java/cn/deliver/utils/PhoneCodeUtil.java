@@ -20,12 +20,6 @@ public class PhoneCodeUtil {
     private static final int REQUESTFORBIDDEN = 403;
 
     /**
-     * 阿里云API提供的密钥
-     */
-    private String accessKeyId = "LTAI8z2VtTnLakmr";
-    private String accessSecret = "IP4Qe4vFpyXiKzBgJBycwrZHKPoBdM";
-
-    /**
      * 设置为private避免外界直接调用其构造器
      */
     private PhoneCodeUtil(){}
@@ -47,7 +41,7 @@ public class PhoneCodeUtil {
         String host = "https://chanyoo.market.alicloudapi.com";
         String path = "/sendsms";
         String method = "GET";
-        String appcode = "0fc8ac951491442288068e64f6a8a20c";
+        String appcode = "6a978b7e00904b9aa29412e1916c0399";
         Map<String, String> headers = new HashMap();
         headers.put("Authorization", "APPCODE " + appcode);
         Map<String, String> querys = new HashMap();

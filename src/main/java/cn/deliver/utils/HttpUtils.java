@@ -30,10 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * HttpUtils
- * @author 93231
- */
 public class HttpUtils {
 
     /**
@@ -290,15 +286,12 @@ public class HttpUtils {
         try {
             SSLContext ctx = SSLContext.getInstance("TLS");
             X509TrustManager tm = new X509TrustManager() {
-                @Override
                 public X509Certificate[] getAcceptedIssuers() {
                     return null;
                 }
-                @Override
                 public void checkClientTrusted(X509Certificate[] xcs, String str) {
 
                 }
-                @Override
                 public void checkServerTrusted(X509Certificate[] xcs, String str) {
 
                 }

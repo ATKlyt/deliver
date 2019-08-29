@@ -41,10 +41,10 @@ public class PhoneCodeUtil {
      * @param code 随机生成的6位数验证码
      */
     public boolean sendPhoneCode(String phoneNumber,String code){
-        String host = "https://chanyoo.market.alicloudapi.com";
+        String host = "http://chanyoo.market.alicloudapi.com";
         String path = "/sendsms";
         String method = "GET";
-        String appcode = "6a978b7e00904b9aa29412e1916c0399";
+        String appcode = "7da356b7bde1415dabf5539a09d0cafa";
         Map<String, String> headers = new HashMap();
         headers.put("Authorization", "APPCODE " + appcode);
         Map<String, String> querys = new HashMap();
@@ -81,5 +81,4 @@ public class PhoneCodeUtil {
         }
         return sb.toString();
     }
-
 }

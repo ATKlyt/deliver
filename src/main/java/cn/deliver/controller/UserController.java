@@ -14,11 +14,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import javax.servlet.http.HttpServletRequest;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.*;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -250,6 +250,7 @@ public class UserController {
             codeData.put("beforeTime",beforeTime);
             return new Result("验证码发送成功","0",codeData);
         }else{
+            System.out.println("验证码发送失败");
             return new Result("验证码发送失败","1",null);
         }
     }
@@ -269,7 +270,7 @@ public class UserController {
         Long time = (Long) data.get("time");
         Map<String,Object> codeData = (HashMap<String, Object>) data.get("codeData");
         //计算时间差，判断验证码是否过期
-        Long timeDifference = (time - (Long) codeData.get("beforeTime")) / 1000;
+        long timeDifference = (time - (Long) codeData.get("beforeTime")) / 1000;
         if(timeDifference > CODETIME){
             return new Result("验证码已过期，请重新发送验证码","1",null);
         }
@@ -315,7 +316,7 @@ public class UserController {
      */
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     @ResponseBody
-    public Result userLogin(@RequestBody Map<String,Object> data, HttpServletRequest request){
+    public Result userLogin(@RequestBody Map<String,Object> data){
         String id = (String) data.get("id");
         String password = (String) data.get("password");
         if(!password.matches(PASSWORDFORMAT)){
@@ -333,7 +334,6 @@ public class UserController {
         //加密处理后的密码
         String cryptographicPassword = DigestUtils.md5DigestAsHex(password.getBytes());
         if(userService.login(id,cryptographicPassword) != null){
-            request.getSession().setAttribute("id",id);
             return new Result("登录成功","0",id);
         }else{
             return new Result("登录失败","1",null);
@@ -343,7 +343,7 @@ public class UserController {
     /**
      * 修改密码
      * @param data 用户密码
-     * @return
+     * @return 修改密码结果
      */
     @RequestMapping("/updatePassword")
     @ResponseBody
@@ -359,13 +359,12 @@ public class UserController {
 
     /**
      * 展示"我的"首页部分用户信息
-     * @param request 封装Http请求的对象
+     * @param id 用户登录的id
      * @return 用户信息
      */
     @RequestMapping("/getInformation")
     @ResponseBody
-    public Result showPersonData(HttpServletRequest request){
-        String id = (String) request.getSession().getAttribute("id");
+    public Result showPersonData(String id){
         if("".equals(id) || id == null){
             return new Result("找不到用户id，请重新登录","1",null);
         }

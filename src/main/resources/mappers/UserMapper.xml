@@ -40,7 +40,7 @@
     </association>
     <association property="driverInfo" javaType="cn.deliver.domain.DriverInfo">
       <id column="drive_id" property="id"/>
-      <result column="uuid" property="uiid"/>
+      <result column="uiid" property="uiid"/>
       <result column="car_type" property="carType"/>
       <result column="driving_licence_picture" property="drivingLicencePicture"/>
       <result column="car_picture" property="carPicture"/>
@@ -67,22 +67,22 @@
         or ui.name like '%${info}%' or u.role like '%${info}%' or ui.gender like '%${info}%' )
   </select>
 
-<!--  <select id="abstractQueryByDriver" parameterType="java.lang.String" resultMap="UserAndDriverMap">-->
-<!--    select-->
-<!--        u.id,-->
-<!--        u.auth_id,-->
-<!--        u.phone,-->
-<!--        u.role,-->
-<!--        u.email,-->
-<!--        ui.id user_id,-->
-<!--        ui.name,-->
-<!--        ui.avatar,-->
-<!--        di.car_type,-->
-<!--        di.car_type-->
-<!--     from user u,user_info ui-->
-<!--     where u.id = ui.uid and ui.id = di.uiid and  u.auth_id like '%${info}%' or u.phone like '%${info}%' or u.register_area like '%${info}%' or u.email like '%${info}%'-->
-<!--        or ui.name like '%${info}%' or u.role like '%${info}%' or ui.gender like '%${info}%'-->
-<!--  </select>-->
+  <!--<select id="abstractQueryByDriver" parameterType="java.lang.String" resultMap="UserAndDriverMap">-->
+    <!--select-->
+        <!--u.id,-->
+        <!--u.auth_id,-->
+        <!--u.phone,-->
+        <!--u.role,-->
+        <!--u.email,-->
+        <!--ui.id user_id,-->
+        <!--ui.name,-->
+        <!--ui.avatar,-->
+        <!--di.car_type,-->
+        <!--di.car_type-->
+     <!--from user u,user_info ui-->
+     <!--where u.id = ui.uid and ui.id = di.uiid and  u.auth_id like '%${info}%' or u.phone like '%${info}%' or u.register_area like '%${info}%' or u.email like '%${info}%'-->
+        <!--or ui.name like '%${info}%' or u.role like '%${info}%' or ui.gender like '%${info}%'-->
+  <!--</select>-->
 
   <!-- 查询所有的用户信息 -->
   <select id="findAllUser"  resultMap="UserAndDriverMap">
@@ -326,20 +326,20 @@
   <!--用户注册(提交基本信息)-->
   <insert id="register" parameterType="cn.deliver.domain.User" useGeneratedKeys="true" keyProperty="id">
         insert into user
-        (auth_id,phone,password,status,role,register_time,register_area,register_role
+        (auth_id,phone,password,status,register_time,register_area,register_role
         <if test="evidence != null">
           ,evidence
         </if>)
         values
-        (#{authId},#{phone},#{password},#{status},#{role},#{registerTime},#{registerArea},#{registerRole}
+        (#{authId},#{phone},#{password},#{status},#{registerTime},#{registerArea},#{registerRole}
         <if test="evidence != null">
           ,#{evidence}
         </if>)
     </insert>
 
   <!--用户登录(系统发放id以及手机号码均可登录)-->
-  <select id="login" resultType="java.lang.Integer">
-    select id from user where password = #{password} and
+  <select id="login" resultMap="BaseResultMap">
+    select id,auth_id,role from user where password = #{password} and
     <if test="length==10">
       auth_id =
     </if>
@@ -348,29 +348,14 @@
     </if>
     #{id}
   </select>
-    <select id="findPhoneByUid" resultType="java.lang.String">
-      select phone from user where id = #{cid,jdbcType=INTEGER} ;
-    </select>
+
+  <select id="findPhoneByUid" resultType="java.lang.String">
+    select phone from user where id = #{cid,jdbcType=INTEGER} ;
+  </select>
 
   <!--通过authId来获取对应的手机号码-->
   <select id="findPhoneNumberByAuthId" resultType="java.lang.String">
     select phone from user where auth_id = #{authId}
   </select>
 
-  <!--通过登录id来获取用户信息-->
-  <select id="findUserDataById" resultType="cn.deliver.domain.UserInfo">
-    select name,avatar,gender,birthday from user inner join user_info on
-    <if test="length==10">
-      auth_id =
-    </if>
-    <if test="length==11">
-      phone =
-    </if>
-    #{id}
-    and user.id = user_info.uid
-  </select>
-
-  <update id="updatePassword" >
-    update user set password = #{password} where id = #{id}
-  </update>
 </mapper>

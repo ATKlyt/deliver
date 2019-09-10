@@ -311,4 +311,9 @@
     <select id="findNameByUid" resultType="java.lang.String">
       select name from user_info where uid = #{cid,jdbcType=INTEGER} ;
     </select>
+
+  <select id="getUserInfoById" resultMap="BaseResultMap">
+    select id,name,gender,birthday,avatar from user_info where
+     uid = #{id}
+  </select>
 </mapper>

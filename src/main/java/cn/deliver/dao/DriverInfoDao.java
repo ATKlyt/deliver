@@ -36,4 +36,11 @@ public interface DriverInfoDao {
      * @return
      */
     int driverInfoRegister(DriverInfo driverInfo);
+
+    /**
+     * 根据用户id获取UserInfo表信息
+     * @param id 用户id
+     * @return 对应UserInfo表信息
+     */
+    DriverInfo getDriverInfoById(Integer id);
 }

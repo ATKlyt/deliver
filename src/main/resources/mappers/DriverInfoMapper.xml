@@ -275,7 +275,7 @@
   </update>
 
 
-<!--                                      俊彬-->
+<!--俊彬-->
   <insert id="driverInfoRegister" parameterType="cn.deliver.domain.DriverInfo" useGeneratedKeys="true" keyProperty="id">
     insert into driver_info
     (uiid,car_type,driving_licence_picture,car_picture
@@ -290,4 +290,8 @@
     </if>
     )
   </insert>
+
+  <select id="getDriverInfoById" resultMap="BaseResultMap">
+    select car_type,car_picture,running_route,car_number,status from driver_info where uiid = #{id};
+  </select>
 </mapper>

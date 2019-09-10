@@ -3,7 +3,6 @@ package cn.deliver.controller;
 import cn.deliver.domain.Result;
 import cn.deliver.domain.User;
 import cn.deliver.domain.UserDriverInfo;
-import cn.deliver.domain.UserInfo;
 import cn.deliver.service.UserService;
 import cn.deliver.utils.ExportExcel;
 import cn.deliver.utils.UploadFileUtil;
@@ -30,11 +29,11 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    private final int CODETIME = 60;
-    private final int PHONELENGTH = 11;
-    private final int CODELENGTH = 6;
-    private final String PASSWORDFORMAT = "(?!.*[\\u4E00-\\u9FA5\\s])(?!^[a-zA-Z]+$)(?!^[\\d]+$)(?!^[^a-zA-Z\\d]+$)^.{6,16}$";
-    private final String PHONENUMBERFORMAT = "^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$";
+    private String USERROLE = "0";
+    private int CODETIME = 60;
+    private int PHONELENGTH = 11;
+    private String PASSWORDFORMAT = "(?!.*[\\u4E00-\\u9FA5\\s])(?!^[a-zA-Z]+$)(?!^[\\d]+$)(?!^[^a-zA-Z\\d]+$)^.{6,16}$";
+    private String PHONENUMBERFORMAT = "^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$";
     /**
      * 管理员删除用户
      * @param map 封装 id
@@ -156,7 +155,6 @@ public class UserController {
         int len = 0;
         // 非常重要
         response.reset();
-
         if(isOnLine){
             response.setHeader("Content-Disposition", "inline; filename=" + f.getName());
         }else{
@@ -333,46 +331,11 @@ public class UserController {
         }
         //加密处理后的密码
         String cryptographicPassword = DigestUtils.md5DigestAsHex(password.getBytes());
-        if(userService.login(id,cryptographicPassword) != null){
-            return new Result("登录成功","0",id);
+        User user = userService.login(id,cryptographicPassword);
+        if(user != null){
+            return new Result("登录成功","0",userService.getUserDriverInfoById(user));
         }else{
-            return new Result("登录失败","1",null);
-        }
-    }
-
-    /**
-     * 修改密码
-     * @param data 用户密码
-     * @return 修改密码结果
-     */
-    @RequestMapping("/updatePassword")
-    @ResponseBody
-    public Result updatePassword(@RequestBody Map<String,Object> data){
-        String phoneNumber = (String) data.get("phone");
-        String password = (String) data.get("password");
-        if(userService.updatePassword(phoneNumber,password)){
-            return new Result("修改密码成功","0",null);
-        }else{
-            return new Result("修改密码失败","1",null);
-        }
-    }
-
-    /**
-     * 展示"我的"首页部分用户信息
-     * @param id 用户登录的id
-     * @return 用户信息
-     */
-    @RequestMapping("/getInformation")
-    @ResponseBody
-    public Result showPersonData(String id){
-        if("".equals(id) || id == null){
-            return new Result("找不到用户id，请重新登录","1",null);
-        }
-        UserInfo userInfo = userService.findUserDataById(id,id.length());
-        if(userInfo == null){
-            return new Result("该账号不存在，请重新登录","1",null);
-        }else {
-            return new Result("获取用户资料成功", "0", userInfo);
+            return new Result("用户账号或密码有误","1",null);
         }
     }
 }

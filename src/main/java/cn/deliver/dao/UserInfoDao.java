@@ -54,4 +54,11 @@ public interface UserInfoDao {
     String findUserAuthId(int userInfoId);
 
     String findNameByUid(Integer cid);
+
+    /**
+     * 根据用户id获取UserInfo表信息
+     * @param id 用户id
+     * @return 对应UserInfo表信息
+     */
+    UserInfo getUserInfoById(Integer id);
 }

@@ -3,7 +3,6 @@ package cn.deliver.service;
 import cn.deliver.domain.Result;
 import cn.deliver.domain.User;
 import cn.deliver.domain.UserDriverInfo;
-import cn.deliver.domain.UserInfo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,9 +68,9 @@ public interface UserService {
      * 用户登录
      * @param id 用户id或手机号码
      * @param password 用户密码
-     * @return 登录结果
+     * @return 用户登录信息
      */
-    Integer login(String id, String password);
+    User login(String id, String password);
 
     /**
      * 获取手机验证码
@@ -88,22 +87,6 @@ public interface UserService {
     String findPhoneNumberByAuthId(String authId);
 
     /**
-     * 通过用户登录账号来获取用户信息
-     * @param id 用户登录id
-     * @param length 判别用户登录的id是手机号码还是系统发放id
-     * @return 存储用户信息的UserInfo对象
-     */
-    UserInfo findUserDataById(String id,int length);
-
-    /**
-     * 修改密码
-     * @param phoneNumber 用户手机号码
-     * @param password 用户密码
-     * @return 修改结果
-     */
-    boolean updatePassword(String phoneNumber, String password);
-
-    /**
      * 查询内容
      * @param info
      * @return
@@ -117,4 +100,10 @@ public interface UserService {
      */
     Result deleteUser(Map<String, Object> map);
 
+    /**
+     * 根据用户登录信息获取用户个人信息
+     * @param user 用户登录信息
+     * @return 用户个人信息
+     */
+    UserDriverInfo getUserDriverInfoById(User user);
 }

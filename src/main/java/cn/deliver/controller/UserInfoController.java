@@ -21,9 +21,9 @@ public class UserInfoController {
     @Autowired
     private DriverInfoService driverInfoService;
 
-    private final String DRIVER = "司机";
-    private final String USER = "用户";
-    private final String ADMIN = "管理员";
+    private final String DRIVER = "2";
+    private final String USER = "1";
+    private final String ADMIN = "3";
     private final String IDENTITYCARDFORMAT = "^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$|^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9]|X)$";
 
     /**

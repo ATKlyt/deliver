@@ -23,7 +23,6 @@ import java.util.Map;
 @Service
 public class UserServiceImpl implements UserService{
 
-
     private final int IDLENGTH = 10;
     private final int CODELENGTH = 6;
     private final String TRANSPORTDRIVER = "客运车司机";
@@ -40,6 +39,8 @@ public class UserServiceImpl implements UserService{
     OrderDao orderDao;
     @Autowired
     UserOrderDao userOrderDao;
+    @Autowired
+    DriverInfoDao driverInfoDao;
 
     @Override
     public Result findDeliverInfoByAuthId(Integer uid) {
@@ -218,35 +219,34 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public UserDriverInfo getUserDriverInfoById(User user) {
+        UserDriverInfo userDriverInfo = new UserDriverInfo();
+        userDriverInfo.setUser(user);
+        if("0".equals(user.getRole())) {
+            return userDriverInfo;
+        }else{
+            UserInfo userInfo = userInfoDao.getUserInfoById(user.getId());
+            userDriverInfo.setUserInfo(userInfo);
+            if("2".equals(user.getRole())){
+                DriverInfo driverInfo  = driverInfoDao.getDriverInfoById(userInfo.getId());
+                userDriverInfo.setDriverInfo(driverInfo);
+            }
+        }
+        return userDriverInfo;
+    }
+
+    @Override
     public String findPhoneNumberByAuthId(String authId) {
         return userDao.findPhoneNumberByAuthId(authId);
     }
 
     @Override
-    public UserInfo findUserDataById(String id ,int length) {
-        return userDao.findUserDataById(id,length);
-    }
-
-    @Override
-    public boolean updatePassword(String phoneNumber, String password) {
-        password = phoneNumber + password;
-        String cryptographicPassword = DigestUtils.md5DigestAsHex(password.getBytes());
-        if(userDao.updatePassword(phoneNumber,cryptographicPassword) == 1){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    @Override
     public Map<String,Object> register(User user) {
         //后台随机生成10位数的ID
-        user.setAuthId(PhoneCodeUtil.getPhoneCodeUtil().getRandomNum(IDLENGTH));
+        setUserAuthId(user);
         //md5盐值加密
         String cryptographicPassword = user.getPhone() + user.getPassword();
         user.setPassword(DigestUtils.md5DigestAsHex(cryptographicPassword.getBytes()));
-        //未通过后台审核前所有用户的身份均为游客
-        user.setRole("游客");
         //审核状态("0"为审核中，"1"为审核通过，"2"为审核不通过)
         user.setStatus("0");
         user.setRegisterTime(new Timestamp(System.currentTimeMillis()));
@@ -259,7 +259,20 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Integer login(String id, String password) {
+    public User login(String id, String password) {
         return userDao.login(id,password,id.length());
+    }
+
+    /**
+     * 设置注册用户的系统发放id
+     * @param user
+     */
+    public void setUserAuthId(User user){
+        String id = PhoneCodeUtil.getPhoneCodeUtil().getRandomNum(IDLENGTH);
+        if(userDao.findPhoneNumberByAuthId(id) == null){
+            user.setAuthId(id);
+        }else{
+            setUserAuthId(user);
+        }
     }
 }

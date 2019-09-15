@@ -4,6 +4,7 @@ import cn.deliver.dao.AreaDao;
 import cn.deliver.dao.DriverInfoDao;
 import cn.deliver.dao.UserInfoDao;
 import cn.deliver.domain.Area;
+import cn.deliver.domain.UserDriverArea;
 import cn.deliver.domain.UserInfo;
 import cn.deliver.service.UserInfoService;
 import cn.deliver.utils.UploadFileUtil;
@@ -48,5 +49,10 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Override
     public String uploadFile(MultipartFile file, String type) {
         return UploadFileUtil.uploadFile(file,type);
+    }
+
+    @Override
+    public int updateUserInfo(UserDriverArea userDriverArea) {
+        return 0;
     }
 }

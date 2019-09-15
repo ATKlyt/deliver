@@ -339,7 +339,7 @@
 
   <!--用户登录(系统发放id以及手机号码均可登录)-->
   <select id="login" resultMap="BaseResultMap">
-    select id,auth_id,role from user where password = #{password} and
+    select id,auth_id,phone,role,register_role from user where password = #{password} and
     <if test="length==10">
       auth_id =
     </if>

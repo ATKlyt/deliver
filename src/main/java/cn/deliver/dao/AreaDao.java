@@ -73,8 +73,6 @@ public interface AreaDao {
 
     int insertUserArea(Area area);
 
-
-
     List<Area> findAllDeliverByUid(Integer uid);
 
     List<ConsigneeDetail> findAllConsigneesByUid(Integer uid);

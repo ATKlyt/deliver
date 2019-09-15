@@ -316,4 +316,6 @@
     select id,name,gender,birthday,avatar from user_info where
      uid = #{id}
   </select>
+
+  <update id="updateUserInfo" keyProperty=""></update>
 </mapper>

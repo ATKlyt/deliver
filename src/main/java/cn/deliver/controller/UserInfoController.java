@@ -23,6 +23,7 @@ public class UserInfoController {
 
     private final String DRIVER = "2";
     private final String USER = "1";
+    private final String ADMIN = "3";
     private final String IDENTITYCARDFORMAT = "^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$|^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9]|X)$";
 
     /**
@@ -63,12 +64,26 @@ public class UserInfoController {
                 }else{
                     return new Result("司机注册失败","1",null);
                 }
+            }else if(ADMIN.equals(role)){
+                return new Result("管理员注册成功","0",userAuthId);
             }else{
                 return new Result("获取身份失败，请重新注册","1",null);
             }
         }else{
             return new Result("用户注册失败","1",null);
         }
+    }
+
+    /**
+     * 修改个人信息
+     * @param userDriverArea
+     * @return
+     */
+    @RequestMapping("/updateUserInfo")
+    @ResponseBody
+    public Result updateUserInfo(@RequestBody UserDriverArea userDriverArea){
+//        if(userInfoService.)
+        return null;
     }
 
     /**

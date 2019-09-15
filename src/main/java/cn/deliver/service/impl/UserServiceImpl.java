@@ -254,12 +254,12 @@ public class UserServiceImpl implements UserService{
     public UserDriverInfo getUserDriverInfoById(User user) {
         UserDriverInfo userDriverInfo = new UserDriverInfo();
         userDriverInfo.setUser(user);
-        if("0".equals(user.getRole())) {
+        if("0".equals(user.getRegisterRole())) {
             return userDriverInfo;
         }else{
             UserInfo userInfo = userInfoDao.getUserInfoById(user.getId());
             userDriverInfo.setUserInfo(userInfo);
-            if("2".equals(user.getRole())){
+            if("2".equals(user.getRegisterRole())){
                 DriverInfo driverInfo  = driverInfoDao.getDriverInfoById(userInfo.getId());
                 userDriverInfo.setDriverInfo(driverInfo);
             }

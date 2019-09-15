@@ -1,6 +1,7 @@
 package cn.deliver.service;
 
 import cn.deliver.domain.Area;
+import cn.deliver.domain.UserDriverArea;
 import cn.deliver.domain.UserInfo;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,4 +35,11 @@ public interface UserInfoService {
      * @return 图片的url
      */
     String uploadFile(MultipartFile file, String type);
+
+    /**
+     * 修改用户个人信息
+     * @param userDriverArea 存储用户信息的对象
+     * @return 修改结果
+     */
+    int updateUserInfo(UserDriverArea userDriverArea);
 }

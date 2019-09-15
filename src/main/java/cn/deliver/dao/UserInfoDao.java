@@ -61,4 +61,11 @@ public interface UserInfoDao {
      * @return 对应UserInfo表信息
      */
     UserInfo getUserInfoById(Integer id);
+
+    /**
+     * 修改用户个人信息
+     * @param userInfo 存储用户个人信息的对象
+     * @return 修改结果
+     */
+    int updateUserInfo(UserInfo userInfo);
 }

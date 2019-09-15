@@ -33,6 +33,7 @@ public interface DriverInfoDao {
     /**
      * 司机注册时填写详细信息
      * @param driverInfo 司机详细信息
+     * @author 康俊彬
      * @return
      */
     int driverInfoRegister(DriverInfo driverInfo);
@@ -43,4 +44,11 @@ public interface DriverInfoDao {
      * @return 对应UserInfo表信息
      */
     DriverInfo getDriverInfoById(Integer id);
+
+    /**
+     * 修改用户个人信息
+     * @param driverInfo 存储用户个人信息的对象
+     * @return 修改结果
+     */
+    int updateDriverInfo(DriverInfo driverInfo);
 }

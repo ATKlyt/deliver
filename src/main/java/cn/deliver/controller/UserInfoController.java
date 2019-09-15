@@ -80,6 +80,18 @@ public class UserInfoController {
     }
 
     /**
+     * 修改个人信息
+     * @param userDriverArea
+     * @return
+     */
+    @RequestMapping("/updateUserInfo")
+    @ResponseBody
+    public Result updateUserInfo(@RequestBody UserDriverArea userDriverArea){
+//        if(userInfoService.)
+        return null;
+    }
+
+    /**
      * 上传身份证拍摄图片
      * @param file 图片文件
      * @param type 图片种类

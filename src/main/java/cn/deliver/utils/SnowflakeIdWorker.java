@@ -138,5 +138,10 @@ public class SnowflakeIdWorker {
 //        System.out.println(id);
     }
 
+    public static long getNo(){
+        SnowflakeIdWorker idWorker = new SnowflakeIdWorker(1, 1);
+        long no = idWorker.nextId();
+        return no;
+    }
 
 }

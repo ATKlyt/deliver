@@ -60,18 +60,48 @@ public class OrderController {
 
     /**
      * 判断是否需要担保人
+     * 用户订单id和司机uid
      * @param parameters
      * @return
      */
-    @RequestMapping("validateVillage")
+    @RequestMapping("validateNeedSafety")
     @ResponseBody
-    public Result validateVillage(@RequestBody Map<String, Object> parameters){
-        Integer orderId = (Integer) parameters.get("orderId");
-        return orderService.validateVillage(orderId);
+    public Result validateNeedSafety(@RequestBody Map<String, Object> parameters){
+        Integer userOrderId = (Integer) parameters.get("userOrderId");
+        Integer driverUid = (Integer) parameters.get("driverUid");
+        return orderService.validateNeedSafety(userOrderId, driverUid);
+    }
+
+
+    /**
+     * 判断担保人符合要求
+     * 用户订单id和司机uid
+     * @param parameters
+     * @return
+     */
+    @RequestMapping("validateSafety")
+    @ResponseBody
+    public Result validateSafety(@RequestBody Map<String, Object> parameters){
+        Integer userOrderId = (Integer) parameters.get("userOrderId");
+        String suretyAuthId = (String) parameters.get("suretyAuthId");
+        return orderService.validateSafety(suretyAuthId, userOrderId);
+    }
+
+
+    /**
+     * 司机主动接单
+     * 用户订单id和司机uid必需，当该交易(即order)需要担保人时，则order的属性safetyId不为null
+     * @param order
+     * @return
+     */
+    @RequestMapping("receive")
+    @ResponseBody
+    public Result receiveUserOrder(@RequestBody Order order){
+        return orderService.receiveUserOrder(order);
     }
 
     /**
-     * 司机确认
+     * 司机确认用户邀请
      * @param parameters
      * @return
      */

@@ -25,6 +25,7 @@ public class UserOrderController {
     UserOrderService userOrderService;
 
 
+
     /**
      * 通过地址(村级)查询出发地为该村的用户订单
      * 查找发货人详细信息和发货人地址和用户订单Id
@@ -93,11 +94,11 @@ public class UserOrderController {
     @RequestMapping("uploadGoodsPictures")
     @ResponseBody
     public Result uploadGoodsPictures(MultipartFile[] goodsPictures) {
-        final String GOODSPICTURE = "goodsPictures";
+        final String GOODS_PICTURE = "goodsPictures";
         List<String> totalPaths = new ArrayList<String>();
         int length = goodsPictures.length;
         for (int i = 0; i < length; i++) {
-            totalPaths.add(UploadFileUtil.uploadFile(goodsPictures[i], GOODSPICTURE));
+            totalPaths.add(UploadFileUtil.uploadFile(goodsPictures[i], GOODS_PICTURE));
         }
         if (totalPaths.size() > 0){
             return new Result("添加成功","0",totalPaths);
@@ -105,4 +106,6 @@ public class UserOrderController {
             return new Result("添加失败","1");
         }
     }
+
+
 }

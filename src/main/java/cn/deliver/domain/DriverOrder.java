@@ -18,7 +18,7 @@ public class DriverOrder {
     private Timestamp deadline;
 
     /**
-     * (0未过期,1过期,2取消状态,3删除状态)
+     * (0过期,1未过期,2取消状态,3删除状态)
      * 过期状态：当前时间超过出发时间
      */
     private String status;

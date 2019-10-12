@@ -350,12 +350,16 @@
   </select>
 
   <select id="findPhoneByUid" resultType="java.lang.String">
-    select phone from user where id = #{cid,jdbcType=INTEGER} ;
+    select phone from user where id = #{cid,jdbcType=INTEGER}
   </select>
 
   <!--通过authId来获取对应的手机号码-->
   <select id="findPhoneNumberByAuthId" resultType="java.lang.String">
     select phone from user where auth_id = #{authId}
   </select>
+
+  <update id="updatePassword">
+    update user set password = #{password} where phone = #{phone}
+  </update>
 
 </mapper>

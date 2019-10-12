@@ -109,4 +109,12 @@ public interface UserService {
      * @return 用户个人信息
      */
     UserDriverInfo getUserDriverInfoById(User user);
+
+    /**
+     * 修改密码
+     * @param phone 手机号码
+     * @param cryptographicPassword 加盐密码
+     * @return 操作结果
+     */
+    boolean updatePassword(String phone, String cryptographicPassword);
 }

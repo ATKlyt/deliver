@@ -1,15 +1,11 @@
 package cn.deliver.service.impl;
 
-import cn.deliver.dao.AreaDao;
-import cn.deliver.dao.DriverOrderDao;
-import cn.deliver.dao.UserInfoDao;
-import cn.deliver.dao.UserOrderDao;
+import cn.deliver.dao.*;
 import cn.deliver.domain.*;
 import cn.deliver.service.DriverOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -22,6 +18,12 @@ public class DriverOrderServiceImpl implements DriverOrderService {
     AreaDao areaDao;
     @Autowired
     UserOrderDao userOrderDao;
+    @Autowired
+    UserDao userDao;
+    @Autowired
+    OrderDao orderDao;
+    private final String TRANSPORT_DRIVER = "客运车司机";
+    private final String PRIVATE_DRIVER = "私家车司机";
 
 
 
@@ -50,19 +52,32 @@ public class DriverOrderServiceImpl implements DriverOrderService {
 
     @Override
     public Result addDriverOrder(Area originalArea, Area consigneeArea, DriverOrder driverOrder) throws InterruptedException {
-        areaDao.insertSelective(originalArea);
-        areaDao.insertSelective(consigneeArea);
-        driverOrder.setOriginalId(originalArea.getId());
-        driverOrder.setDestinationId(consigneeArea.getId());
-        //该司机行程处于未过期状态
-        driverOrder.setStatus("1");
-        if (driverOrderDao.insertSelective(driverOrder)>0){
-            return new Result("发布成功", "0");
-        }else{
-            return new Result("发布失败", "1");
+        User user = userDao.selectByPrimaryKey(driverOrder.getUid());
+        String userRole = user.getRole();
+        if (TRANSPORT_DRIVER.equals(userRole) || PRIVATE_DRIVER.equals(userRole)){
+            areaDao.insertSelective(originalArea);
+            areaDao.insertSelective(consigneeArea);
+            driverOrder.setOriginalId(originalArea.getId());
+            driverOrder.setDestinationId(consigneeArea.getId());
+            //该司机行程处于未过期状态
+            driverOrder.setStatus("1");
+            if (driverOrderDao.insertSelective(driverOrder)>0){
+                return new Result("发布成功", "0");
+            }else{
+                return new Result("发布失败", "1");
+            }
+        }else {
+            return new Result("该用户不是司机，发单失败", "1");
         }
+
     }
 
+
+    /**
+     * 查询司机行程详情
+     * @param driverOrderId
+     * @return
+     */
     @Override
     public Result findDetailByDriverOrder(Integer driverOrderId) {
         DriverOrderMessage driverOrderMessage = driverOrderDao.findDetailByUserOrder(driverOrderId);

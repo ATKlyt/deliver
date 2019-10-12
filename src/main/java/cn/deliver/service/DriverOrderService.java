@@ -1,8 +1,8 @@
 package cn.deliver.service;
 
-import cn.deliver.domain.*;
-
-import java.util.List;
+import cn.deliver.domain.Area;
+import cn.deliver.domain.DriverOrder;
+import cn.deliver.domain.Result;
 
 public interface DriverOrderService {
 
@@ -24,4 +24,5 @@ public interface DriverOrderService {
     Result findDetailByDriverOrder(Integer driverOrderId);
 
     Result addDriverOrder(Area originalArea, Area consigneeArea, DriverOrder driverOrder) throws InterruptedException;
+
 }

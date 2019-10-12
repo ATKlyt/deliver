@@ -15,7 +15,7 @@ public interface UserDao {
 
     int insertSelective(User record);
 
-    User selectByPrimaryKey(Long id);
+    User selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(User record);
 

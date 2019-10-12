@@ -46,15 +46,15 @@ public class UserServiceImpl implements UserService{
     public Result findDeliverInfoByAuthId(Integer uid) {
         User user = userDao.findByUid(uid);
         String userRole = user.getRole();
-        UserInfo userInfo = userInfoDao.findByUid(uid);
         Map<String, Object> map = new HashMap<>(16);
-        map.put("phone", user.getPhone());
-        map.put("name", userInfo.getName());
         //没有具体信息，意味着他还没有发货资格
         if (TRANSPORTDRIVER.equals(userRole) || PRIVATEDRIVER.equals(userRole) || COMMONUSER.equals(userRole)) {
-            return new Result("查询成功", "1", map);
+            UserInfo userInfo = userInfoDao.findByUid(uid);
+            map.put("phone", user.getPhone());
+            map.put("name", userInfo.getName());
+            return new Result("查询成功", "0", map);
         } else {
-            return new Result("该用户没有发货资格", "1", map);
+            return new Result("该用户没有发货资格", "1");
         }
     }
 
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService{
                 map.put("phone", user.getPhone());
                 //联系人名字
                 map.put("name", userInfo.getName());
-                return new Result("该用户没有收货资格", "0", map);
+                return new Result("查询成功", "0", map);
             } else {
                 //该用户没有收货资格
                 return new Result("该用户没有收货资格", "1");
@@ -83,38 +83,6 @@ public class UserServiceImpl implements UserService{
         }
     }
 
-    @Override
-    public Result findSuretyByAuthId(String authId,Integer orderId) {
-        Order order = orderDao.selectByPrimaryKey(orderId);
-        UserOrder userOrder = userOrderDao.selectByPrimaryKey(order.getUserOrderId());
-        Map<String, Object> map = new HashMap<>(16);
-        User user = userDao.findByAuthId(authId);
-        if (user != null) {
-            String suretyVillage = areaDao.findAreaByUidAndStatus(user.getId(), "1").getVillage();
-            //收货人所在村
-            String consigneeVillage = areaDao.selectByPrimaryKey
-                    (userOrder.getConsigneeAreaId()).getVillage();
-            //发货人所在村
-            String deliverVillage = areaDao.selectByPrimaryKey
-                    (userOrder.getDeliverAreaId()).getVillage();
-            if (suretyVillage.equals(consigneeVillage) || suretyVillage.equals(deliverVillage)){
-                UserInfo userInfo = userInfoDao.findByUid(user.getId());
-                //担保人id
-                map.put("sid",user.getId());
-                //担保人电话
-                map.put("phone", user.getPhone());
-                //担保人名字
-                map.put("name", userInfo.getName());
-                return new Result("该用户能成为担保人", "0", map);
-            }else{
-                //该用户不能成为担保人(不同村)
-                return new Result("该用户不能成为担保人", "1");
-            }
-        } else {
-            //查找不到该用户
-            return new Result("查找不到该用户", "1");
-        }
-    }
 
     @Override
     public List<UserDriverInfo> findAllUser() {

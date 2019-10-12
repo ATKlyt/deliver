@@ -6,7 +6,6 @@ import cn.deliver.dao.UserInfoDao;
 import cn.deliver.dao.UserOrderDao;
 import cn.deliver.domain.*;
 import cn.deliver.service.UserOrderService;
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,14 +23,24 @@ public class UserOrderServiceImpl implements UserOrderService {
     UserDao userDao;
     @Autowired
     UserInfoDao userInfoDao;
+    private final String TRANSPORT_DRIVER = "客运车司机";
+    private final String PRIVATE_DRIVER = "私家车司机";
+    private final String COMMON_USER = "用户";
 
     @Override
     public Result addUserOrder(UserOrder userOrder) {
-        if (userOrderDao.insertSelective(userOrder) > 0) {
-            return new Result("发单成功", "0", userOrder.getId());
-        } else {
-            return new Result("发单失败", "1");
+        User user = userDao.selectByPrimaryKey(userOrder.getUid());
+        String userRole = user.getRole();
+        if (TRANSPORT_DRIVER.equals(userRole) || PRIVATE_DRIVER.equals(userRole) || COMMON_USER.equals(userRole)){
+            if (userOrderDao.insertSelective(userOrder) > 0) {
+                return new Result("发单成功", "0", userOrder.getId());
+            } else {
+                return new Result("发单失败", "1");
+            }
+        }else{
+            return new Result("该用户没有发单资格", "1");
         }
+
     }
 
     @Override

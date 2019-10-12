@@ -1,9 +1,7 @@
 package cn.deliver.domain;
 
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.List;
 
 public class UserOrder {
     private Integer id;
@@ -22,10 +20,10 @@ public class UserOrder {
 
     /**
      * 0/1/2/3/4/5  --->
-     * 用户订单还未达成交易关系/
+     * 用户订单等待被接
      * 用户订单已被司机接单，达成交易关系/
      * 用户已被司机接单，等待担保人确认/
-     * 用户订单被取消/
+     * 用户订单被用户取消/
      * 用户订单过期/
      * 用户订单已完成
      */

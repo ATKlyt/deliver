@@ -114,7 +114,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="cn.deliver.domain.Order" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
-    insert into order
+    insert into `order`
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

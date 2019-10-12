@@ -17,9 +17,6 @@ public interface UserService {
     Result findDeliverInfoByAuthId(Integer uid);
 
     Result findConsigneeByAuthId(String authId);
-
-    Result findSuretyByAuthId(String authId, Integer driverUid);
-
     /**
      * 查询所有的用户
      * */

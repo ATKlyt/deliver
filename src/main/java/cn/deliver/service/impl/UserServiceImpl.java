@@ -236,6 +236,15 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public boolean updatePassword(String phone, String cryptographicPassword) {
+        if(userDao.updatePassword(phone, cryptographicPassword) == 1){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @Override
     public String findPhoneNumberByAuthId(String authId) {
         return userDao.findPhoneNumberByAuthId(authId);
     }

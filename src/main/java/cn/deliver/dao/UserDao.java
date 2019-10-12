@@ -97,4 +97,12 @@ public interface UserDao {
      * @return
      */
     String findPhoneByUid(Integer cid);
+
+    /**
+     * 修改密码
+     * @param phone 手机号码
+     * @param cryptographicPassword 加盐密码
+     * @return 操作结果
+     */
+    int updatePassword(@Param("phone") String phone, @Param("password") String cryptographicPassword);
 }

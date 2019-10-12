@@ -338,4 +338,17 @@ public class UserController {
             return new Result("用户账号或密码有误","1",null);
         }
     }
+
+    @RequestMapping("/updatePassword")
+    @ResponseBody
+    public Result updatePassword(@RequestBody User user){
+        String phone = user.getPhone();
+        String password = phone + user.getPassword();
+        String cryptographicPassword = DigestUtils.md5DigestAsHex(password.getBytes());
+        if(userService.updatePassword(phone, cryptographicPassword)){
+            return new Result("修改密码成功","0",null);
+        }else{
+            return new Result("修改密码失败","1",null);
+        }
+    }
 }

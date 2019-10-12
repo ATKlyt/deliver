@@ -24,7 +24,19 @@ public class UserOrderController {
     @Autowired
     UserOrderService userOrderService;
 
-
+//    /**
+//     *
+//     * @param parameters
+//     * @return
+//     */
+//    @RequestMapping("")
+//    @ResponseBody
+//    public Result findNeedSafetyConfirm(@RequestBody Map<String, Object> parameters){
+//        //获得担保人的Id
+//        Integer safetyId = (Integer) parameters.get("SafetyId");
+//        UserOrder userOrder = userOrderService.findUserOrder
+//
+//    }
 
     /**
      * 通过地址(村级)查询出发地为该村的用户订单

@@ -23,9 +23,9 @@ public class UserOrderServiceImpl implements UserOrderService {
     UserDao userDao;
     @Autowired
     UserInfoDao userInfoDao;
-    private final String TRANSPORT_DRIVER = "客运车司机";
-    private final String PRIVATE_DRIVER = "私家车司机";
-    private final String COMMON_USER = "用户";
+    private final String TRANSPORT_DRIVER = "3";
+    private final String PRIVATE_DRIVER = "2";
+    private final String COMMON_USER = "1";
 
     @Override
     public Result addUserOrder(UserOrder userOrder) {

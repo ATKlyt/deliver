@@ -22,8 +22,10 @@ public class DriverOrderServiceImpl implements DriverOrderService {
     UserDao userDao;
     @Autowired
     OrderDao orderDao;
-    private final String TRANSPORT_DRIVER = "客运车司机";
-    private final String PRIVATE_DRIVER = "私家车司机";
+    //客运车
+    private final String TRANSPORT_DRIVER = "3";
+    //私家车
+    private final String PRIVATE_DRIVER = "2";
 
 
 

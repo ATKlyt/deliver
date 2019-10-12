@@ -25,9 +25,9 @@ public class UserServiceImpl implements UserService{
 
     private final int IDLENGTH = 10;
     private final int CODELENGTH = 6;
-    private final String TRANSPORTDRIVER = "客运车司机";
-    private final String PRIVATEDRIVER = "私家车司机";
-    private final String COMMONUSER = "用户";
+    private final String TRANSPORT_DRIVER = "3";
+    private final String PRIVATE_DRIVER = "2";
+    private final String COMMON_USER = "1";
 
     @Autowired
     UserDao userDao;
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService{
         String userRole = user.getRole();
         Map<String, Object> map = new HashMap<>(16);
         //没有具体信息，意味着他还没有发货资格
-        if (TRANSPORTDRIVER.equals(userRole) || PRIVATEDRIVER.equals(userRole) || COMMONUSER.equals(userRole)) {
+        if (TRANSPORT_DRIVER.equals(userRole) || PRIVATE_DRIVER.equals(userRole) || COMMON_USER.equals(userRole)) {
             UserInfo userInfo = userInfoDao.findByUid(uid);
             map.put("phone", user.getPhone());
             map.put("name", userInfo.getName());
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService{
         User user = userDao.findByAuthId(authId);
         if (user != null) {
             String userRole = user.getRole();
-            if (TRANSPORTDRIVER.equals(userRole) || PRIVATEDRIVER.equals(userRole) || COMMONUSER.equals(userRole)) {
+            if (TRANSPORT_DRIVER.equals(userRole) || PRIVATE_DRIVER.equals(userRole) || COMMON_USER.equals(userRole)) {
                 UserInfo userInfo = userInfoDao.findByUid(user.getId());
                 //联系人id
                 map.put("cid",user.getId());

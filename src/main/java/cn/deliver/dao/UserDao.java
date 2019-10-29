@@ -105,4 +105,11 @@ public interface UserDao {
      * @return 操作结果
      */
     int updatePassword(@Param("phone") String phone, @Param("password") String cryptographicPassword);
+
+    /**
+     * 根据id查找用户
+     * @param id
+     * @return
+     */
+    User findUserById(int id);
 }

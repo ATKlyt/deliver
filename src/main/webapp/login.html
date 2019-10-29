@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>登录界面</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+</head>
+
+<body>
+
+<div>
+    <div id="login_interface">
+        <form class="form-horizontal" align="center">
+            <div class="form-group"
+                 style="display: flex; align-items: center; justify-content: center; margin-top: 50px;">
+                <label  class="col-sm-2 control-label"
+                       style="width: 80px;">昵称：</label>
+                <div style="width: 250px;">
+                    <input type="text" class="form-control" id="name"
+                           placeholder="昵称" style="width: auto; margin-right: 0px;">
+                    <span class="help-block"></span>
+                </div>
+            </div>
+        </form>
+        </br>
+        <div class="form-group"
+             style="display: flex; align-items: center; justify-content: center;">
+            <div align="center">
+                <button type="submit" class="btn btn-default" id="login_btn" >登录</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+
+        var data = {
+            id:"1"
+        }
+
+        $("#login_btn").click(
+            function() {
+                $.ajax({
+                    url : "/deliver_war_exploded/chat/login.do",
+                    type : "POST",
+                    datType: "json",
+                    data:JSON.stringify(data),
+                    headers: {'Content-Type': 'application/json'},
+                    async:false,
+                    success:function (result) {
+                        window.location.href = result.data;
+                    }
+                });
+
+            });
+
+
+    </script>
+</div>
+</body>
+
+</html>

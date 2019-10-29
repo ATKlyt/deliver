@@ -37,6 +37,8 @@ public class UserController {
     private String PASSWORDFORMAT = "(?!.*[\\u4E00-\\u9FA5\\s])(?!^[a-zA-Z]+$)(?!^[\\d]+$)(?!^[^a-zA-Z\\d]+$)^.{6,16}$";
     private String PHONENUMBERFORMAT = "^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$";
 
+
+
     /**
      * 管理员删除用户
      * @param map 封装 id

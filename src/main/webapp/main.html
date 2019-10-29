@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>聊天室</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <!-- 引入 JQuery  -->
+    <script type="text/javascript" src="jquery.min.js"></script>
+</head>
+
+<body>
+<div style="margin: 20px auto; border: 1px solid blue; width: 300px; height: 500px;">
+    <!-- 消息展示框 -->
+    <div id="msg" style="width: 100%; height: 70%; border: 1px solid yellow;overflow: auto;"></div>
+
+    <!-- 消息编辑框 -->
+    <textarea id="tx" style="width: 100%; height: 20%;"></textarea>
+
+    <!-- 消息发送按钮 -->
+    <button id="TXBTN" style="width: 100%; height: 8%;">发送数据</button>
+
+</div>
+</body>
+<script type="text/javascript">
+    var path = location.href.substring(location.href.indexOf('/')+1,location.href.lastIndexOf('/'));
+    //发送人编号
+    var uid = '${sessionScope.loginUser.id}';
+    var from = "1";
+
+    var fromName = '${sessionScope.loginUser.name}';
+    //接收人编号
+    var to = "-1";
+    var websocket ;
+    //判断当前浏览器是否支持WebSocket
+
+        websocket = new WebSocket("ws://"+path+"/ws.do");
+        console.log("===========WebSocket");
+
+    //连接成功建立的回调方法
+    websocket.onopen = function() {
+        console.log("WebSocket连接成功");
+    }
+
+
+    //接收到消息的回调方法
+    websocket.onmessage = function(event) {
+        console.log('Client received a message',event);
+        $("#msg").append("<p>(<font color='red'>" + event.data + "</font>)</p>");
+        var data = $.parseJSON(event.data);
+        console.log('WebSocket:收到一条信息',data);
+
+        //2种推送信息
+        //判断是否是欢迎消息
+        if(data.from == undefined || data.from == null || data.from==""){
+            //=========系统通知
+            // $("div").append("<li><b>" + data.date + "</b><em>系统信息：</em><span>" + data.text() + "</span></li>");
+        }
+    }
+
+
+    //连接关闭的回调方法
+    websocket.onclose = function() {
+        // $("div").append("<li><b>" + new Date().Format("yyyy-mm-dd hh:mm:ss") + "</b><em>系统信息：</em><span>连接已断开</span></li>");
+        // scrollTo();
+        console.log("WebSocket连接关闭",event);
+    }
+
+    //连接发生错误的回调方法
+    websocket.onerror = function() {
+        // $("div").append("<li><b>" + new Date().Format("yyyy-mm-dd hh:mm:ss") + "</b><em>系统信息：</em><span>连接异常，建议重新登录</span></li>");
+        console.log("WebSocket连接发生错误");
+    };
+
+
+
+
+    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+    window.onbeforeunload = function() {
+        closeWebSocket();
+    }
+
+    //关闭WebSocket连接
+    function closeWebSocket() {
+        websocket.close();
+    }
+
+    //发送消息
+    function send() {
+        var message = $(".text").val() ;
+        websocket.send(message);
+    }
+
+
+
+
+    // 点击了发送消息按钮的响应事件
+    $("#TXBTN").click(function(){
+
+        // 获取消息内容
+        var text = $("#tx").val();
+
+        // 判断
+        if(text == null || text == ""){
+            alert(" content  can not empty!!");
+            return false;
+        }
+
+        var msg = {
+            from: "1",
+            msgContent: text,
+            // to:null,
+            to: "2",
+            // postsId: 1
+        };
+        console.log(document.cookie)
+
+        // 发送消息
+        websocket.send(JSON.stringify(msg));
+
+
+    });
+
+</script>
+</html>

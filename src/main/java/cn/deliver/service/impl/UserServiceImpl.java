@@ -244,6 +244,17 @@ public class UserServiceImpl implements UserService{
         }
     }
 
+    /**
+     * 根据id查找用户
+     * @param id
+     * @return
+     */
+    @Override
+    public User findUserById(int id) {
+        User user = userDao.findUserById(id);
+        return user;
+    }
+
     @Override
     public String findPhoneNumberByAuthId(String authId) {
         return userDao.findPhoneNumberByAuthId(authId);

@@ -89,6 +89,11 @@
         select * from user
     </select>
 
+  <!-- 根据id查找用户 -->
+  <select id="findUserById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select * from user where id = #{id}
+  </select>
+
   <!-- 查询两个表格中的某些片段 -->
   <select id="findCommonUser" resultMap="UserAndDriverMap">
         select * from user u,user_info ui where u.id= ui.uid

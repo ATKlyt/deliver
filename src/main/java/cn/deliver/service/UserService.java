@@ -114,4 +114,11 @@ public interface UserService {
      * @return 操作结果
      */
     boolean updatePassword(String phone, String cryptographicPassword);
+
+    /**
+     * 根据id查找用户
+     * @param id
+     * @return
+     */
+    User findUserById(int id);
 }

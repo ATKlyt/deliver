@@ -9,7 +9,6 @@ import cn.deliver.utils.UploadFileUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.text.ParseException;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +78,9 @@ public class UserController {
         return userService.findDeliverInfoByAuthId(uid);
     }
 
+    public static void main(String[] args) {
+    }
+
     /**
      * 获取收货人信息
      * @param authId
@@ -119,6 +120,8 @@ public class UserController {
         PageInfo page = new PageInfo(searchList,5);
         return new Result("处理成功","0",page);
     }
+
+
 
 
     /**
@@ -342,6 +345,11 @@ public class UserController {
         }
     }
 
+    /**
+     * 修改密码
+     * @param user 用户信息
+     * @return  修改结果
+     */
     @RequestMapping("/updatePassword")
     @ResponseBody
     public Result updatePassword(@RequestBody User user){
@@ -352,6 +360,21 @@ public class UserController {
             return new Result("修改密码成功","0",null);
         }else{
             return new Result("修改密码失败","1",null);
+        }
+    }
+
+    /**
+     * 修改用户资料
+     * @param user 用户资料
+     * @return 修改结果
+     */
+    @RequestMapping("/updateInfo")
+    @ResponseBody
+    public Result updatePersonInfo(@RequestBody Map<String, Object> user){
+        if(userService.updatePersonInfo(user)){
+            return new Result("修改资料成功","0",null);
+        }else{
+            return new Result("修改资料失败","1",null);
         }
     }
 }

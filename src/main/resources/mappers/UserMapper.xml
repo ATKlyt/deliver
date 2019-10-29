@@ -362,4 +362,8 @@
     update user set password = #{password} where phone = #{phone}
   </update>
 
+  <update id="updatePersonInfo" parameterType="java.util.Map">
+    update user u inner join user_info info on u.id = info.uid set phone = #{user.phone}, name = #{user.name}, avatar = #{user.avatar}, gender = #{user.gender} where u.id = #{user.id};
+  </update>
+
 </mapper>

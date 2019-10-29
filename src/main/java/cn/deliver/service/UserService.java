@@ -114,4 +114,12 @@ public interface UserService {
      * @return 操作结果
      */
     boolean updatePassword(String phone, String cryptographicPassword);
+
+    /**
+     * 修改用户资料
+     * @param user 用户资料
+     * @return 修改结果
+     */
+    boolean updatePersonInfo(Map<String, Object> user);
+
 }

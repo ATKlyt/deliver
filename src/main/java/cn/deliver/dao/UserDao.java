@@ -5,7 +5,7 @@ import cn.deliver.domain.UserDriverInfo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-
+import java.util.Map;
 
 public interface UserDao {
 
@@ -105,4 +105,11 @@ public interface UserDao {
      * @return 操作结果
      */
     int updatePassword(@Param("phone") String phone, @Param("password") String cryptographicPassword);
+
+    /**
+     * 修改用户资料
+     * @param user 用户资料
+     * @return 修改结果
+     */
+    int updatePersonInfo(@Param("user") Map<String, Object> user);
 }

@@ -25,9 +25,9 @@ public class UserServiceImpl implements UserService{
 
     private final int IDLENGTH = 10;
     private final int CODELENGTH = 6;
-    private final String TRANSPORTDRIVER = "客运车司机";
-    private final String PRIVATEDRIVER = "私家车司机";
-    private final String COMMONUSER = "用户";
+    private final String TRANSPORTDRIVER = "3";
+    private final String PRIVATEDRIVER = "2";
+    private final String COMMONUSER = "1";
 
     @Autowired
     UserDao userDao;
@@ -238,6 +238,15 @@ public class UserServiceImpl implements UserService{
     @Override
     public boolean updatePassword(String phone, String cryptographicPassword) {
         if(userDao.updatePassword(phone, cryptographicPassword) == 1){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updatePersonInfo(Map<String, Object> user) {
+        if(userDao.updatePersonInfo(user) == 2){
             return true;
         }else{
             return false;

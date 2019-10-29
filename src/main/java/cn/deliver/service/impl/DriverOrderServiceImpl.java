@@ -10,6 +10,7 @@ import java.util.List;
 
 @Service
 public class DriverOrderServiceImpl implements DriverOrderService {
+
     @Autowired
     DriverOrderDao driverOrderDao;
     @Autowired
@@ -22,8 +23,8 @@ public class DriverOrderServiceImpl implements DriverOrderService {
     UserDao userDao;
     @Autowired
     OrderDao orderDao;
-    private final String TRANSPORT_DRIVER = "客运车司机";
-    private final String PRIVATE_DRIVER = "私家车司机";
+    private final String TRANSPORT_DRIVER = "3";
+    private final String PRIVATE_DRIVER = "2";
 
 
 

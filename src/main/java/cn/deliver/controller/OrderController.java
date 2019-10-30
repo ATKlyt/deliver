@@ -24,7 +24,7 @@ public class OrderController {
     /**
      * 用户邀请司机
      * 可以邀请多个，多个司机
-     * driverUid，userOrderId，(suretyId)
+     * driverUid，userOrderId
      * @param order
      * @return
      */
@@ -109,8 +109,8 @@ public class OrderController {
     @ResponseBody
     public Result driverConfirmOrder(@RequestBody Map<String, Object> parameters){
         Integer orderId = (Integer) parameters.get("orderId");
-        Integer suretyId = (Integer) parameters.get("suretyId");
-        return orderService.driverConfirmOrder(orderId,suretyId);
+        String suretyAuthId = (String) parameters.get("suretyAuthId");
+        return orderService.driverConfirmOrder(orderId,suretyAuthId);
     }
 
 }

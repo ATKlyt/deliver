@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.deliver.dao.ChatDao">
+    <resultMap id="BaseResultMap" type="cn.deliver.domain.Message">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="from_id" jdbcType="INTEGER" property="from" />
+        <result column="form_name" jdbcType="VARCHAR" property="form_name"/>
+        <result column="to_id" jdbcType="INTEGER" property="to" />
+        <result column="to_name" jdbcType="VARCHAR" property="to_name"/>
+        <result column="message" jdbcType="VARCHAR" property="message" />
+        <result column="message_type" jdbcType="INTEGER" property="type" />
+        <result column="date" jdbcType="TIMESTAMP" property="date" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+    </resultMap>
+
+    <insert id="insertMessage" parameterType="cn.deliver.domain.Message" >
+        insert into chat_message
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="from!=0">
+                from_id,
+            </if>
+            <if test="from_name!=null">
+                from_name,
+            </if>
+            <if test="to!=0">
+                to_id,
+            </if>
+            <if test="to_name!=null">
+                to_name,
+            </if>
+            <if test="message!=null">
+                message,
+            </if>
+            <if test="type!=0">
+                message_type,
+            </if>
+            <if test="date!=null">
+                date,
+            </if>
+            <if test="status!=null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="from!=0">
+                #{from},
+            </if>
+            <if test="from_name!=null">
+                #{from_name},
+            </if>
+            <if test="to!=0">
+                #{to},
+            </if>
+            <if test="to_name!=null">
+                #{to_name},
+            </if>
+            <if test="message!=null">
+                #{message},
+            </if>
+            <if test="type!=0">
+                #{type},
+            </if>
+            <if test="date!=null">
+                #{date},
+            </if>
+            <if test="status!=null">
+                #{status},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 查找用户未读信息 -->
+    <select id="findUserAllMessageByTS" resultMap="BaseResultMap">
+        select * from chat_message where to_id = #{to_id} and status = #{status}
+    </select>
+
+    <!-- 查看两个用户之间未读信息 -->
+    <select id="findUserAllMessageByFTS" resultMap="BaseResultMap">
+        select * from chat_message where to_id = #{to_id} and status = 0 and from_id = #{from_id}
+    </select>
+
+    <!-- 更改用户信息未读状态为已读状态 -->
+    <update id="changeMessageStatus">
+        update chat_message set status = #{status} where id = #{id}
+    </update>
+
+    <!-- 查找两个用户之间所有聊天记录 -->
+    <select id="findUserAllMessageByTF" resultMap="BaseResultMap">
+        select * from chat_message where from_id = #{from_id} and to_id = #{to_id} or from_id = #{to_id} and to_id = #{from_id};
+    </select>
+
+</mapper>

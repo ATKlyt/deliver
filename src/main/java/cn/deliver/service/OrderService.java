@@ -11,7 +11,7 @@ public interface OrderService {
 
     Result validateNeedSafety(Integer userOrderId, Integer uid);
 
-    Result driverConfirmOrder(Integer orderId,Integer suretyId);
+    Result driverConfirmOrder(Integer orderId,String suretyAuthId);
 
     Result receiveUserOrder(Order order);
 

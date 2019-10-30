@@ -122,4 +122,11 @@ public interface UserService {
      */
     boolean updatePersonInfo(Map<String, Object> user);
 
+    /**
+     * 根据id查找用户
+     * @param id
+     * @return
+     */
+    User findUserById(int id);
+
 }

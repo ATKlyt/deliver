@@ -72,10 +72,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Result addOrderSelective(Order order) {
-        if (orderDao.insertSelective(order) > 0) {
-            return new Result("邀请成功，等待司机回应", SUCCESS);
-        } else {
-            return new Result("邀请失败", ERROR);
+        String msg = validateUserOrderStatus(order.getUserOrderId());
+        if (WAIT_DRIVER_STATUS.equals(msg)){
+            if (orderDao.insertSelective(order) > 0) {
+                return new Result("邀请成功，等待司机回应", SUCCESS);
+            } else {
+                return new Result("邀请失败", ERROR);
+            }
+        }else {
+            return new Result(msg, ERROR);
         }
     }
 
@@ -142,6 +147,8 @@ public class OrderServiceImpl implements OrderService {
             //存储担保人电话及姓名
             Map<String, Object> map = new HashMap<>(16);
             //联系人电话
+            map.put("suretyId", suretyUser.getId());
+            //联系人电话
             map.put("phone", suretyUser.getPhone());
             //联系人名字
             map.put("name", suretyUserInfo.getName());
@@ -159,13 +166,38 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
+    /**
+     * 被邀请司机接单错误信息
+     * @param userOrderStatus
+     * @return
+     */
+    public Map orderErrorType(String userOrderStatus){
+        Map<String, String> data = new HashedMap(16);
+        if (USER_CANCEL_ERROR.equals(userOrderStatus)){
+            //用户订单已被取消
+            data.put("errorMsg", "用户订单已被取消");
+            data.put("orderStatus", "3");
+        }else if (PAST_DUE_ERROR.equals(userOrderStatus)){
+            //用户订单已过期
+            data.put("errorMsg", "用户订单已过期");
+            data.put("orderStatus", "7");
+        }else {
+            //用户订单已被其他司机完成
+            //用户订单已经被其他司机接受(需要担保人/不需要担保人)
+            data.put("errorMsg", "用户订单已经被其他司机接受");
+            data.put("orderStatus", "5");
+        }
+        return data;
+    }
+
+
 
     /**
      * 司机接单错误信息
      * @param userOrderStatus
      * @return
      */
-    public String errorType(String userOrderStatus){
+    public String userOrderErrorType(String userOrderStatus){
         if (RECEIVED_ERROR.equals(userOrderStatus)){
             return "用户订单已经被其他司机接受";
         }else if (RECEIVED_NEED_SURETY_ERROR.equals(userOrderStatus)){
@@ -239,7 +271,7 @@ public class OrderServiceImpl implements OrderService {
         if (WAIT_DRIVER_STATUS.equals(userOrderStatus)){
             return SUCCESS;
         }else {
-            return errorType(userOrderStatus);
+            return userOrderErrorType(userOrderStatus);
         }
     }
 
@@ -251,7 +283,7 @@ public class OrderServiceImpl implements OrderService {
      * @param status
      * @return
      */
-    public String updateUserOrderStatus(Integer userOrderId, String status) {
+    public String updateUserOrderStatus(Integer userOrderId, String status, String type) {
         String userOrderStatus = validateUserOrderStatus(userOrderId);
         if (WAIT_DRIVER_STATUS.equals(userOrderStatus)){
             UserOrder userOrder = userOrderDao.selectByPrimaryKey(userOrderId);
@@ -266,7 +298,13 @@ public class OrderServiceImpl implements OrderService {
                 return ERROR;
             }
         }else {
-            return errorType(userOrderStatus);
+            if (type == null){
+                //司机主动接单
+                return userOrderErrorType(userOrderStatus);
+            }else {
+                //被邀请司机接单
+                return (String) orderErrorType(userOrderStatus).get("errorMsg");
+            }
         }
 
     }
@@ -278,8 +316,8 @@ public class OrderServiceImpl implements OrderService {
      * @param driverUid
      * @return
      */
-    public synchronized String updateUserOrderAndNumber(Integer userOrderId, Integer driverUid, String status) {
-        String updateResult = updateUserOrderStatus(userOrderId, status);
+    public synchronized String updateUserOrderAndNumber(Integer userOrderId, Integer driverUid, String status, String type) {
+        String updateResult = updateUserOrderStatus(userOrderId, status, type);
         if (SUCCESS.equals(updateResult)) {
             if (SUCCESS.equals(updateNumber(driverUid))) {
                 return SUCCESS;
@@ -350,9 +388,8 @@ public class OrderServiceImpl implements OrderService {
                              * 即不需要担保人，即该用户订单(即userOrder)状态为1--->司机已确认，交易达成
                              * 更新司机此时已接订单数量--->+1
                              */
-                            updateResult = updateUserOrderAndNumber(userOrderId, driverUid, "1");
+                            updateResult = updateUserOrderAndNumber(userOrderId, driverUid, "1", null);
                             if (SUCCESS.equals(updateResult)) {
-                                int i = 1/0;
                                 //即不需要担保人，即该订单(即order)状态为1--->司机已确认，交易达成
                                 order.setStatus("1");
                                 order.setNo(String.valueOf(SnowflakeIdWorker.getNo()));
@@ -376,7 +413,7 @@ public class OrderServiceImpl implements OrderService {
                              * 更新司机此时已接订单数量--->+1
                              * 同时成功才进行进行order插入
                              */
-                            updateResult = updateUserOrderAndNumber(userOrderId, driverUid, "2");
+                            updateResult = updateUserOrderAndNumber(userOrderId, driverUid, "2", null);
                             if (SUCCESS.equals(updateResult)) {
                                 //即需要担保人，即该订单(即order)状态为2--->司机已确认，等待担保人确认
                                 order.setStatus("2");
@@ -413,12 +450,11 @@ public class OrderServiceImpl implements OrderService {
      * 此时数据库里order表里已有该条order数据
      *
      * @param orderId
-     * @param suretyId
+     * @param suretyAuthId
      * @return
      */
     @Override
-    public Result driverConfirmOrder(Integer orderId, Integer suretyId) {
-
+    public Result driverConfirmOrder(Integer orderId, String suretyAuthId) {
         Order order = orderDao.selectByPrimaryKey(orderId);
         Integer driverUid = order.getDriverUid();
         Integer userOrderId = order.getUserOrderId();
@@ -427,114 +463,58 @@ public class OrderServiceImpl implements OrderService {
             //判断当前该订单(即order)的用户订单(即userOrder)的状态
             String userOrderStatus = validateUserOrderStatus(userOrderId);
             if (SUCCESS.equals(userOrderStatus)) {
-
+                //可以接单
+                final String NOT_REQUIRED = "不需要担保人";
+                //再次进行对是否需要担保人的验证
+                Result result = validateNeedSafety(userOrderId, driverUid);
+                String msg = result.getMsg();
+                //不需要担保人
+                if (NOT_REQUIRED.equals(msg)) {
+                    if (suretyAuthId == null) {
+                        String updateResult = updateUserOrderAndNumber(userOrderId, driverUid, "1", "invite");
+                        if (SUCCESS.equals(updateResult)) {
+                            order.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+                            order.setStatus("1");
+                            orderDao.updateByPrimaryKeySelective(order);
+                            return new Result("接单成功", SUCCESS);
+                        } else if (OVER_ERROR.equals(updateResult)) {
+                            return new Result("接单失败，请检查司机已接订单数量", ERROR);
+                        } else {
+                            return new Result(updateResult, ERROR);
+                        }
+                    } else {
+                        return new Result("错误信息，无需填写担保人", ERROR);
+                    }
+                } else {
+                    if (suretyAuthId != null) {
+                        Integer suretyId = userDao.findByAuthId(suretyAuthId).getId();
+                        String updateResult = updateUserOrderAndNumber(userOrderId, driverUid, "1", "invite");
+                        if (SUCCESS.equals(updateResult)) {
+                            order.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+                            order.setStatus("2");
+                            order.setSuretyId(suretyId);
+                            orderDao.updateByPrimaryKeySelective(order);
+                            return new Result("接单成功", SUCCESS);
+                        } else if (OVER_ERROR.equals(updateResult)) {
+                            return new Result("接单失败，请检查司机已接订单数量", ERROR);
+                        } else {
+                            return new Result(updateResult, ERROR);
+                        }
+                    } else {
+                        return new Result("错误信息，请填写担保人", ERROR);
+                    }
+                }
             } else {
-                //并将order状态标记为8，即表示该用户订单已被其他司机所接受
-                updateOrderStatusAndSuretyId(order, "8", null);
-                return new Result("接单失败，该用户订单已被其他司机接受", ERROR);
+                //将order状态重新标记，取决于userOrder此时的状态
+                Map data = orderErrorType(userOrderStatus);
+                String errorMsg = (String) data.get("errorMsg");
+                String orderStatus = (String) data.get("orderStatus");
+                updateOrderStatusAndSuretyId(order, orderStatus, null);
+                return new Result(errorMsg, ERROR);
             }
-        } else {
+        }else {
             return new Result("接单失败，当前司机接单数量为5", ERROR);
         }
-
-
-        //判断订单状态是否等于1,即是否是等待司机确认的状态
-//        synchronized (orderObject) {
-//            order = orderDao.selectByPrimaryKey(orderId);
-//            if (!WAITDRIVERSTATUS.equals(order.getStatus())) {
-//                //并将order状态标记为8，即该用户订单已被其他司机所接受
-//                //。。。。。。。。。。。
-//
-//
-//                return new Result("该用户订单已被接受", "1");
-//            } else {
-//                //不等于1，则更新订单状态
-//                //。。。。。。。。。。。
-//
-//
-//                UserOrder userOrder = userOrderDao.selectByPrimaryKey(order.getUserOrderId());
-//                if (suretyId != null) {
-//                    //将该用户订单标记为2,即该用户订单已被司机接单，等待担保人确认
-//                    userOrder.setStatus("2");
-//                    //跟新userOrder的status
-//                    userOrderDao.updateByPrimaryKeySelective(userOrder);
-//                    //封装担保人Id
-//                    order.setSuretyId(suretyId);
-//                    //将该订单标记为2,即该订单已被司机接单，等待担保人确认
-//                    order.setStatus("2");
-//                    order.setUpdateTime(TimeUtil.getNowTime());
-//                } else {
-//                    //将该用户订单标记为1,即该用户订单已被司机接单，交易达成
-//                    userOrder.setStatus("1");
-//                    //跟新userOrder的status
-//                    userOrderDao.updateByPrimaryKeySelective(userOrder);
-//                    //封装担保人Id
-//                    order.setSuretyId(suretyId);
-//                    //将该订单标记为3,即该订单已被司机接单，等待担保人确认
-//                    order.setStatus("3");
-//                    order.setUpdateTime(TimeUtil.getNowTime());
-//                }
-//            }
-//        }
-//
-//        UserOrder userOrder = userOrderDao.selectByPrimaryKey(order.getUserOrderId());
-//        //若是不需要担保人,suretyId为null
-//        if (suretyId != null) {
-//            //将该用户订单标记为2,即该用户订单已被司机接单，等待担保人确认
-//            userOrder.setStatus("2");
-//            //跟新userOrder的status
-//            userOrderDao.updateByPrimaryKeySelective(userOrder);
-//            //封装担保人Id
-//            order.setSuretyId(suretyId);
-//            //将该订单标记为2,即该订单已被司机接单，等待担保人确认
-//            order.setStatus("2");
-//            order.setUpdateTime(TimeUtil.getNowTime());
-//            synchronized (orderObject) {
-//                //检查这个司机当前订单数量
-//                DriverInfo driverInfo = driverInfoDao.selectByPrimaryKey(order.getDriverUid());
-//                int orderNumber = driverInfo.getOrderNumber();
-//                if (orderNumber < MAXNUMBER) {
-//                    //更新此时司机订单数量----> +1
-//                    driverInfo.setOrderNumber(orderNumber + 1);
-//                    driverInfoDao.updateByPrimaryKey(driverInfo);
-//                    //返回
-//                    if (orderDao.updateByPrimaryKeySelective(order) > 0) {
-//                        return new Result("确认成功,等待担保人确认", "0");
-//                    }
-//                } else {
-//                    return new Result("当前司机接单数量为5", "1");
-//                }
-//            }
-//        } else {
-//            //将该用户订单标记为1,即该用户订单已被司机接单，交易达成
-//            userOrder.setStatus("1");
-//            //跟新userOrder的status
-//            userOrderDao.updateByPrimaryKeySelective(userOrder);
-//            //封装担保人Id
-//            order.setSuretyId(suretyId);
-//            //将该订单标记为3,即该订单已被司机接单，等待担保人确认
-//            order.setStatus("3");
-//            order.setUpdateTime(TimeUtil.getNowTime());
-//            synchronized (orderObject) {
-//                //检查这个司机当前订单数量
-//                DriverInfo driverInfo = driverInfoDao.selectByPrimaryKey(order.getDriverUid());
-//                int orderNumber = driverInfo.getOrderNumber();
-//                if (orderNumber < MAXNUMBER) {
-//                    //更新此时司机订单数量
-//                    driverInfo.setOrderNumber(orderNumber + 1);
-//                    driverInfoDao.updateByPrimaryKey(driverInfo);
-//                    //返回
-//                    if (orderDao.updateByPrimaryKeySelective(order) > 0) {
-//                        return new Result("确认成功", "0");
-//                    }
-//                } else {
-//                    return new Result("当前司机接单数量为5", "1");
-//                }
-//            }
-//        }
-//
-//        return new Result("确认失败", "1");
-    return null;
     }
 
 }

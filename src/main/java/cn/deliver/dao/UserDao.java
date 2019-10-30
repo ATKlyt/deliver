@@ -112,4 +112,10 @@ public interface UserDao {
      * @return 修改结果
      */
     int updatePersonInfo(@Param("user") Map<String, Object> user);
+    /**
+     * 根据id查找用户
+     * @param id
+     * @return
+     */
+    User findUserById(int id);
 }

@@ -4,10 +4,16 @@
 
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://java.sun.com/xml/ns/javaee"
-         xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-         id="WebApp_ID" version="2.5">
+         xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+                            http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd
+                            http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans.xsd"
+         id="WebApp_ID" version="3.0">
+
   <display-name>Archetype Created Web Application</display-name>
+
+  <absolute-ordering />
 
   <!-- druid 监控服务 -->
   <servlet>
@@ -45,7 +51,7 @@
   </filter-mapping>
   <!-- 项目启动后打开的第一个页面 -->
   <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
 
   <!--&lt;!&ndash;404&ndash;&gt;-->
@@ -77,6 +83,7 @@
       <param-value>classpath:SpringMVC.xml</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
+    <async-supported>true</async-supported>
   </servlet>
 
 

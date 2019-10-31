@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -17,21 +16,20 @@ import java.util.Map;
 public class AreaController {
     @Autowired
     AreaService areaService;
-    private final String CONSIGNEE = "consignee";
-    private final String DELIVER = "deliver";
+    private final String CONSIGNEE_TYPE = "consignee";
+    private final String DELIVER_TYPE = "deliver";
 
 
     /**
      * 修改所属地区
      * 需要 用户id
-     *     地址(省、市、区、详细地址)
+     *     地址(省、市、区、镇、村、详细地址)
      * @param area
      * @return
      */
-    @RequestMapping("updateBelongArea")
+    @RequestMapping("updateBelong")
     @ResponseBody
     public Result updateBelongArea(@RequestBody Area area){
-        //验证area
         return areaService.updateBelongAreaByUid(area);
     }
 
@@ -46,39 +44,9 @@ public class AreaController {
         if (area.getCid() == null){
             return new Result("请填写联系人id","1");
         }
-        //验证area是不是为空
-
         //将此地址状态设置为收货地址
-        area.setStatus("3");
+        area.setType("3");
         return areaService.insertSelective(area);
-    }
-
-    /**
-     * 修改默认收货地址
-     * areaId 要修改成默认收货地址的areaId
-     * uid    所登陆用户的id
-     * @param parameters
-     * @return
-     */
-    @RequestMapping("updateConsignee")
-    @ResponseBody
-    public Result updateConsignee(@RequestBody Map<String, Object> parameters){
-        Integer areaId = (Integer) parameters.get("areaId");
-        Integer uid = (Integer) parameters.get("uid");
-        return areaService.updateArea(areaId,uid,CONSIGNEE);
-    }
-
-    /**
-     * 查询所有收货地址
-     * @param parameters
-     * @return
-     */
-    @RequestMapping("queryAllConsignee")
-    @ResponseBody
-    public Result queryAllConsignee(@RequestBody Map<String, Object> parameters){
-        Integer uid = (Integer) parameters.get("uid");
-        //验证
-        return areaService.findAllConsigneeByUid(uid);
     }
 
     /**
@@ -89,11 +57,24 @@ public class AreaController {
     @RequestMapping("addDeliver")
     @ResponseBody
     public Result addDeliver(@RequestBody Area area){
-        //验证area是不是为空
-
-        //将此地址状态设置为收货地址
-        area.setStatus("5");
+        //将此地址类型设置为收货地址
+        area.setType("5");
         return areaService.insertSelective(area);
+    }
+
+    /**
+     * 修改默认收货地址
+     * areaId 要修改成默认收货地址的areaId
+     * uid    所登陆用户的id
+     * @param parameters
+     * @return
+     */
+    @RequestMapping("updateDefaultConsignee")
+    @ResponseBody
+    public Result updateDefaultConsigneeArea(@RequestBody Map<String, Object> parameters){
+        Integer areaId = (Integer) parameters.get("areaId");
+        Integer uid = (Integer) parameters.get("uid");
+        return areaService.updateDefaultArea(areaId,uid,CONSIGNEE_TYPE);
     }
 
     /**
@@ -103,12 +84,24 @@ public class AreaController {
      * @param parameters
      * @return
      */
-    @RequestMapping("updateDeliver")
+    @RequestMapping("updateDefaultDeliver")
     @ResponseBody
-    public Result updateDeliver(@RequestBody Map<String, Object> parameters){
+    public Result updateDefaultDeliverArea(@RequestBody Map<String, Object> parameters){
         Integer areaId = (Integer) parameters.get("areaId");
         Integer uid = (Integer) parameters.get("uid");
-        return areaService.updateArea(areaId,uid,DELIVER);
+        return areaService.updateDefaultArea(areaId,uid,DELIVER_TYPE);
+    }
+
+    /**
+     * 查询所有收货地址
+     * @param parameters
+     * @return
+     */
+    @RequestMapping("queryAllConsignee")
+    @ResponseBody
+    public Result queryAllConsigneeArea(@RequestBody Map<String, Object> parameters){
+        Integer uid = (Integer) parameters.get("uid");
+        return areaService.findAllConsigneeAreaByUid(uid);
     }
 
     /**
@@ -118,10 +111,10 @@ public class AreaController {
      */
     @RequestMapping("queryAllDeliver")
     @ResponseBody
-    public Result queryAllDeliver(@RequestBody Map<String, Object> parameters){
+    public Result queryAllDeliverArea(@RequestBody Map<String, Object> parameters){
         Integer uid = (Integer) parameters.get("uid");
         //验证
-        return areaService.findAllDeliverByUid(uid);
+        return areaService.findAllDeliverAreaByUid(uid);
     }
 
     /**
@@ -129,11 +122,22 @@ public class AreaController {
      * @param parameters
      * @return
      */
-    @RequestMapping("deleteArea")
+    @RequestMapping("delete")
     @ResponseBody
     public Result deleteArea(@RequestBody Map<String, Object> parameters){
         Integer areaId = (Integer) parameters.get("areaId");
         return areaService.deleteAreaByAreaId(areaId);
+    }
+
+    /**
+     * 修改发货/收货地址
+     * @param area
+     * @return
+     */
+    @RequestMapping("update")
+    @ResponseBody
+    public Result updateArea(@RequestBody Area area){
+        return areaService.updateByUserOrderIdSelective(area);
     }
 
 

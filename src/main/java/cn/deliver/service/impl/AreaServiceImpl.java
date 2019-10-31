@@ -8,8 +8,6 @@ import cn.deliver.service.AreaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @Service
@@ -19,9 +17,14 @@ public class AreaServiceImpl implements AreaService {
     AreaDao areaDao;
 
     @Override
+    public Area selectByPrimaryKey(Integer areaId) {
+        return areaDao.selectByPrimaryKey(areaId);
+    }
+
+    @Override
     public Result updateBelongAreaByUid(Area area) {
-        int rows =  areaDao.updateBelongAreaByUid(area);
-        if (rows > 0){
+        int count =  areaDao.updateBelongAreaByUid(area);
+        if (count > 0){
             return new Result("修改成功", "0");
         }else{
             return new Result("修改失败", "1");
@@ -39,32 +42,32 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public Result updateArea(Integer areaId, Integer uid ,String type) {
+    public Result updateDefaultArea(Integer areaId, Integer uid ,String AreaType) {
         //地址类型
-        final String consignee = "consignee";
-        final String consigneeStatus = "2";
-        final String deliverStatus = "4";
-        int status = 1;
+        String consigneeType = "consignee";
+        String deliverType = "deliver";
+        String defaultConsigneeAreaType = "2";
+        String defaultDeliverAreaType = "4";
+        int flag = 1;
         //地址类型为收货地址
-        if (consignee.equals(type)){
+        if (consigneeType.equals(AreaType)){
             //判断该用户是否有默认地址
-            if (areaDao.findAreaByUidAndStatus(uid,consigneeStatus) != null){
+            if (areaDao.findAreaByUidAndType(uid,defaultConsigneeAreaType) != null){
                 //将原本的默认收货地址修改成非默认收货地址
-                status = areaDao.updateNonDefaultByUid(uid,type);
+                flag = areaDao.updateDefaultToCommonByUid(uid,AreaType);
             }
-        }else{
+        }else if (deliverType.equals(AreaType)){
             //判断该用户是否有默认发货地址
-            if (areaDao.findAreaByUidAndStatus(uid,deliverStatus) != null){
+            if (areaDao.findAreaByUidAndType(uid,defaultDeliverAreaType) != null){
                 //将原本的默认发货地址修改成非默认发货地址
-                status = areaDao.updateNonDefaultByUid(uid,type);
+                flag = areaDao.updateDefaultToCommonByUid(uid,AreaType);
             }
         }
-
         //上一步修改成功或者没有这行上一步
-        if (status > 0 ){
-            status = areaDao.updateDefaultById(areaId,type);
+        if (flag > 0 ){
+            flag = areaDao.updateCommonToDefaultById(areaId,AreaType);
         }
-        if (status > 0){
+        if (flag > 0){
             return new Result("修改成功", "0");
         }else{
             return new Result("修改失败", "1");
@@ -72,25 +75,34 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public Result findAllConsigneeByUid(Integer uid) {
+    public Result findAllConsigneeAreaByUid(Integer uid) {
         //查询所有收货地址
-        List<ConsigneeDetail> consignees = areaDao.findAllConsigneesByUid(uid);
+        List<ConsigneeDetail> consignees = areaDao.findAllConsigneeAreaByUid(uid);
         return new Result("查询成功","0",consignees);
     }
 
     @Override
+    public Result findAllDeliverAreaByUid(Integer uid) {
+        //查询所有发货地址
+        List<Area> delivers = areaDao.findAllDeliverAreaByUid(uid);
+        return new Result("查询成功","0",delivers);
+    }
+
+    @Override
     public Result deleteAreaByAreaId(Integer areaId) {
+        int count;
         try {
-            int status = areaDao.deleteByPrimaryKey(areaId);
-            if (status > 0){
+            count = areaDao.deleteByPrimaryKey(areaId);
+            if (count > 0){
                 return new Result("删除成功","0");
             }else{
                 return new Result("删除失败","1");
             }
         }catch (Exception e){
+            //当这条地址数据被引用，则将其设置为不可见
             e.printStackTrace();
-            int status = areaDao.deleteByAreaId(areaId);
-            if (status > 0){
+            count = areaDao.deleteByAreaId(areaId);
+            if (count > 0){
                 return new Result("删除成功","0");
             }else{
                 return new Result("删除失败","1");
@@ -99,10 +111,13 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public Result findAllDeliverByUid(Integer uid) {
-        //查询所有发货地址
-        List<Area> delivers = areaDao.findAllDeliverByUid(uid);
-        return new Result("查询成功","0",delivers);
+    public Result updateByUserOrderIdSelective(Area area) {
+        int count = areaDao.updateByPrimaryKeySelective(area);
+        if (count > 0){
+            return new Result("修改成功","0");
+        }else{
+            return new Result("修改失败","1");
+        }
     }
 
 

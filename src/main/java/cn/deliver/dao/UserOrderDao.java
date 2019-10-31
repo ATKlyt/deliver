@@ -1,16 +1,12 @@
 package cn.deliver.dao;
 
 import cn.deliver.domain.UserOrder;
-import cn.deliver.domain.UserOrderExample;
-import cn.deliver.domain.UserOrderMessage;
 import org.apache.ibatis.annotations.Param;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface UserOrderDao {
-    long countByExample(UserOrderExample example);
-
-    int deleteByExample(UserOrderExample example);
 
     int deleteByPrimaryKey(Integer id);
 
@@ -18,19 +14,28 @@ public interface UserOrderDao {
 
     int insertSelective(UserOrder record);
 
-    List<UserOrder> selectByExample(UserOrderExample example);
-
     UserOrder selectByPrimaryKey(Integer id);
-
-    int updateByExampleSelective(@Param("record") UserOrder record, @Param("example") UserOrderExample example);
-
-    int updateByExample(@Param("record") UserOrder record, @Param("example") UserOrderExample example);
 
     int updateByPrimaryKeySelective(UserOrder record);
 
     int updateByPrimaryKey(UserOrder record);
 
-    List<UserOrderMessage> findNearByVillage(String village);
+    int updateStatusByType(@Param("userOrderId") Integer userOrderId,
+                           @Param("updateTime") Timestamp updateTime,
+                           @Param("type") String type);
 
-//    UserOrderMessage findDetailByUserOrderId(Integer userOrderId);
+    List<UserOrder> findAllByUid(Integer userId);
+
+    List<UserOrder> findBySuretyIdAndStatus(Integer suretyId);
+
+    List<UserOrder> findByCid(Integer cid);
+
+
+    List<UserOrder> findNearByArea(@Param("city") String city,
+                                        @Param("district") String district,
+                                        @Param("town") String town,
+                                        @Param("village") String village);
+
+
+    List<UserOrder> findInvitationByDriverUid(Integer driverUid);
 }

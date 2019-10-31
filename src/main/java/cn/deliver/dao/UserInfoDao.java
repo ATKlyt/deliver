@@ -1,15 +1,10 @@
 package cn.deliver.dao;
 
 import cn.deliver.domain.UserInfo;
-import cn.deliver.domain.UserInfoExample;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 public interface UserInfoDao {
-    long countByExample(UserInfoExample example);
-
-    int deleteByExample(UserInfoExample example);
 
     int deleteByPrimaryKey(Integer id);
 
@@ -17,13 +12,7 @@ public interface UserInfoDao {
 
     int insertSelective(UserInfo record);
 
-    List<UserInfo> selectByExample(UserInfoExample example);
-
     UserInfo selectByPrimaryKey(Integer id);
-
-    int updateByExampleSelective(@Param("record") UserInfo record, @Param("example") UserInfoExample example);
-
-    int updateByExample(@Param("record") UserInfo record, @Param("example") UserInfoExample example);
 
     int updateByPrimaryKeySelective(UserInfo record);
 
@@ -31,14 +20,21 @@ public interface UserInfoDao {
 
     List<UserInfo> selectSurety(Integer uid);
 
+    /**
+     * 通过uid查找用户信息
+     * @param uid
+     * @return
+     */
     UserInfo findByUid(Integer uid);
 
-    //==================================艺明=====================================
-    //插入用户信息
+    /**
+     * 插入用户信息
+     * @param userInfo
+     * @return
+     */
     int insertUserInfo(UserInfo userInfo);
 
 
-    //==================================俊彬=====================================
     /**
      * 用户注册时填写详细信息
      * @param userInfo 用户详细信息
@@ -53,7 +49,7 @@ public interface UserInfoDao {
      */
     String findUserAuthId(int userInfoId);
 
-    String findNameByUid(Integer cid);
+    String findNameByUid(Integer uid);
 
     /**
      * 根据用户id获取UserInfo表信息

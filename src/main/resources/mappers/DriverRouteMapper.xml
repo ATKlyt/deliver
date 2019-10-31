@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.deliver.dao.DriverRouteDao" >
+  <resultMap id="BaseResultMap" type="cn.deliver.domain.DriverRoute" >
+  <id column="id" property="id" jdbcType="INTEGER" />
+  <result column="uid" property="uid" jdbcType="INTEGER" />
+  <result column="original_area_id" property="originalAreaId" jdbcType="INTEGER" />
+  <result column="destination_area_id" property="destinationAreaId" jdbcType="INTEGER" />
+  <result column="capacity" property="capacity" jdbcType="INTEGER" />
+  <result column="depart_time" property="departTime" jdbcType="TIMESTAMP" />
+  <result column="status" property="status" jdbcType="VARCHAR" />
+  <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+</resultMap>
+  <resultMap id="DriverRouteRelatedResultMap" type="cn.deliver.domain.DriverRouteRelated" >
+    <result column="driver_route_id" property="driverRouteId" jdbcType="INTEGER" />
+    <result column="driver_uid" property="driverUid" jdbcType="TIMESTAMP" />
+    <result column="driver_name" property="driverName" jdbcType="TIMESTAMP" />
+    <result column="driver_phone" property="driverPhone" jdbcType="TIMESTAMP" />
+    <result column="capacity" property="capacity" jdbcType="INTEGER" />
+    <result column="car_number" property="carNumber" jdbcType="TIMESTAMP" />
+    <result column="car_picture" property="carPicture" jdbcType="TIMESTAMP" />
+    <result column="depart_time" property="departTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <collection property="areas" ofType="cn.deliver.domain.Area">
+      <id column="id" property="id" jdbcType="INTEGER" />
+      <result column="uid" property="uid" jdbcType="INTEGER" />
+      <result column="province" property="province" jdbcType="VARCHAR" />
+      <result column="city" property="city" jdbcType="VARCHAR" />
+      <result column="district" property="district" jdbcType="VARCHAR" />
+      <result column="town" property="town" jdbcType="VARCHAR" />
+      <result column="village" property="village" jdbcType="VARCHAR" />
+      <result column="detail" property="detail" jdbcType="VARCHAR" />
+      <result column="cid" property="cid" jdbcType="INTEGER" />
+      <result column="type" property="type" jdbcType="VARCHAR" />
+    </collection>
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, uid, original_area_id, destination_area_id, capacity, depart_time, status, create_time,
+    update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from driver_route
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from driver_route
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" useGeneratedKeys="true" parameterType="cn.deliver.domain.DriverRoute" >
+    insert into driver_route (id, uid, original_area_id,
+    destination_area_id, capacity, depart_time,
+    status, create_time, update_time
+    )
+    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{originalAreaId,jdbcType=INTEGER},
+    #{destinationAreaId,jdbcType=INTEGER}, #{capacity,jdbcType=INTEGER}, #{departTime,jdbcType=TIMESTAMP},
+    #{status,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+    )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" useGeneratedKeys="true" parameterType="cn.deliver.domain.DriverRoute" >
+    insert into driver_route
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="uid != null" >
+        uid,
+      </if>
+      <if test="originalAreaId != null" >
+        original_area_id,
+      </if>
+      <if test="destinationAreaId != null" >
+        destination_area_id,
+      </if>
+      <if test="capacity != null" >
+        capacity,
+      </if>
+      <if test="departTime != null" >
+        depart_time,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null" >
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="originalAreaId != null" >
+        #{originalAreaId,jdbcType=INTEGER},
+      </if>
+      <if test="destinationAreaId != null" >
+        #{destinationAreaId,jdbcType=INTEGER},
+      </if>
+      <if test="capacity != null" >
+        #{capacity,jdbcType=INTEGER},
+      </if>
+      <if test="departTime != null" >
+        #{departTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.deliver.domain.DriverRoute" >
+    update driver_route
+    <set >
+      <if test="uid != null" >
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="originalAreaId != null" >
+        original_area_id = #{originalAreaId,jdbcType=INTEGER},
+      </if>
+      <if test="destinationAreaId != null" >
+        destination_area_id = #{destinationAreaId,jdbcType=INTEGER},
+      </if>
+      <if test="capacity != null" >
+        capacity = #{capacity,jdbcType=INTEGER},
+      </if>
+      <if test="departTime != null" >
+        depart_time = #{departTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.deliver.domain.DriverRoute" >
+    update driver_route
+    set uid = #{uid,jdbcType=INTEGER},
+    original_area_id = #{originalAreaId,jdbcType=INTEGER},
+    destination_area_id = #{destinationAreaId,jdbcType=INTEGER},
+    capacity = #{capacity,jdbcType=INTEGER},
+    depart_time = #{departTime,jdbcType=TIMESTAMP},
+    status = #{status,jdbcType=VARCHAR},
+    create_time = #{createTime,jdbcType=TIMESTAMP},
+    update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="findNearByArea" resultMap="DriverRouteRelatedResultMap">
+    SELECT
+    area.*, temp.driver_route_id,
+    temp.depart_time,
+    temp.car_picture,
+    temp.car_number
+    FROM
+    (
+    SELECT
+      dr.original_area_id,
+      dr.id AS driver_route_id,
+      dr.depart_time,
+      di.car_picture,
+      di.car_number
+
+    FROM
+        driver_route AS dr,
+        `user` AS u,
+        user_info AS ui,
+        driver_info AS di
+    WHERE
+      u.id = ui.uid
+      AND ui.id = di.uiid
+      AND u.id = dr.uid
+      AND dr.`status` = 0
+      AND di.order_number &lt; 5
+    ) AS temp,
+    area
+    WHERE
+    area.city = #{city,jdbcType=VARCHAR}
+    AND area.district = #{district,jdbcType=VARCHAR}
+    AND area.town = #{town,jdbcType=VARCHAR}
+    AND area.village = #{village,jdbcType=VARCHAR}
+    AND temp.original_area_id = area.id;
+  </select>
+  <select id="findDetailById" resultMap="DriverRouteRelatedResultMap">
+    SELECT
+    temp.driver_route_id,
+    temp.driver_name,
+    temp.driver_phone,
+	area.*
+    FROM
+	(
+      SELECT
+          dr.id AS driver_route_id,
+          dr.destination_area_id,
+          dr.uid AS driver_uid,
+          u.phone AS driver_phone,
+          ui. NAME AS driver_name
+      FROM
+          driver_route AS dr,
+          `user` AS u,
+          user_info AS ui,
+          driver_info AS di
+      WHERE
+            u.id = ui.uid
+            AND ui.id = di.uiid
+            AND u.id = dr.uid
+            AND dr.id = #{driverRouteId,jdbcType=INTEGER}
+    ) AS temp,
+      area
+    WHERE
+	( area.uid = temp.driver_uid AND area.type = 1 )
+	OR area.id = temp.destination_area_id;
+  </select>
+
+  <select id="findInvitationByUserOrderId" resultType="cn.deliver.domain.InvitationBrief">
+    SELECT
+      area.*, temp.driver_route_id,
+      temp.depart_time,
+      temp.driver_name,
+      temp.driver_phone,
+      temp.capacity,
+      temp.invitation_status
+    FROM
+      (
+        SELECT
+        dr.original_area_id,
+        dr.id AS driver_route_id,
+        dr.depart_time,
+        dr.capacity,
+        u.phone AS driver_phone,
+        ui. NAME AS driver_name,
+        invitation.status AS invitation_status
+        FROM
+        driver_route AS dr,
+        `user` AS u,
+        user_info AS ui,
+        invitation
+        WHERE
+        u.id = ui.uid
+        AND u.id = dr.uid
+        AND invitation.user_order_id = #{userOrderId,jdbcType=INTEGER}
+        AND invitation.driver_route_id = dr.id
+      ) AS temp,
+    area
+    WHERE
+    temp.original_area_id = area.id;
+  </select>
+    <select id="findInvitationByDriverRouteIdAndUserOrderId" resultMap="BaseResultMap">
+    SELECT
+      dr.original_area_id,
+      dr.destination_area_id,
+      dr.id,
+      dr.depart_time,
+      dr.create_time,
+      dr.capacity
+      FROM
+      driver_route AS dr,
+      invitation
+      WHERE
+      invitation.user_order_id = #{userOrderId,jdbcType=INTEGER}
+      AND invitation.driver_route_id = dr.id
+      AND dr.id = #{driverRouteId,jdbcType=INTEGER}
+  </select>
+
+</mapper>

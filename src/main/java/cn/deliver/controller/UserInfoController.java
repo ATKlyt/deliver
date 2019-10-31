@@ -38,7 +38,7 @@ public class UserInfoController {
         if(role == null){
             return new Result("用户暂未选择身份","1",null);
         }
-        if(userDriverArea.getUserInfo().getUid() == null ||userDriverArea.getUserInfo().getName() == null ||userDriverArea.getArea().getProvince() == null ||userDriverArea.getArea().getCity() == null ||userDriverArea.getArea().getDistrict() == null ||userDriverArea.getArea().getStatus() == null){
+        if(userDriverArea.getUserInfo().getUid() == null ||userDriverArea.getUserInfo().getName() == null ||userDriverArea.getArea().getProvince() == null ||userDriverArea.getArea().getCity() == null ||userDriverArea.getArea().getDistrict() == null ||userDriverArea.getArea().getType() == null){
             return new Result("用户注册必填项信息为空","1",null);
         }
         if(!ADMIN.equals(role)){

@@ -3,6 +3,7 @@ package cn.deliver.service;
 import cn.deliver.domain.Result;
 import cn.deliver.domain.User;
 import cn.deliver.domain.UserDriverInfo;
+import cn.deliver.domain.UserRelated;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -114,4 +115,6 @@ public interface UserService {
      * @return 操作结果
      */
     boolean updatePassword(String phone, String cryptographicPassword);
+
+    UserRelated findNameAndPhoneByUid(Integer uid);
 }

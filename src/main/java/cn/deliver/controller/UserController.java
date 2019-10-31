@@ -81,7 +81,7 @@ public class UserController {
     }
 
     /**
-     * 获取收货人信息
+     * 获取收货人姓名电话
      * @param authId
      * @return
      */

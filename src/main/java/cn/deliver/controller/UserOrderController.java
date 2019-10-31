@@ -3,7 +3,11 @@ package cn.deliver.controller;
 import cn.deliver.domain.Area;
 import cn.deliver.domain.Result;
 import cn.deliver.domain.UserOrder;
+import cn.deliver.domain.UserRelated;
+import cn.deliver.service.AreaService;
 import cn.deliver.service.UserOrderService;
+import cn.deliver.service.UserService;
+import cn.deliver.utils.SnowflakeIdWorker;
 import cn.deliver.utils.UploadFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,84 +28,209 @@ public class UserOrderController {
 
     @Autowired
     UserOrderService userOrderService;
-
-//    /**
-//     *
-//     * @param parameters
-//     * @return
-//     */
-//    @RequestMapping("")
-//    @ResponseBody
-//    public Result findNeedSafetyConfirm(@RequestBody Map<String, Object> parameters){
-//        //获得担保人的Id
-//        Integer safetyId = (Integer) parameters.get("SafetyId");
-//        UserOrder userOrder = userOrderService.findUserOrder
-//
-//    }
+    @Autowired
+    UserService userService;
+    @Autowired
+    AreaService areaService;
 
     /**
-     * 通过地址(村级)查询出发地为该村的用户订单
-     * 查找发货人详细信息和发货人地址和用户订单Id
-     * @param area
+     * 用户发布订单
+     * @param userOrder
      * @return
      */
-    @RequestMapping("findNear")
+    @RequestMapping("orderRelease")
     @ResponseBody
-    public Result findNearByVillage(@RequestBody Area area) {
-        String village = area.getVillage();
-        return userOrderService.findNearByVillage(village);
+    public Result orderRelease(@RequestBody UserOrder userOrder){
+        //设置创建时间和更新时间
+        Timestamp nowTime = new Timestamp(System.currentTimeMillis());
+        userOrder.setCreateTime(nowTime);
+        userOrder.setUpdateTime(nowTime);
+        //生成订单编号
+        userOrder.setUserOrderNumber(String.valueOf(new SnowflakeIdWorker(1, 1).nextId()));
+        //将该用户订单设置为等待担保人确认
+        userOrder.setStatus("0");
+        return userOrderService.orderRelease(userOrder);
     }
 
     /**
-     * 通过用户订单id查询收货人详细信息和用户订单详细描述
+     * 验证担保人是否符合要求
+     * @param parameters
+     * @return
+     */
+    @RequestMapping("validateSurety")
+    @ResponseBody
+    public Result validateSurety(@RequestBody Map<String, Object> parameters){
+        Integer suretyId = (Integer) parameters.get("suretyId");
+        Integer shipperId = (Integer) parameters.get("shipperId");
+        return userOrderService.validateSurety(suretyId, shipperId);
+    }
+
+    /**
+     * 司机接受用户订单
+     * @param parameters
+     * @return
+     */
+    @RequestMapping("orderReceive")
+    @ResponseBody
+    public Result orderReceive(@RequestBody Map<String, Object> parameters){
+        Integer userOrderId = (Integer) parameters.get("userOrderId");
+        Integer driverUid = (Integer) parameters.get("driverUid");
+        UserOrder userOrder = userOrderService.selectByPrimaryKey(userOrderId);
+        userOrder.setDriverUid(driverUid);
+        userOrder.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        userOrder.setStatus("3");
+        return userOrderService.orderReceive(userOrder);
+    }
+
+    /**
+     * 担保人拒绝担保
+     * @param parameters
+     * @return
+     */
+    @RequestMapping("suretyRefuse")
+    @ResponseBody
+    public Result suretyRefuse(@RequestBody Map<String, Object> parameters){
+        Integer suretyId = (Integer) parameters.get("suretyId");
+        Integer userOrderId = (Integer) parameters.get("userOrderId");
+        return userOrderService.suretyRefuse(suretyId, userOrderId);
+    }
+
+    /**
+     * 担保人确认担保
+     * @param parameters
+     * @return
+     */
+    @RequestMapping("suretyConfirm")
+    @ResponseBody
+    public Result suretyConfirm(@RequestBody Map<String, Object> parameters){
+        Integer suretyId = (Integer) parameters.get("suretyId");
+        Integer userOrderId = (Integer) parameters.get("userOrderId");
+        return userOrderService.suretyConfirm(suretyId, userOrderId);
+    }
+
+    /**
+     * 查找用户发布的所有订单
+     * 包括订单照片、描述、状态
+     * @param parameters
+     * @return
+     */
+    @RequestMapping("findAll")
+    @ResponseBody
+    public Result findAllByUid(@RequestBody Map<String, Object> parameters){
+        Integer userId = (Integer) parameters.get("userId");
+        return userOrderService.findAllByUid(userId);
+    }
+
+    /**
+     * 查找用户订单详情
+     * 包括订单编号、发布时间以及担保人，收货人和司机的姓名电话
      * @param parameters
      * @return
      */
     @RequestMapping("findDetail")
     @ResponseBody
-    public Result findDetailByUserOrderId(@RequestBody Map<String, Object> parameters) {
+    public Result findDetailByUserOrderId(@RequestBody Map<String, Object> parameters){
         Integer userOrderId = (Integer) parameters.get("userOrderId");
-        return userOrderService.findDetailByUserOrderId(userOrderId);
+        Map<String, Object> map = new HashMap<>(16);
+        UserOrder userOrder = userOrderService.selectByPrimaryKey(userOrderId);
+        Area consigneeArea = areaService.selectByPrimaryKey(userOrder.getConsigneeAreaId());
+        Area deliverArea = areaService.selectByPrimaryKey(userOrder.getDeliverAreaId());
+        //担保人信息
+        UserRelated suretyRelate = userService.findNameAndPhoneByUid(userOrder.getUid());
+        //收货人信息
+        UserRelated contactRelate = userService.findNameAndPhoneByUid(consigneeArea.getCid());
+        //司机信息
+        UserRelated driverRelate = userService.findNameAndPhoneByUid(userOrder.getDriverUid());
+        map.put("driverRelate", driverRelate);
+        map.put("suretyRelate", suretyRelate);
+        map.put("contactRelate", contactRelate);
+        map.put("deliverArea", deliverArea);
+        map.put("consigneeArea", consigneeArea);
+        map.put("createTime", userOrder.getCreateTime());
+        map.put("userOrderNumber", userOrder.getUserOrderNumber());
+        return new Result("查询成功", "0", map);
+    }
+
+    /**
+     * 需要担保人担保的所有用户订单
+     * @param parameters
+     * @return
+     */
+    @RequestMapping("needSurety")
+    @ResponseBody
+    public Result findNeedSurety(@RequestBody Map<String, Object> parameters){
+        Integer suretyId = (Integer) parameters.get("suretyId");
+        return userOrderService.findNeedSurety(suretyId);
+    }
+
+    /**
+     * 获取待收货的所有用户订单
+     * @param parameters
+     * @return
+     */
+    @RequestMapping("waitDeliver")
+    @ResponseBody
+    public Result findWaitDeliver(@RequestBody Map<String, Object> parameters){
+        Integer cid = (Integer) parameters.get("cid");
+        return userOrderService.findWaitDeliver(cid);
+    }
+
+    /**
+     * 收货人确认收货
+     * @param parameters
+     * @return
+     */
+    @RequestMapping("contactConfirm")
+    @ResponseBody
+    public Result contactConfirm(@RequestBody Map<String, Object> parameters){
+        Integer cid = (Integer) parameters.get("cid");
+        Integer userOrderId = (Integer) parameters.get("userOrderId");
+        return userOrderService.contactConfirm(cid, userOrderId);
     }
 
 
     /**
-     * 用户发布订单
+     * 查找附近订单
+     * @param area
+     * @return
+     */
+    @RequestMapping("findNear")
+    @ResponseBody
+    public Result findNearByArea(@RequestBody Area area) {
+        String city = area.getCity();
+        String district = area.getDistrict();
+        String town = area.getTown();
+        String village = area.getVillage();
+        return userOrderService.findNearByArea(city, district, town, village);
+    }
+
+
+
+    /**
+     * 司机接受邀请
      * @param parameters
      * @return
      */
-    @RequestMapping("addUserOrder")
+    @RequestMapping("accept")
     @ResponseBody
-    public Result addUserOrder(@RequestBody Map<String, Object> parameters) {
-        ArrayList<String> goodsPictures = (ArrayList<String>) parameters.get("goodsPictures");
-        Map<String, Object> userOrderMsg = (Map<String, Object>) parameters.get("deliveryMsg");
-        UserOrder userOrder = new UserOrder();
-        userOrder.setUid((Integer) userOrderMsg.get("uid"));
-        userOrder.setDeliverAreaId((Integer) userOrderMsg.get("deliverAreaId"));
-        userOrder.setConsigneeAreaId((Integer) userOrderMsg.get("consigneeAreaId"));
-        userOrder.setDescription((String) userOrderMsg.get("description"));
-        userOrder.setDeliveryStart(new Timestamp((Long) userOrderMsg.get("deliveryStart")));
-        userOrder.setDeliveryEnd(new Timestamp((Long) userOrderMsg.get("deliveryEnd")));
-        //验证
-        userOrder.setStatus("0");
-        int size = goodsPictures.size();
-        int i = 0;
-        for (String goodsPicture : goodsPictures) {
-            if (i == 0){
-                userOrder.setGoodsPicture1(goodsPicture);
-            }else if (i == 1){
-                userOrder.setGoodsPicture2(goodsPicture);
-            }else {
-                userOrder.setGoodsPicture3(goodsPicture);
-            }
-            i++;
-        }
-        return userOrderService.addUserOrder(userOrder);
+    public Result driverAcceptInvite(@RequestBody Map<String, Object> parameters) {
+        Integer userOrderId = (Integer) parameters.get("userOrderId");
+        Integer driverUid = (Integer) parameters.get("driverUid");
+        Integer driverRouteId = (Integer) parameters.get("driverRouteId");
+        UserOrder userOrder = userOrderService.selectByPrimaryKey(userOrderId);
+        userOrder.setDriverRouteId(driverRouteId);
+        userOrder.setDriverUid(driverUid);
+        userOrder.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        userOrder.setStatus("3");
+        return userOrderService.driverAccept(userOrder);
     }
+
+
 
 
     /**
      * 上传商品图片
+     * @param goodsPictures
      * @return
      */
     @RequestMapping("uploadGoodsPictures")
@@ -118,6 +248,9 @@ public class UserOrderController {
             return new Result("添加失败","1");
         }
     }
+
+
+
 
 
 }

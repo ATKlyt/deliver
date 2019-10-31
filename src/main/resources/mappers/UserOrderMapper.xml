@@ -1,381 +1,362 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.deliver.dao.UserOrderDao">
-  <resultMap id="BaseResultMap" type="cn.deliver.domain.UserOrder">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="uid" jdbcType="INTEGER" property="uid" />
-    <result column="description" jdbcType="VARCHAR" property="description" />
-    <result column="pay" jdbcType="DECIMAL" property="pay" />
-    <result column="delivery_start" jdbcType="TIMESTAMP" property="deliveryStart" />
-    <result column="consignee_area_id" jdbcType="INTEGER" property="consigneeAreaId" />
-    <result column="deliver_area_id" jdbcType="INTEGER" property="deliverAreaId" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
-    <result column="delivery_end" jdbcType="TIMESTAMP" property="deliveryEnd" />
-    <result column="goods_picture_1" jdbcType="VARCHAR" property="goodsPicture1" />
-    <result column="goods_picture_2" jdbcType="VARCHAR" property="goodsPicture2" />
-    <result column="goods_picture_3" jdbcType="VARCHAR" property="goodsPicture3" />
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.deliver.dao.UserOrderDao" >
+  <resultMap id="BaseResultMap" type="cn.deliver.domain.UserOrder" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="pay" property="pay" jdbcType="DECIMAL" />
+    <result column="delivery_start_time" property="deliveryStartTime" jdbcType="TIMESTAMP" />
+    <result column="delivery_end_time" property="deliveryEndTime" jdbcType="TIMESTAMP" />
+    <result column="deliver_area_id" property="deliverAreaId" jdbcType="INTEGER" />
+    <result column="consignee_area_id" property="consigneeAreaId" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="goods_picture1" property="goodsPicture1" jdbcType="VARCHAR" />
+    <result column="goods_picture2" property="goodsPicture2" jdbcType="VARCHAR" />
+    <result column="goods_picture3" property="goodsPicture3" jdbcType="VARCHAR" />
+    <result column="user_order_number" property="userOrderNumber" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="surety_id" property="suretyId" jdbcType="INTEGER" />
+    <result column="driver_uid" property="driverUid" jdbcType="INTEGER" />
+    <result column="driver_route_id" property="driverRouteId" jdbcType="INTEGER" />
   </resultMap>
 
-  <resultMap id="userOrderMessage" type="cn.deliver.domain.UserOrderMessage">
-    <result column="phone" jdbcType="VARCHAR" property="phone"/>
-    <result column="name" jdbcType="VARCHAR" property="name"/>
-    <result column="user_order_id" jdbcType="INTEGER" property="userOrderId"/>
-    <association property="area" javaType="cn.deliver.domain.Area">
-      <id column="id" jdbcType="INTEGER" property="id" />
-      <result column="uid" jdbcType="INTEGER" property="uid" />
-      <result column="province" jdbcType="VARCHAR" property="province" />
-      <result column="city" jdbcType="VARCHAR" property="city" />
-      <result column="district" jdbcType="VARCHAR" property="district" />
-      <result column="town" jdbcType="VARCHAR" property="town" />
-      <result column="village" jdbcType="VARCHAR" property="village" />
-      <result column="cid" jdbcType="INTEGER" property="cid" />
-      <result column="detail" jdbcType="VARCHAR" property="detail" />
-    </association>
-
+  <resultMap id="UserOrderBriefResultMap" type="cn.deliver.domain.UserOrderBrief" >
+    <result column="user_order_id" property="userOrderId" jdbcType="INTEGER" />
+    <result column="driver_route_id" property="driverRouteId" jdbcType="INTEGER" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="pay" property="pay" jdbcType="DECIMAL" />
+    <result column="goods_picture1" property="goodsPicture1" jdbcType="VARCHAR" />
+    <result column="goods_picture2" property="goodsPicture2" jdbcType="VARCHAR" />
+    <result column="goods_picture3" property="goodsPicture3" jdbcType="VARCHAR" />
   </resultMap>
-  <sql id="Example_Where_Clause">
-    <where>
-      <foreach collection="oredCriteria" item="criteria" separator="or">
-        <if test="criteria.valid">
-          <trim prefix="(" prefixOverrides="and" suffix=")">
-            <foreach collection="criteria.criteria" item="criterion">
-              <choose>
-                <when test="criterion.noValue">
-                  and ${criterion.condition}
-                </when>
-                <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value}
-                </when>
-                <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue">
-                  and ${criterion.condition}
-                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem}
-                  </foreach>
-                </when>
-              </choose>
-            </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
+  <sql id="Base_Column_List" >
+    id, uid, description, pay, delivery_start_time, delivery_end_time, deliver_area_id,
+    consignee_area_id, status, goods_picture1, goods_picture2, goods_picture3, user_order_number,
+    create_time, update_time, surety_id, driver_uid, driver_route_id
   </sql>
-  <sql id="Update_By_Example_Where_Clause">
-    <where>
-      <foreach collection="example.oredCriteria" item="criteria" separator="or">
-        <if test="criteria.valid">
-          <trim prefix="(" prefixOverrides="and" suffix=")">
-            <foreach collection="criteria.criteria" item="criterion">
-              <choose>
-                <when test="criterion.noValue">
-                  and ${criterion.condition}
-                </when>
-                <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value}
-                </when>
-                <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue">
-                  and ${criterion.condition}
-                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem}
-                  </foreach>
-                </when>
-              </choose>
-            </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
-  </sql>
-  <sql id="Base_Column_List">
-    id, uid, description, pay, delivery_start, consignee_area_id, deliver_area_id, status, 
-    delivery_end, goods_picture_1, goods_picture_2, goods_picture_3
-  </sql>
-  <select id="selectByExample" parameterType="cn.deliver.domain.UserOrderExample" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select
-    <if test="distinct">
-      distinct
-    </if>
-    <include refid="Base_Column_List" />
-    from user_order
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
-  </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
     <include refid="Base_Column_List" />
     from user_order
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_order
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="cn.deliver.domain.UserOrderExample">
-    delete from user_order
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-  </delete>
-  <insert id="insert" parameterType="cn.deliver.domain.UserOrder">
-    insert into user_order (id, uid, description, 
-      pay, delivery_start, consignee_area_id, 
-      deliver_area_id, status, delivery_end, 
-      goods_picture_1, goods_picture_2, goods_picture_3
-      )
-    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, 
-      #{pay,jdbcType=DECIMAL}, #{deliveryStart,jdbcType=TIMESTAMP}, #{consigneeAreaId,jdbcType=INTEGER}, 
-      #{deliverAreaId,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{deliveryEnd,jdbcType=TIMESTAMP}, 
-      #{goodsPicture1,jdbcType=VARCHAR}, #{goodsPicture2,jdbcType=VARCHAR}, #{goodsPicture3,jdbcType=VARCHAR}
-      )
+  <insert id="insert" keyColumn="id" keyProperty="id" useGeneratedKeys="true" parameterType="cn.deliver.domain.UserOrder" >
+    insert into user_order (id, uid, description,
+    pay, delivery_start_time, delivery_end_time,
+    deliver_area_id, consignee_area_id, status,
+    goods_picture1, goods_picture2, goods_picture3,
+    user_order_number, create_time, update_time,
+    surety_id, driver_uid, driver_route_id
+    )
+    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR},
+    #{pay,jdbcType=DECIMAL}, #{deliveryStartTime,jdbcType=TIMESTAMP}, #{deliveryEndTime,jdbcType=TIMESTAMP},
+    #{deliverAreaId,jdbcType=INTEGER}, #{consigneeAreaId,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR},
+    #{goodsPicture1,jdbcType=VARCHAR}, #{goodsPicture2,jdbcType=VARCHAR}, #{goodsPicture3,jdbcType=VARCHAR},
+    #{userOrderNumber,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+    #{suretyId,jdbcType=INTEGER}, #{driverUid,jdbcType=INTEGER}, #{driverRouteId,jdbcType=INTEGER}
+    )
   </insert>
-  <insert id="insertSelective" parameterType="cn.deliver.domain.UserOrder" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" useGeneratedKeys="true" parameterType="cn.deliver.domain.UserOrder" >
     insert into user_order
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
         id,
       </if>
-      <if test="uid != null">
+      <if test="uid != null" >
         uid,
       </if>
-      <if test="description != null">
+      <if test="description != null" >
         description,
       </if>
-      <if test="pay != null">
+      <if test="pay != null" >
         pay,
       </if>
-      <if test="deliveryStart != null">
-        delivery_start,
+      <if test="deliveryStartTime != null" >
+        delivery_start_time,
       </if>
-      <if test="consigneeAreaId != null">
-        consignee_area_id,
+      <if test="deliveryEndTime != null" >
+        delivery_end_time,
       </if>
-      <if test="deliverAreaId != null">
+      <if test="deliverAreaId != null" >
         deliver_area_id,
       </if>
-      <if test="status != null">
+      <if test="consigneeAreaId != null" >
+        consignee_area_id,
+      </if>
+      <if test="status != null" >
         status,
       </if>
-      <if test="deliveryEnd != null">
-        delivery_end,
+      <if test="goodsPicture1 != null" >
+        goods_picture1,
       </if>
-      <if test="goodsPicture1 != null">
-        goods_picture_1,
+      <if test="goodsPicture2 != null" >
+        goods_picture2,
       </if>
-      <if test="goodsPicture2 != null">
-        goods_picture_2,
+      <if test="goodsPicture3 != null" >
+        goods_picture3,
       </if>
-      <if test="goodsPicture3 != null">
-        goods_picture_3,
+      <if test="userOrderNumber != null" >
+        user_order_number,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="suretyId != null" >
+        surety_id,
+      </if>
+      <if test="driverUid != null" >
+        driver_uid,
+      </if>
+      <if test="driverRouteId != null" >
+        driver_route_id,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="uid != null">
+      <if test="uid != null" >
         #{uid,jdbcType=INTEGER},
       </if>
-      <if test="description != null">
+      <if test="description != null" >
         #{description,jdbcType=VARCHAR},
       </if>
-      <if test="pay != null">
+      <if test="pay != null" >
         #{pay,jdbcType=DECIMAL},
       </if>
-      <if test="deliveryStart != null">
-        #{deliveryStart,jdbcType=TIMESTAMP},
+      <if test="deliveryStartTime != null" >
+        #{deliveryStartTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="consigneeAreaId != null">
-        #{consigneeAreaId,jdbcType=INTEGER},
+      <if test="deliveryEndTime != null" >
+        #{deliveryEndTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="deliverAreaId != null">
+      <if test="deliverAreaId != null" >
         #{deliverAreaId,jdbcType=INTEGER},
       </if>
-      <if test="status != null">
+      <if test="consigneeAreaId != null" >
+        #{consigneeAreaId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
         #{status,jdbcType=VARCHAR},
       </if>
-      <if test="deliveryEnd != null">
-        #{deliveryEnd,jdbcType=TIMESTAMP},
-      </if>
-      <if test="goodsPicture1 != null">
+      <if test="goodsPicture1 != null" >
         #{goodsPicture1,jdbcType=VARCHAR},
       </if>
-      <if test="goodsPicture2 != null">
+      <if test="goodsPicture2 != null" >
         #{goodsPicture2,jdbcType=VARCHAR},
       </if>
-      <if test="goodsPicture3 != null">
+      <if test="goodsPicture3 != null" >
         #{goodsPicture3,jdbcType=VARCHAR},
+      </if>
+      <if test="userOrderNumber != null" >
+        #{userOrderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="suretyId != null" >
+        #{suretyId,jdbcType=INTEGER},
+      </if>
+      <if test="driverUid != null" >
+        #{driverUid,jdbcType=INTEGER},
+      </if>
+      <if test="driverRouteId != null" >
+        #{driverRouteId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="cn.deliver.domain.UserOrderExample" resultType="java.lang.Long">
-    select count(*) from user_order
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-  </select>
-  <update id="updateByExampleSelective" parameterType="map">
+  <update id="updateByPrimaryKeySelective" parameterType="cn.deliver.domain.UserOrder" >
     update user_order
-    <set>
-      <if test="record.id != null">
-        id = #{record.id,jdbcType=INTEGER},
-      </if>
-      <if test="record.uid != null">
-        uid = #{record.uid,jdbcType=INTEGER},
-      </if>
-      <if test="record.description != null">
-        description = #{record.description,jdbcType=VARCHAR},
-      </if>
-      <if test="record.pay != null">
-        pay = #{record.pay,jdbcType=DECIMAL},
-      </if>
-      <if test="record.deliveryStart != null">
-        delivery_start = #{record.deliveryStart,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.consigneeAreaId != null">
-        consignee_area_id = #{record.consigneeAreaId,jdbcType=INTEGER},
-      </if>
-      <if test="record.deliverAreaId != null">
-        deliver_area_id = #{record.deliverAreaId,jdbcType=INTEGER},
-      </if>
-      <if test="record.status != null">
-        status = #{record.status,jdbcType=VARCHAR},
-      </if>
-      <if test="record.deliveryEnd != null">
-        delivery_end = #{record.deliveryEnd,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.goodsPicture1 != null">
-        goods_picture_1 = #{record.goodsPicture1,jdbcType=VARCHAR},
-      </if>
-      <if test="record.goodsPicture2 != null">
-        goods_picture_2 = #{record.goodsPicture2,jdbcType=VARCHAR},
-      </if>
-      <if test="record.goodsPicture3 != null">
-        goods_picture_3 = #{record.goodsPicture3,jdbcType=VARCHAR},
-      </if>
-    </set>
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExample" parameterType="map">
-    update user_order
-    set id = #{record.id,jdbcType=INTEGER},
-      uid = #{record.uid,jdbcType=INTEGER},
-      description = #{record.description,jdbcType=VARCHAR},
-      pay = #{record.pay,jdbcType=DECIMAL},
-      delivery_start = #{record.deliveryStart,jdbcType=TIMESTAMP},
-      consignee_area_id = #{record.consigneeAreaId,jdbcType=INTEGER},
-      deliver_area_id = #{record.deliverAreaId,jdbcType=INTEGER},
-      status = #{record.status,jdbcType=VARCHAR},
-      delivery_end = #{record.deliveryEnd,jdbcType=TIMESTAMP},
-      goods_picture_1 = #{record.goodsPicture1,jdbcType=VARCHAR},
-      goods_picture_2 = #{record.goodsPicture2,jdbcType=VARCHAR},
-      goods_picture_3 = #{record.goodsPicture3,jdbcType=VARCHAR}
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByPrimaryKeySelective" parameterType="cn.deliver.domain.UserOrder">
-    update user_order
-    <set>
-      <if test="uid != null">
+    <set >
+      <if test="uid != null" >
         uid = #{uid,jdbcType=INTEGER},
       </if>
-      <if test="description != null">
+      <if test="description != null" >
         description = #{description,jdbcType=VARCHAR},
       </if>
-      <if test="pay != null">
+      <if test="pay != null" >
         pay = #{pay,jdbcType=DECIMAL},
       </if>
-      <if test="deliveryStart != null">
-        delivery_start = #{deliveryStart,jdbcType=TIMESTAMP},
+      <if test="deliveryStartTime != null" >
+        delivery_start_time = #{deliveryStartTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="consigneeAreaId != null">
-        consignee_area_id = #{consigneeAreaId,jdbcType=INTEGER},
+      <if test="deliveryEndTime != null" >
+        delivery_end_time = #{deliveryEndTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="deliverAreaId != null">
+      <if test="deliverAreaId != null" >
         deliver_area_id = #{deliverAreaId,jdbcType=INTEGER},
       </if>
-      <if test="status != null">
+      <if test="consigneeAreaId != null" >
+        consignee_area_id = #{consigneeAreaId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
         status = #{status,jdbcType=VARCHAR},
       </if>
-      <if test="deliveryEnd != null">
-        delivery_end = #{deliveryEnd,jdbcType=TIMESTAMP},
+      <if test="goodsPicture1 != null" >
+        goods_picture1 = #{goodsPicture1,jdbcType=VARCHAR},
       </if>
-      <if test="goodsPicture1 != null">
-        goods_picture_1 = #{goodsPicture1,jdbcType=VARCHAR},
+      <if test="goodsPicture2 != null" >
+        goods_picture2 = #{goodsPicture2,jdbcType=VARCHAR},
       </if>
-      <if test="goodsPicture2 != null">
-        goods_picture_2 = #{goodsPicture2,jdbcType=VARCHAR},
+      <if test="goodsPicture3 != null" >
+        goods_picture3 = #{goodsPicture3,jdbcType=VARCHAR},
       </if>
-      <if test="goodsPicture3 != null">
-        goods_picture_3 = #{goodsPicture3,jdbcType=VARCHAR},
+      <if test="userOrderNumber != null" >
+        user_order_number = #{userOrderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="suretyId != null" >
+        surety_id = #{suretyId,jdbcType=INTEGER},
+      </if>
+      <if test="driverUid != null" >
+        driver_uid = #{driverUid,jdbcType=INTEGER},
+      </if>
+      <if test="driverRouteId != null" >
+        driver_route_id = #{driverRouteId,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="cn.deliver.domain.UserOrder">
+  <update id="updateByPrimaryKey" parameterType="cn.deliver.domain.UserOrder" >
     update user_order
     set uid = #{uid,jdbcType=INTEGER},
-      description = #{description,jdbcType=VARCHAR},
-      pay = #{pay,jdbcType=DECIMAL},
-      delivery_start = #{deliveryStart,jdbcType=TIMESTAMP},
-      consignee_area_id = #{consigneeAreaId,jdbcType=INTEGER},
-      deliver_area_id = #{deliverAreaId,jdbcType=INTEGER},
-      status = #{status,jdbcType=VARCHAR},
-      delivery_end = #{deliveryEnd,jdbcType=TIMESTAMP},
-      goods_picture_1 = #{goodsPicture1,jdbcType=VARCHAR},
-      goods_picture_2 = #{goodsPicture2,jdbcType=VARCHAR},
-      goods_picture_3 = #{goodsPicture3,jdbcType=VARCHAR}
+    description = #{description,jdbcType=VARCHAR},
+    pay = #{pay,jdbcType=DECIMAL},
+    delivery_start_time = #{deliveryStartTime,jdbcType=TIMESTAMP},
+    delivery_end_time = #{deliveryEndTime,jdbcType=TIMESTAMP},
+    deliver_area_id = #{deliverAreaId,jdbcType=INTEGER},
+    consignee_area_id = #{consigneeAreaId,jdbcType=INTEGER},
+    status = #{status,jdbcType=VARCHAR},
+    goods_picture1 = #{goodsPicture1,jdbcType=VARCHAR},
+    goods_picture2 = #{goodsPicture2,jdbcType=VARCHAR},
+    goods_picture3 = #{goodsPicture3,jdbcType=VARCHAR},
+    user_order_number = #{userOrderNumber,jdbcType=VARCHAR},
+    create_time = #{createTime,jdbcType=TIMESTAMP},
+    update_time = #{updateTime,jdbcType=TIMESTAMP},
+    surety_id = #{suretyId,jdbcType=INTEGER},
+    driver_uid = #{driverUid,jdbcType=INTEGER},
+    driver_route_id = #{driverRouteId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <select id="findNearByVillage" resultMap="userOrderMessage">
+
+  <update id="updateStatusByType">
+    update user_order
+    <set >
+      <if test="type == 'suretyRefuse'" >
+        status = '2'
+      </if>
+      <if test="type == 'suretyConfirm'" >
+        status = '1'
+      </if>
+      <if test="type == 'contactConfirm'" >
+        status = '4'
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
+      </if>
+    </set>
+    where id = #{userOrderId,jdbcType=INTEGER}
+  </update>
+  <select id="findAllByUid" resultMap="BaseResultMap">
+    SELECT
+		uo.id,
+		uo.description,
+		uo.`status`,
+		uo.goods_picture1,
+		uo.goods_picture2,
+		uo.goods_picture3,
+        uo.pay
+	FROM
+		user_order AS uo
+	WHERE
+		uo.uid = #{userId,jdbcType=INTEGER}
+    </select>
+  <select id="findBySuretyIdAndStatus" resultMap="BaseResultMap">
       SELECT
-          user_order.id AS user_order_id,
-          user_info.`name`,
-          `user`.phone,
-          area.*
+      uo.id,
+      uo.description,
+      uo.goods_picture1,
+      uo.goods_picture2,
+      uo.goods_picture3,
+      uo.pay
       FROM
-          user_order,
-          area,
-          `user`,
-          user_info
+      user_order AS uo
       WHERE
-          user_order.deliver_area_id = area.id
-      AND area.village = #{village,jdbcType=VARCHAR}
-      AND area.uid = user_info.uid
-      AND `user`.id = area.uid;
+      uo.surety_id = #{suretyId,jdbcType=INTEGER}
+      AND uo.status = '0'
+    </select>
+  <select id="findByCid" resultMap="BaseResultMap">
+    SELECT
+    uo.id,
+    uo.description,
+    uo.goods_picture1,
+    uo.goods_picture2,
+    uo.goods_picture3
+    FROM
+    user_order AS uo,
+    area
+    WHERE
+    area.cid = #{cid,jdbcType=INTEGER}
+    AND uo.status = '3'
+    AND area.id = uo.consignee_area_id
   </select>
-<!--  <select id="findDetailByUserOrderId" resultMap="userOrderMessage">-->
-<!--    SELECT-->
-<!--      user_order.goods_picture_1,-->
-<!--      user_order.goods_picture_2,-->
-<!--      user_order.goods_picture_3,-->
-<!--      user_order.description,-->
-<!--      user_order.delivery_start,-->
-<!--      user_order.delivery_end,-->
-<!--      user_order.pay,-->
-<!--      user_info.`name`,-->
-<!--      `user`.phone,-->
-<!--      area.*-->
-<!--    FROM-->
-<!--        user_order,-->
-<!--        area,-->
-<!--        `user`,-->
-<!--        user_info-->
-<!--    WHERE-->
-<!--        user_order.id = #{userOrderId,jdbcType=INTEGER}-->
-<!--    AND user_order.consignee_area_id = area.id-->
-<!--    AND area.uid = `user`.id-->
-<!--    AND area.uid = user_info.uid-->
-<!--  </select>-->
+  <select id="findNearByArea" resultMap="BaseResultMap">
+    SELECT
+    uo.id,
+    uo.description,
+    uo.goods_picture1,
+    uo.goods_picture2,
+    uo.goods_picture3
+    FROM
+    user_order AS uo,
+    area
+    WHERE
+    uo.deliver_area_id = area.id
+    AND area.city = #{city,jdbcType=VARCHAR}
+    AND area.district = #{district,jdbcType=VARCHAR}
+    AND area.town = #{town,jdbcType=VARCHAR}
+    AND area.village = #{village,jdbcType=VARCHAR}
+    AND uo.status = "1"
+  </select>
+  <update id="updateDriverUidById">
+    update user_order
+    set driver_uid = #{driverUid,jdbcType=INTEGER},
+    where id = #{userOrderId,jdbcType=INTEGER}
+  </update>
+    <select id="findInvitationByDriverUid" resultMap="UserOrderBriefResultMap">
+      SELECT
+      uo.id AS user_order_id,
+      dr.id AS driver_route_id,
+      uo.description,
+      uo.goods_picture1,
+      uo.goods_picture2,
+      uo.goods_picture3,
+      uo.pay
+      FROM
+      user_order AS uo,
+      invitation,
+      driver_route AS dr
+      WHERE
+      dr.uid = #{driverUid,jdbcType=INTEGER}
+      AND dr.id = invitation.driver_route_id
+      AND uo.id = invitation.user_order_id
+    </select>
+
 </mapper>

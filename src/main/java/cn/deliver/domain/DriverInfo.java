@@ -19,36 +19,6 @@ public class DriverInfo {
 
     private String status;
 
-    public DriverInfo() {
-    }
-
-    @Override
-    public String toString() {
-        return "DriverInfo{" +
-                "id=" + id +
-                ", uuid=" + uiid +
-                ", drivingLicencePicture='" + drivingLicencePicture + '\'' +
-                ", carPicture='" + carPicture + '\'' +
-                ", runningRoute='" + runningRoute + '\'' +
-                ", orderNumber=" + orderNumber +
-                ", carType='" + carType + '\'' +
-                ", carNumber='" + carNumber + '\'' +
-                ", status='" + status + '\'' +
-                '}';
-    }
-
-    public DriverInfo(Integer id, Integer uiid, String drivingLicencePicture, String carPicture, String runningRoute, Integer orderNumber, String carType, String carNumber, String status) {
-        this.id = id;
-        this.uiid = uiid;
-        this.drivingLicencePicture = drivingLicencePicture;
-        this.carPicture = carPicture;
-        this.runningRoute = runningRoute;
-        this.orderNumber = orderNumber;
-        this.carType = carType;
-        this.carNumber = carNumber;
-        this.status = status;
-    }
-
     public Integer getId() {
         return id;
     }
@@ -119,5 +89,35 @@ public class DriverInfo {
 
     public void setStatus(String status) {
         this.status = status == null ? null : status.trim();
+    }
+
+    public DriverInfo(Integer id, Integer uiid, String carType, String drivingLicencePicture, String carPicture, String runningRoute, Integer orderNumber, String carNumber, String status) {
+        this.id = id;
+        this.uiid = uiid;
+        this.carType = carType;
+        this.drivingLicencePicture = drivingLicencePicture;
+        this.carPicture = carPicture;
+        this.runningRoute = runningRoute;
+        this.orderNumber = orderNumber;
+        this.carNumber = carNumber;
+        this.status = status;
+    }
+
+    public DriverInfo() {
+    }
+
+    @Override
+    public String toString() {
+        return "DriverInfo{" +
+                "id=" + id +
+                ", uiid=" + uiid +
+                ", carType='" + carType + '\'' +
+                ", drivingLicencePicture='" + drivingLicencePicture + '\'' +
+                ", carPicture='" + carPicture + '\'' +
+                ", runningRoute='" + runningRoute + '\'' +
+                ", orderNumber=" + orderNumber +
+                ", carNumber='" + carNumber + '\'' +
+                ", status='" + status + '\'' +
+                '}';
     }
 }

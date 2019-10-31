@@ -3,6 +3,7 @@ package cn.deliver.service;
 import cn.deliver.domain.Result;
 import cn.deliver.domain.User;
 import cn.deliver.domain.UserDriverInfo;
+import cn.deliver.domain.UserRelated;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -129,4 +130,5 @@ public interface UserService {
      */
     User findUserById(int id);
 
+    UserRelated findNameAndPhoneByUid(Integer uid);
 }

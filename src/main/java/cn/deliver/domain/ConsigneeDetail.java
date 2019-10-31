@@ -1,40 +1,24 @@
 package cn.deliver.domain;
 
 public class ConsigneeDetail {
-    private Integer id;
+    private Integer areaId;
     private String province;
     private String city;
     private String district;
     private String town;
     private String village;
     private String detail;
-    private String phone;
-    private String name;
     private Integer cid;
-    private String status;
+    private String type;
+    private String name;
+    private String phone;
 
-    public Integer getCid() {
-        return cid;
+    public Integer getAreaId() {
+        return areaId;
     }
 
-    public void setCid(Integer cid) {
-        this.cid = cid;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    public void setAreaId(Integer areaId) {
+        this.areaId = areaId;
     }
 
     public String getProvince() {
@@ -85,12 +69,20 @@ public class ConsigneeDetail {
         this.detail = detail;
     }
 
-    public String getPhone() {
-        return phone;
+    public Integer getCid() {
+        return cid;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setCid(Integer cid) {
+        this.cid = cid;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getName() {
@@ -99,5 +91,13 @@ public class ConsigneeDetail {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

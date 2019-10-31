@@ -2,6 +2,7 @@ package cn.deliver.dao;
 
 import cn.deliver.domain.User;
 import cn.deliver.domain.UserDriverInfo;
+import cn.deliver.domain.UserRelated;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -21,8 +22,12 @@ public interface UserDao {
 
     int updateByPrimaryKey(User record);
 
-    User findByUid(Integer uid);
 
+    /**
+     * 通过系统发放id查找用户
+     * @param authId
+     * @return
+     */
     User findByAuthId(String authId);
 
     /**
@@ -118,4 +123,6 @@ public interface UserDao {
      * @return
      */
     User findUserById(int id);
+
+    UserRelated findNameAndPhoneByUid(Integer uid);
 }

@@ -3,6 +3,7 @@ package cn.deliver.domain;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+
 public class UserOrder {
     private Integer id;
 
@@ -12,24 +13,29 @@ public class UserOrder {
 
     private BigDecimal pay;
 
-    private Timestamp deliveryStart;
+    private Timestamp deliveryStartTime;
 
-    private Integer consigneeAreaId;
+    private Timestamp deliveryEndTime;
 
     private Integer deliverAreaId;
 
-    /**
-     * 0/1/2/3/4/5  --->
-     * 用户订单等待被接
-     * 用户订单已被司机接单，达成交易关系/
-     * 用户已被司机接单，等待担保人确认/
-     * 用户订单被用户取消/
-     * 用户订单过期/
-     * 用户订单已完成
+    private Integer consigneeAreaId;
+
+    /**0
+     *      * 订单状态
+     *      * 等待担保人确认 0
+     *      * 等待被司机接受 1
+     *      * //司机主动接单
+     *      * //用户邀请司机接单，等待司机回应
+     *      * //司机同意邀请，确认接单
+     *      * 货物开始配送状态
+     *      * 收货人确认收货，订单完成
+     *      * 用户取消订单
+     *      * 司机取消订单
+     *      * 用户发布订单失败(担保人拒绝担保) 2
+     *      * 删除订单
      */
     private String status;
-
-    private Timestamp deliveryEnd;
 
     private String goodsPicture1;
 
@@ -37,13 +43,17 @@ public class UserOrder {
 
     private String goodsPicture3;
 
-    public BigDecimal getPay() {
-        return pay;
-    }
+    private String userOrderNumber;
 
-    public void setPay(BigDecimal pay) {
-        this.pay = pay;
-    }
+    private Timestamp createTime;
+
+    private Timestamp updateTime;
+
+    private Integer suretyId;
+
+    private Integer driverUid;
+
+    private Integer driverRouteId;
 
     public Integer getId() {
         return id;
@@ -69,13 +79,21 @@ public class UserOrder {
         this.description = description == null ? null : description.trim();
     }
 
-
-    public Timestamp getDeliveryStart() {
-        return deliveryStart;
+    public BigDecimal getPay() {
+        return pay;
     }
 
-    public void setDeliveryStart(Timestamp deliveryStart) {
-        this.deliveryStart = deliveryStart;
+    public void setPay(BigDecimal pay) {
+        this.pay = pay;
+    }
+
+
+    public Integer getDeliverAreaId() {
+        return deliverAreaId;
+    }
+
+    public void setDeliverAreaId(Integer deliverAreaId) {
+        this.deliverAreaId = deliverAreaId;
     }
 
     public Integer getConsigneeAreaId() {
@@ -86,28 +104,12 @@ public class UserOrder {
         this.consigneeAreaId = consigneeAreaId;
     }
 
-    public Integer getDeliverAreaId() {
-        return deliverAreaId;
-    }
-
-    public void setDeliverAreaId(Integer deliverAreaId) {
-        this.deliverAreaId = deliverAreaId;
-    }
-
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status == null ? null : status.trim();
-    }
-
-    public Timestamp getDeliveryEnd() {
-        return deliveryEnd;
-    }
-
-    public void setDeliveryEnd(Timestamp deliveryEnd) {
-        this.deliveryEnd = deliveryEnd;
     }
 
     public String getGoodsPicture1() {
@@ -132,5 +134,69 @@ public class UserOrder {
 
     public void setGoodsPicture3(String goodsPicture3) {
         this.goodsPicture3 = goodsPicture3 == null ? null : goodsPicture3.trim();
+    }
+
+    public String getUserOrderNumber() {
+        return userOrderNumber;
+    }
+
+    public void setUserOrderNumber(String userOrderNumber) {
+        this.userOrderNumber = userOrderNumber == null ? null : userOrderNumber.trim();
+    }
+
+    public Timestamp getDeliveryStartTime() {
+        return deliveryStartTime;
+    }
+
+    public void setDeliveryStartTime(Timestamp deliveryStartTime) {
+        this.deliveryStartTime = deliveryStartTime;
+    }
+
+    public Timestamp getDeliveryEndTime() {
+        return deliveryEndTime;
+    }
+
+    public void setDeliveryEndTime(Timestamp deliveryEndTime) {
+        this.deliveryEndTime = deliveryEndTime;
+    }
+
+    public Timestamp getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Integer getSuretyId() {
+        return suretyId;
+    }
+
+    public void setSuretyId(Integer suretyId) {
+        this.suretyId = suretyId;
+    }
+
+    public Integer getDriverUid() {
+        return driverUid;
+    }
+
+    public void setDriverUid(Integer driverUid) {
+        this.driverUid = driverUid;
+    }
+
+    public Integer getDriverRouteId() {
+        return driverRouteId;
+    }
+
+    public void setDriverRouteId(Integer driverRouteId) {
+        this.driverRouteId = driverRouteId;
     }
 }

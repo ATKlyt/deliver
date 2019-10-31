@@ -37,15 +37,18 @@ public class UserServiceImpl implements UserService{
     @Autowired
     AreaDao areaDao;
     @Autowired
-    OrderDao orderDao;
-    @Autowired
     UserOrderDao userOrderDao;
     @Autowired
     DriverInfoDao driverInfoDao;
 
     @Override
+    public UserRelated findNameAndPhoneByUid(Integer uid) {
+        return userDao.findNameAndPhoneByUid(uid);
+    }
+
+    @Override
     public Result findDeliverInfoByAuthId(Integer uid) {
-        User user = userDao.findByUid(uid);
+        User user = userDao.selectByPrimaryKey(uid);
         String userRole = user.getRole();
         Map<String, Object> map = new HashMap<>(16);
         //没有具体信息，意味着他还没有发货资格
@@ -62,17 +65,14 @@ public class UserServiceImpl implements UserService{
     @Override
     public Result findConsigneeByAuthId(String authId) {
         Map<String, Object> map = new HashMap<>(16);
-        User user = userDao.findByAuthId(authId);
-        if (user != null) {
-            String userRole = user.getRole();
-            if (TRANSPORT_DRIVER.equals(userRole) || PRIVATE_DRIVER.equals(userRole) || COMMON_USER.equals(userRole)) {
-                UserInfo userInfo = userInfoDao.findByUid(user.getId());
+        User contact = userDao.findByAuthId(authId);
+        if (contact != null) {
+            String contactRole = contact.getRole();
+            if (TRANSPORT_DRIVER.equals(contactRole) || PRIVATE_DRIVER.equals(contactRole) || COMMON_USER.equals(contactRole)) {
                 //联系人id
-                map.put("cid",user.getId());
                 //联系人电话
-                map.put("phone", user.getPhone());
                 //联系人名字
-                map.put("name", userInfo.getName());
+                map.put("contactRelate", userDao.findNameAndPhoneByUid(contact.getId()));
                 return new Result("查询成功", "0", map);
             } else {
                 //该用户没有收货资格
@@ -244,7 +244,6 @@ public class UserServiceImpl implements UserService{
             return false;
         }
     }
-
     /**
      * 根据id查找用户
      * @param id

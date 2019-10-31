@@ -1,9 +1,8 @@
 package cn.deliver.domain;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class UserInfo {
-
     private Integer id;
 
     private Integer uid;
@@ -12,15 +11,15 @@ public class UserInfo {
 
     private String gender;
 
-    private Date birthday;
+    private java.util.Date birthday;
 
     private String identityCard;
 
     private String identityCardPicture;
 
-    private String role;
-
     private String avatar;
+
+    private String role;
 
     public UserInfo() {
     }
@@ -48,6 +47,14 @@ public class UserInfo {
                 ", identityCardPicture='" + identityCardPicture + '\'' +
                 ", avatar='" + avatar + '\'' +
                 '}';
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public Integer getId() {
@@ -78,19 +85,11 @@ public class UserInfo {
         return gender;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     public void setGender(String gender) {
         this.gender = gender == null ? null : gender.trim();
     }
 
-    public Date getBirthday() {
+    public java.util.Date getBirthday() {
         return birthday;
     }
 

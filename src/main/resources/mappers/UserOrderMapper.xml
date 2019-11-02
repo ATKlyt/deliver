@@ -30,6 +30,12 @@
     <result column="goods_picture1" property="goodsPicture1" jdbcType="VARCHAR" />
     <result column="goods_picture2" property="goodsPicture2" jdbcType="VARCHAR" />
     <result column="goods_picture3" property="goodsPicture3" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <association property="userRelated" javaType="cn.deliver.domain.UserRelated">
+      <result column="user_id" property="id" jdbcType="VARCHAR" />
+      <result column="name" property="name" jdbcType="VARCHAR" />
+      <result column="phone" property="phone" jdbcType="VARCHAR" />
+    </association>
   </resultMap>
   <sql id="Base_Column_List" >
     id, uid, description, pay, delivery_start_time, delivery_end_time, deliver_area_id,
@@ -274,32 +280,48 @@
     </set>
     where id = #{userOrderId,jdbcType=INTEGER}
   </update>
-  <select id="findAllByUid" resultMap="BaseResultMap">
+  <select id="findAllByUid" resultMap="UserOrderBriefResultMap">
     SELECT
-		uo.id,
-		uo.description,
-		uo.`status`,
-		uo.goods_picture1,
-		uo.goods_picture2,
-		uo.goods_picture3,
-        uo.pay
-	FROM
-		user_order AS uo
-	WHERE
-		uo.uid = #{userId,jdbcType=INTEGER}
-    </select>
-  <select id="findBySuretyIdAndStatus" resultMap="BaseResultMap">
-      SELECT
-      uo.id,
+      uo.id AS user_order_id,
       uo.description,
       uo.goods_picture1,
       uo.goods_picture2,
       uo.goods_picture3,
-      uo.pay
+      uo.pay,
+      uo.status,
+      u.id AS user_id,
+      u.phone,
+      ui.name
+    FROM
+      user_order AS uo,
+      user AS u,
+      user_info AS ui,
+      area
+    WHERE
+      uo.uid = #{userId,jdbcType=INTEGER}
+      AND uo.consignee_area_id = area.id
+      AND u.id = ui.uid
+      AND area.cid = u.id
+    </select>
+  <select id="findBySuretyIdAndStatus" resultMap="UserOrderBriefResultMap">
+      SELECT
+      uo.id AS user_order_id,
+      uo.description,
+      uo.goods_picture1,
+      uo.goods_picture2,
+      uo.goods_picture3,
+      uo.pay,
+      u.id AS user_id,
+      u.phone,
+      ui.name
       FROM
-      user_order AS uo
+      user_order AS uo,
+      user AS u,
+      user_info AS ui
       WHERE
       uo.surety_id = #{suretyId,jdbcType=INTEGER}
+      AND uo.uid = ui.uid
+      AND uo.uid = u.id
       AND uo.status = '0'
     </select>
   <select id="findByCid" resultMap="BaseResultMap">

@@ -103,7 +103,11 @@ public class DriverRouteController {
     @ResponseBody
     public Result findNearByUserOrderId(@RequestBody Map<String, Object> parameters){
         Integer userOrderId = (Integer) parameters.get("userOrderId");
-        return driverRouteService.findNearByUserOrderId(userOrderId);
+        Integer pageNumber = (Integer) parameters.get("pageNumber");
+        if (pageNumber == null){
+            pageNumber = 1;
+        }
+        return driverRouteService.findNearByUserOrderId(userOrderId, pageNumber);
     }
 
 }

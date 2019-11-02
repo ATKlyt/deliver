@@ -3,6 +3,7 @@ package cn.deliver.domain;
 import java.math.BigDecimal;
 
 public class UserOrderBrief {
+
     private Integer userOrderId;
     private Integer driverRouteId;
     private String description;
@@ -10,6 +11,24 @@ public class UserOrderBrief {
     private String goodsPicture1;
     private String goodsPicture2;
     private String goodsPicture3;
+    private String status;
+    private UserRelated userRelated;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public UserRelated getUserRelated() {
+        return userRelated;
+    }
+
+    public void setUserRelated(UserRelated userRelated) {
+        this.userRelated = userRelated;
+    }
 
     public Integer getUserOrderId() {
         return userOrderId;

@@ -34,7 +34,7 @@ public interface DriverRouteService {
      * @param userOrderId
      * @return
      */
-    Result findNearByUserOrderId(Integer userOrderId);
+    Result findNearByUserOrderId(Integer userOrderId, Integer pageNumber);
 
     /**
      * 查找司机行程相关具体信息(包括车牌号，车辆照片，行程目的地以及司机所属地)

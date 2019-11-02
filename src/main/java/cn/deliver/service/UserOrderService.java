@@ -16,15 +16,15 @@ public interface UserOrderService {
 
     Result suretyConfirm(Integer suretyId, Integer userOrderId);
 
-    Result findAllByUid(Integer userId);
+    Result findAllByUid(Integer userId, Integer pageNumber);
 
-    Result findNeedSurety(Integer suretyId);
+    Result findNeedSurety(Integer suretyId, Integer pageNumber);
 
-    Result findWaitDeliver(Integer cid);
+    Result findWaitDeliver(Integer cid, Integer pageNumber);
 
     Result contactConfirm(Integer cid, Integer userOrderId);
 
-    Result findNearByArea(String city, String district, String town, String village);
+    Result findNearByArea(String city, String district, String town, String village, Integer pageNumber);
 
     Result driverAccept(UserOrder userOrder);
 }

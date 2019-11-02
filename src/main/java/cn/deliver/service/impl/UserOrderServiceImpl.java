@@ -6,6 +6,7 @@ import cn.deliver.domain.Result;
 import cn.deliver.domain.User;
 import cn.deliver.domain.UserOrder;
 import cn.deliver.service.UserOrderService;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,10 @@ public class UserOrderServiceImpl implements UserOrderService {
     InvitationDao invitationDao;
 
 
+    /**
+     * 分页,每一页有5条数据
+     */
+    private final Integer PAGE_SIZE = 5;
     /**
      * 用户订单等待被担保人确认/拒绝
      */
@@ -179,7 +184,8 @@ public class UserOrderServiceImpl implements UserOrderService {
     }
 
     @Override
-    public Result findAllByUid(Integer userId) {
+    public Result findAllByUid(Integer userId, Integer pageNumber) {
+        PageHelper.startPage(pageNumber, PAGE_SIZE);
         List<UserOrder> userOrders = userOrderDao.findAllByUid(userId);
         return new Result("查找成功", "0", userOrders);
     }
@@ -187,13 +193,15 @@ public class UserOrderServiceImpl implements UserOrderService {
 
 
     @Override
-    public Result findNeedSurety(Integer suretyId) {
+    public Result findNeedSurety(Integer suretyId, Integer pageNumber) {
+        PageHelper.startPage(pageNumber, PAGE_SIZE);
         List<UserOrder> userOrders = userOrderDao.findBySuretyIdAndStatus(suretyId);
         return new Result("查找成功", "0", userOrders);
     }
 
     @Override
-    public Result findWaitDeliver(Integer cid) {
+    public Result findWaitDeliver(Integer cid, Integer pageNumber) {
+        PageHelper.startPage(pageNumber, PAGE_SIZE);
         List<UserOrder> userOrders = userOrderDao.findByCid(cid);
         return new Result("查找成功", "0", userOrders);
     }
@@ -222,7 +230,8 @@ public class UserOrderServiceImpl implements UserOrderService {
 
 
     @Override
-    public Result findNearByArea(String city, String district, String town, String village) {
+    public Result findNearByArea(String city, String district, String town, String village, Integer pageNumber) {
+        PageHelper.startPage(pageNumber, PAGE_SIZE);
         List<UserOrder> userOrders = userOrderDao.findNearByArea(city, district, town, village);
         if (userOrders.size() > 0) {
             return new Result("查询成功", "0", userOrders);

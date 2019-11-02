@@ -118,7 +118,11 @@ public class UserOrderController {
     @ResponseBody
     public Result findAllByUid(@RequestBody Map<String, Object> parameters){
         Integer userId = (Integer) parameters.get("userId");
-        return userOrderService.findAllByUid(userId);
+        Integer pageNumber = (Integer) parameters.get("pageNumber");
+        if (pageNumber == null){
+            pageNumber = 1;
+        }
+        return userOrderService.findAllByUid(userId, pageNumber);
     }
 
     /**
@@ -160,7 +164,11 @@ public class UserOrderController {
     @ResponseBody
     public Result findNeedSurety(@RequestBody Map<String, Object> parameters){
         Integer suretyId = (Integer) parameters.get("suretyId");
-        return userOrderService.findNeedSurety(suretyId);
+        Integer pageNumber = (Integer) parameters.get("pageNumber");
+        if (pageNumber == null){
+            pageNumber = 1;
+        }
+        return userOrderService.findNeedSurety(suretyId, pageNumber);
     }
 
     /**
@@ -172,7 +180,11 @@ public class UserOrderController {
     @ResponseBody
     public Result findWaitDeliver(@RequestBody Map<String, Object> parameters){
         Integer cid = (Integer) parameters.get("cid");
-        return userOrderService.findWaitDeliver(cid);
+        Integer pageNumber = (Integer) parameters.get("pageNumber");
+        if (pageNumber == null){
+            pageNumber = 1;
+        }
+        return userOrderService.findWaitDeliver(cid, pageNumber);
     }
 
     /**
@@ -191,17 +203,21 @@ public class UserOrderController {
 
     /**
      * 查找附近订单
-     * @param area
+     * @param parameters
      * @return
      */
     @RequestMapping("findNear")
     @ResponseBody
-    public Result findNearByArea(@RequestBody Area area) {
-        String city = area.getCity();
-        String district = area.getDistrict();
-        String town = area.getTown();
-        String village = area.getVillage();
-        return userOrderService.findNearByArea(city, district, town, village);
+    public Result findNearByArea(@RequestBody Map<String, Object> parameters) {
+        String city = (String) parameters.get("city");
+        String district = (String) parameters.get("district");
+        String town = (String) parameters.get("town");
+        String village = (String) parameters.get("village");
+        Integer pageNumber = (Integer) parameters.get("pageNumber");
+        if (pageNumber == null){
+            pageNumber = 1;
+        }
+        return userOrderService.findNearByArea(city, district, town, village, pageNumber);
     }
 
 

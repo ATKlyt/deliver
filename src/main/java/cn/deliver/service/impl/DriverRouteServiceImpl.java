@@ -3,6 +3,7 @@ package cn.deliver.service.impl;
 import cn.deliver.dao.*;
 import cn.deliver.domain.*;
 import cn.deliver.service.DriverRouteService;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,10 @@ public class DriverRouteServiceImpl implements DriverRouteService {
     @Autowired
     InvitationDao invitationDao;
 
+    /**
+     * 分页,每一页有5条数据
+     */
+    private final Integer PAGE_SIZE = 5;
     /**
      * 司机行程尚未过期
      */
@@ -91,13 +96,14 @@ public class DriverRouteServiceImpl implements DriverRouteService {
     }
 
     @Override
-    public Result findNearByUserOrderId(Integer userOrderId) {
+    public Result findNearByUserOrderId(Integer userOrderId, Integer pageNumber) {
         UserOrder userOrder = userOrderDao.selectByPrimaryKey(userOrderId);
         Area deliverArea = areaDao.selectByPrimaryKey(userOrder.getDeliverAreaId());
         String city = deliverArea.getCity();
         String district = deliverArea.getDistrict();
         String town = deliverArea.getTown();
         String village = deliverArea.getVillage();
+        PageHelper.startPage(pageNumber, PAGE_SIZE);
         List<DriverRouteRelated> driverRouteRelated = driverRouteDao.findNearByArea(city, district, town, village);
         if (driverRouteRelated.size() > 0 ){
             return new Result("查找成功", "0", driverRouteRelated);

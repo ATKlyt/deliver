@@ -27,7 +27,7 @@
     <!-- lucene版本号 -->
     <lucene.version>8.1.1</lucene.version>
     <!-- shiro权限框架版本号-->
-    <shiro.version>1.4.0</shiro.version>
+    <shiro.version>1.5.0</shiro.version>
   </properties>
 
   <dependencies>

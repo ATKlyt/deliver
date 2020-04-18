@@ -46,20 +46,11 @@ public class UserServiceImpl implements UserService{
         return userDao.findNameAndPhoneByUid(uid);
     }
 
+
     @Override
-    public Result findDeliverInfoByAuthId(Integer uid) {
-        User user = userDao.selectByPrimaryKey(uid);
-        String userRole = user.getRole();
-        Map<String, Object> map = new HashMap<>(16);
-        //没有具体信息，意味着他还没有发货资格
-        if (TRANSPORT_DRIVER.equals(userRole) || PRIVATE_DRIVER.equals(userRole) || COMMON_USER.equals(userRole)) {
-            UserInfo userInfo = userInfoDao.findByUid(uid);
-            map.put("phone", user.getPhone());
-            map.put("name", userInfo.getName());
-            return new Result("查询成功", "0", map);
-        } else {
-            return new Result("该用户没有发货资格", "1");
-        }
+    public Result findSuretyHistory(Integer userId) {
+        List<UserRelated> suretyList = userDao.findSuretyHistoryByUid(userId);
+        return new Result("查询成功", "0", suretyList);
     }
 
     @Override

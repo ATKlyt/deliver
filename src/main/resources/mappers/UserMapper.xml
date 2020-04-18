@@ -248,7 +248,7 @@
     </select>
 
   <select id="findByAuthId" resultMap="BaseResultMap">
-    select * from user where auth_id = #{authId,jdbcType=VARCHAR}   ;
+    select * from user where auth_id = #{authId,jdbcType=VARCHAR}
   </select>
   <!--检测手机号码是否已被注册-->
   <select id="checkPhoneNumber" resultType="java.lang.Integer">
@@ -297,5 +297,20 @@
   <select id="findNameAndPhoneByUid" resultType="cn.deliver.domain.UserRelated">
       select u.id ,ui.name ,u.phone from user AS u ,user_info AS ui
       where ui.uid = u.id and u.id = #{uid,jdbcType=INTEGER}
+    </select>
+    <select id="findSuretyHistoryByUid" resultType="cn.deliver.domain.UserRelated">
+      SELECT
+          temp.surety_id AS id,
+          ui.NAME,
+          u.phone
+      FROM
+          ( SELECT DISTINCT surety_id FROM user_order WHERE uid = #{userId,jdbcType=INTEGER} ORDER BY create_time DESC ) AS temp,
+          user_info AS ui,
+          `user` AS u
+      WHERE
+          temp.surety_id = ui.uid
+          AND temp.surety_id = u.id
+          LIMIT 0,
+          10;
     </select>
 </mapper>

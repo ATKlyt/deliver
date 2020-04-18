@@ -137,6 +137,9 @@ public class UserOrderController {
         Integer userOrderId = (Integer) parameters.get("userOrderId");
         Map<String, Object> map = new HashMap<>(16);
         UserOrder userOrder = userOrderService.selectByPrimaryKey(userOrderId);
+        if (userOrder == null){
+            return new Result("查询失败，查询不到该用户订单", "1", null);
+        }
         Area consigneeArea = areaService.selectByPrimaryKey(userOrder.getConsigneeAreaId());
         Area deliverArea = areaService.selectByPrimaryKey(userOrder.getDeliverAreaId());
         //担保人信息

@@ -124,5 +124,17 @@ public interface UserDao {
      */
     User findUserById(int id);
 
+    /**
+     * 通过用户id查找姓名和电话
+     * @param uid
+     * @return
+     */
     UserRelated findNameAndPhoneByUid(Integer uid);
+
+    /**
+     * 通过用户id查找最近使用过的十条担保人记录
+     * @param userId
+     * @return
+     */
+    List<UserRelated> findSuretyHistoryByUid(Integer userId);
 }

@@ -35,7 +35,29 @@ public class UserController {
     private String PASSWORDFORMAT = "(?!.*[\\u4E00-\\u9FA5\\s])(?!^[a-zA-Z]+$)(?!^[\\d]+$)(?!^[^a-zA-Z\\d]+$)^.{6,16}$";
     private String PHONENUMBERFORMAT = "^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$";
 
+    /**
+     * 获取最近使用过的十条担保人记录
+     * @param parameters
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("findSuretyHistory")
+    public Result findSuretyHistory(@RequestBody Map<String, Object> parameters){
+        Integer userId = (Integer) parameters.get("userId");
+        return userService.findSuretyHistory(userId);
+    }
 
+    /**
+     * 获取收货人姓名电话
+     * @param parameters
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("findConsigneeInfo")
+    public Result findConsigneeByAuthId(@RequestBody Map<String, Object> parameters){
+        String authId = (String) parameters.get("authId");
+        return userService.findConsigneeByAuthId(authId);
+    }
 
     /**
      * 管理员删除用户
@@ -69,30 +91,7 @@ public class UserController {
         }
     }
 
-    /**
-     * 获取发货人信息
-     * @param uid
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("findDeliverInfo")
-    public Result findDeliverInfoByAuthId(Integer uid){
-        return userService.findDeliverInfoByAuthId(uid);
-    }
 
-    public static void main(String[] args) {
-    }
-
-    /**
-     * 获取收货人姓名电话
-     * @param authId
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("findConsigneeInfo")
-    public Result findConsigneeByAuthId(String authId){
-        return userService.findConsigneeByAuthId(authId);
-    }
 
     /**
      * 查询分页信息

@@ -13,9 +13,7 @@ import java.util.Map;
 
 public interface UserService {
 
-
-
-    Result findDeliverInfoByAuthId(Integer uid);
+    Result findSuretyHistory(Integer userId);
 
     Result findConsigneeByAuthId(String authId);
     /**
@@ -131,4 +129,6 @@ public interface UserService {
     User findUserById(int id);
 
     UserRelated findNameAndPhoneByUid(Integer uid);
+
+
 }

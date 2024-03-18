@@ -18,7 +18,7 @@
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
     <!-- spring版本号 -->
-    <spring.version>5.1.5.RELEASE</spring.version>
+    <spring.version>6.0.18</spring.version>
     <!-- mysql驱动版本号 -->
     <mysql-driver.version>8.0.15</mysql-driver.version>
     <!-- log4j日志包版本号 -->
